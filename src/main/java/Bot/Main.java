@@ -2,6 +2,7 @@ package Bot;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
@@ -12,14 +13,15 @@ import java.util.Scanner;
 
 /**Class: Main
  * @author Justin Sandman
- * @version 1.0
+ * @version 1.1
  *
  * Everything we should need to have the bot up and running.
  *
  */
 public class Main {
 
-    static String token;
+    private static String token;
+    public final static String COMMAND_SIGN = "!";
 
     /**Method: setToken
      * @author Justin Sandman
