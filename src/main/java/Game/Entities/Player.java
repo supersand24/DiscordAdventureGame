@@ -4,6 +4,7 @@ import Game.Items.Item;
 import Game.Items.Weapons.Sword;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Player class
@@ -33,22 +34,95 @@ public class Player extends Entity {
         holding[0] = new Sword(weaponName, weaponOwner);
         this.name = playerName;
         this.gender = gender;
-        def = genStat();
-        spd = genStat();
-        dex = genStat();
-        wis = genStat();
-        str = genStat();
-        level = 1;
+        genStats();
 
     }
 
     /**
-     * randomly generate an int for the stats
-     * @return returns a random value between 0 and 20
+     * sets the stats of the player
+     * @version 0.4
      */
-    public int genStat() {
+    private void genStats() {
         Random rand = new Random();
-        return rand.nextInt(1,16);
+        int pool = 35;
+        int[] stats = new int[5];
+
+        int cnt = 4;
+
+        //sets the lower bound of the rand
+        int min = 1;
+        //sets the initial max
+        int max = 15;
+
+        while (pool > 0) {
+
+            for (int i = 0; i < stats.length; i++) {
+                if (pool < 0) {
+                    break;
+                }
+                /*
+                if (pool <= 3) {
+                    min = 0;
+                }
+                */
+                if (stats[i] >= 15) {
+                    i++;
+                    continue;
+                }
+
+                if (pool < 15) {
+                    max = pool - cnt;
+                }
+
+                int add = rand.nextInt(min, max);
+                stats[i] += add;
+                pool -= add;
+                pool += 1;
+                cnt--;
+            }
+        }
+
+        shuffleArray(stats);
+        checkMax(stats);
+
+        this.def = stats[0];
+        this.spd = stats[1];
+        this.dex = stats[2];
+        this.wis = stats[3];
+        this.str = stats[4];
+
+    }
+
+    /**
+     * a method for a Fisher-Yates shuffle
+     * @param ar the array to shuffle
+     * @version 1.0
+     */
+    private void shuffleArray(int[] ar)
+    {
+        // If running on Java 6 or older, use `new Random()` on RHS here
+        Random rnd = ThreadLocalRandom.current();
+        for (int i = ar.length - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+            // Simple swap
+            int a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
+    }
+
+    /***
+     * if the value of the sats is greater than 15, sets then to 15
+     * @param ar the array of stats to check
+     * @version 1.0
+     */
+    private void checkMax(int[] ar) {
+        for (int i = 0; i < ar.length; i++) {
+            if (ar[i] > 15) {
+                ar[i] = 15;
+            }
+        }
     }
 
     @Override

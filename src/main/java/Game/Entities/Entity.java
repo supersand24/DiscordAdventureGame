@@ -4,6 +4,8 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Items.Item;
 import Game.Items.Weapons.Weapon;
 
+import java.util.HashMap;
+
 /***
  * parent class to all Entities
  * @author Harrison Brown
@@ -71,6 +73,7 @@ public abstract class Entity {
      */
     protected int str; //strength
 
+
     //constructor
 
     /**
@@ -88,6 +91,7 @@ public abstract class Entity {
         this.health = maxHealth;
         this.maxHealth = maxHealth;
         this.level = 1;
+
     }
 
     //abstract methods
