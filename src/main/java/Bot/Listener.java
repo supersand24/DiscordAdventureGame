@@ -3,13 +3,15 @@ package Bot;
 import Game.Game;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 /**Class: Listener
  * @author Justin Sandman
- * @version 1.2
+ * @version 1.3
  *
  * Where messages come in and are handled.
  *
@@ -33,6 +35,7 @@ public class Listener extends ListenerAdapter {
         roleDeveloper = Game.guild.getRoleById(899416257537908777L);
         Game.roleAdventurer = Game.guild.getRoleById(899464047001468978L);
         Game.roleDead = Game.guild.getRoleById(899464326086279223L);
+        Game.categoryAdventure = Game.guild.getCategoryById(899663492175511612L);
     }
 
     /**Method: onMessageReceived
@@ -52,7 +55,7 @@ public class Listener extends ListenerAdapter {
                 //Ignore empty messages.
                 if (!e.getMessage().getContentRaw().isEmpty()) {
                     //If in the correct channel, later will be changed to not in #meta-gaming channel, and #dev-general channels.
-                    if (e.getChannel().getName().equalsIgnoreCase("testing")) {
+                    //if (e.getChannel().getName().equalsIgnoreCase("testing")) {
                         String messageRaw = e.getMessage().getContentRaw().trim();
                         if (messageRaw.startsWith(Main.COMMAND_SIGN)) {
                             String command = messageRaw.split("//s+")[0].substring(Main.COMMAND_SIGN.length());
@@ -60,7 +63,7 @@ public class Listener extends ListenerAdapter {
                             //Generic Commands
                             switch (command) {
                                 case "test" -> e.getMessage().reply("Message Received").queue();
-                                case "joingame" -> Game.joinGame(e.getMember(), e.getMessage());
+                                //case "adventure" -> Game.startAdventure(sl);
                             }
 
                             //Developer Only Commands
@@ -69,10 +72,35 @@ public class Listener extends ListenerAdapter {
                                     case "startgame" -> Game.startGame();
                                 }
                             }
+                        } else {
+                            if (e.getMessage().getReferencedMessage() != null) {
+                                if (e.getMessage().getReferencedMessage().getAuthor().isBot()) {
+                                    System.out.println("I received a reply");
+                                    if (e.getMessage().getReferencedMessage().getContentRaw().startsWith("Game Starting!")) {
+                                        Game.joinGame(e.getMember(), e.getMessage());
+                                    }
+                                }
+                            }
                         }
-                    }
+                    //}
                 }
             }
+        }
+    }
+
+    @Override
+    public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
+        switch (slashCommand.getName()) {
+            case "adventure"        -> Game.startAdventure(slashCommand);
+            case "taco"             -> System.out.println("Taco");
+        }
+    }
+
+    @Override
+    public void onButtonClick(@NotNull ButtonClickEvent e) {
+        switch (e.getButton().getId()) {
+            case "joinAdventure"    -> Game.joinAdventure(e);
+            case "leaveTown"        -> Game.leaveTown(e);
         }
     }
 }
