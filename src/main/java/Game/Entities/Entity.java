@@ -1,7 +1,10 @@
 package Game.Entities;
 
+import Game.Entities.EnemyTypes.Enemy;
 import Game.Items.Item;
 import Game.Items.Weapons.Weapon;
+
+import java.util.HashMap;
 
 /***
  * parent class to all Entities
@@ -11,6 +14,11 @@ import Game.Items.Weapons.Weapon;
 
 public abstract class Entity {
     //properties
+
+    /**
+     * if the entity is alive
+     */
+    protected boolean isAlive = true;
 
     /**
      * amount of gold the entity has
@@ -37,7 +45,7 @@ public abstract class Entity {
      */
     protected Item[] Inventory;
 
-    protected Weapon[] holding;
+    protected Weapon[] holding = new Weapon[2];
 
     //stats, will probably be changed later
     /**
@@ -60,6 +68,12 @@ public abstract class Entity {
      */
     protected int wis; //wisdom, spell casting etc.
 
+    /**
+     * strength stat
+     */
+    protected int str; //strength
+
+
     //constructor
 
     /**
@@ -77,6 +91,7 @@ public abstract class Entity {
         this.health = maxHealth;
         this.maxHealth = maxHealth;
         this.level = 1;
+
     }
 
     //abstract methods
@@ -84,7 +99,7 @@ public abstract class Entity {
     /**
      * Generic attack for all entities to implement
      */
-    abstract protected void attack();
+    abstract protected void attack(Entity entity);
 
     /**
      * Generic move for all entities to implement
@@ -102,11 +117,19 @@ public abstract class Entity {
     abstract protected void useItem();
 
     /**
-     * Generic checkHealthStatus for all entities to implement
+     * if the entities' health is 0 or less, isAlive is set to false
      */
-    abstract protected void checkHealthStatus();
+    public void checkHealthStatus() {
+        if (health <= 0) {
+            isAlive = false;
+        }
+    }
 
     //gets and sets
+
+    public boolean getIsAlive() {
+        return isAlive;
+    }
 
     public int getGold() {
         return gold;

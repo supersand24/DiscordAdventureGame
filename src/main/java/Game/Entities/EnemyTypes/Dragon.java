@@ -11,7 +11,7 @@ public class Dragon extends Enemy {
      * @see Game.Entities.EnemyTypes.Enemy
      */
     public Dragon() {
-        super(10, 10, "Dragon");
+        super("Dragon");
     }
 
     @Override

@@ -1,10 +1,14 @@
 package Game;
 
+import Game.Entities.EnemyTypes.*;
+import Game.Entities.Player;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
+
+import java.util.Scanner;
 
 /**Class: Game
  * @author Harrison Brown and Justin Sandman
@@ -202,13 +206,73 @@ public class Game {
         guild.getTextChannelById(899417703486455848L).sendMessage(msg).queue();
     }
 
+    /**
+     * @author Harrison Brown
+     * @version 1.0
+     * @param enemies an array of enemies
+     * @return returns true if an enemy in the array is alive
+     */
+    private static boolean enemiesLive (Enemy[] enemies)
+    {
+        int alive = enemies.length;
+        for (int i = 0; i < enemies.length; i++)
+        {
+            if (!enemies[i].getIsAlive())
+            {
+                alive -= 1;
+            }
+        }
+        if (alive == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     /**Method: main
      * @author Harrison Brown
+     * @version 0.2
      * Written : October 17, 2021
      *
      * Temporary method, to test the game without connecting to Discord.
      */
     public static void main(String[] args) {
+        /*
+        Scanner scan = new Scanner(System.in);
 
+        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
+        Enemy[] enemies = new Enemy[2];
+        enemies[0] = new Goblin();
+        enemies[1] = new Goblin();
+
+        do {
+
+            for (Enemy x : enemies) {
+                System.out.print(x.getHealth() + " | ");
+                x.attack(harrison);
+            }
+            System.out.println();
+            System.out.println("Which Goblin do you want to attack? (0 or 1) ");
+            int choice = scan.nextInt();
+            scan.reset();
+            harrison.attack(enemies[choice]);
+            for (Enemy x : enemies) {
+                x.checkHealthStatus();
+            }
+            harrison.checkHealthStatus();
+
+        } while (enemiesLive(enemies) && harrison.getIsAlive());
+        if (harrison.getIsAlive()) {
+            System.out.println("You Win!");
+        } else {
+            System.out.println("Enemies Win!");
+        }
+         */
+
+        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
+        System.out.print(harrison);
     }
 }

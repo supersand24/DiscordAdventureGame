@@ -6,6 +6,11 @@ package Game.Items;
  * @version 0.1
  */
 public abstract class Item {
+
+    /**
+     * what the item is
+     */
+    protected String type;
     /**
      * name of the item
      */
@@ -34,6 +39,12 @@ public abstract class Item {
     }
 
     //gets and sets
+
+
+    public String getType() {
+        return type;
+    }
+
     public String getName() {
         return name;
     }
