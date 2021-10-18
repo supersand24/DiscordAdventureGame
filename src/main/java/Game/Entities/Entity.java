@@ -1,6 +1,7 @@
 package Game.Entities;
 
 import Game.Items.Item;
+import Game.Items.Weapons.Weapon;
 
 /***
  * parent class to all Entities
@@ -35,6 +36,8 @@ public abstract class Entity {
      * current inventory of the entity
      */
     protected Item[] Inventory;
+
+    protected Weapon[] holding;
 
     //stats, will probably be changed later
     /**

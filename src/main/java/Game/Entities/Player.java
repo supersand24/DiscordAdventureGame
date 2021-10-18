@@ -1,5 +1,7 @@
 package Game.Entities;
 
+import Game.Items.Weapons.Sword;
+
 /**
  * Player class
  * @author Harrison Brown
@@ -15,10 +17,12 @@ public class Player extends Entity {
      */
     public Player(int gold, int maxHealth) {
         super(gold, maxHealth);
+        holding[0] = new Sword("Slayer of Thots");
     }
 
     @Override
     public void attack() {
+        ((Sword)holding[0]).attack();
     }
 
     @Override
