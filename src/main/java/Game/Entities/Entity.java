@@ -1,6 +1,6 @@
-package Game.Entity;
+package Game.Entities;
 
-import Game.Item.Item;
+import Game.Items.Item;
 
 /***
  * parent class to all Entities
@@ -69,7 +69,7 @@ public abstract class Entity {
      * @param maxHealth initial max health
      */
 
-    Entity(int gold, int maxHealth) {
+    protected Entity(int gold, int maxHealth) {
         this.gold = gold;
         this.health = maxHealth;
         this.maxHealth = maxHealth;

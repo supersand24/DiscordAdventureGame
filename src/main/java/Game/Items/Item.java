@@ -1,4 +1,4 @@
-package Game.Item;
+package Game.Items;
 
 /***
  * parent class to all items and weapons
@@ -27,7 +27,7 @@ public abstract class Item {
      * @param cost item cost
      * @param weight item weight
      */
-    Item(String name, int cost, int weight) {
+    protected Item(String name, int cost, int weight) {
         this.name = name;
         this.cost = cost;
         this.weight = weight;
