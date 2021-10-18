@@ -1,5 +1,6 @@
 package Bot;
 
+import Game.Game;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**Class: Listener
  * @author Justin Sandman
- * @version 1.0
+ * @version 1.1
  *
  * Where messages come in and are handled.
  *
@@ -22,11 +23,14 @@ public class Listener extends ListenerAdapter {
      * Written : October 17, 2021
      *
      * Runs as soon as the Listener is ready to go.
+     * Gets the Developer Role ready, so Listener can check members for it.
+     * Sends the Guild to the Game, so Game can send messages as needed.
      */
     @Override
     public void onReady(@NotNull ReadyEvent e) {
         System.out.println("Listener is ready, running onReady()");
         roleDeveloper = e.getJDA().getGuilds().get(0).getRoleById(899416257537908777L);
+        Game.guild = e.getJDA().getGuilds().get(0);
     }
 
     /**Method: onMessageReceived
@@ -57,7 +61,7 @@ public class Listener extends ListenerAdapter {
                         //Developer Only Commands
                         if ( e.getMember().getRoles().contains(roleDeveloper) ) {
                             switch (command) {
-                                case "startgame"    -> e.getMessage().reply("Game Starting").queue();
+                                case "startgame"    -> Game.startGame();
                             }
                         }
                     }
