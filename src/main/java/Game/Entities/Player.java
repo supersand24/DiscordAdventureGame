@@ -8,6 +8,10 @@ import Game.Items.Weapons.Sword;
  * @version 0.1
  */
 public class Player extends Entity {
+    /**
+     * The name of the character
+     */
+    protected final String name;
 
     /**
      * player constructor
@@ -15,14 +19,15 @@ public class Player extends Entity {
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
      */
-    public Player(int gold, int maxHealth) {
+    public Player(int gold, int maxHealth, String weaponName, String weaponOwner, String playerName) {
         super(gold, maxHealth);
-        holding[0] = new Sword("Slayer of Thots");
+        holding[0] = new Sword(weaponName, weaponOwner);
+        this.name = playerName;
     }
 
     @Override
-    public void attack() {
-        ((Sword)holding[0]).attack();
+    public void attack(Entity entity) {
+        entity.setHealth(entity.getHealth()-holding[0].getDmg());
     }
 
     @Override
@@ -35,9 +40,5 @@ public class Player extends Entity {
 
     @Override
     public void useItem() {
-    }
-
-    @Override
-    public void checkHealthStatus() {
     }
 }

@@ -1,5 +1,7 @@
 package Game.Items.Weapons;
 
+import Game.Entities.Entity;
+
 /**
  * Sword weapon class
  * @author Harrison Brown
@@ -10,12 +12,16 @@ public class Sword extends Weapon {
      * constructor to create a sword with the given name
      * @param name The name of the Sword
      */
-    public Sword(String name) {
-        super(name,20, 15, 10 );
+    public Sword(String name, String owner) {
+        super(name,20, 15, 10, owner);
     }
 
-    public void attack() {
-        System.out.println("You attacked with " + name);
+    /*
+    public void attack(Entity e) {
+        e.setHealth(e.getHealth()-dmg);
+
+        System.out.println("You attacked with " + name +" for " + dmg + " damage.");
     }
+    */
 
 }
