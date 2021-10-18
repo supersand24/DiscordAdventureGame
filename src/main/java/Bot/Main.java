@@ -2,8 +2,9 @@ package Bot;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import javax.security.auth.login.LoginException;
@@ -13,7 +14,7 @@ import java.util.Scanner;
 
 /**Class: Main
  * @author Justin Sandman
- * @version 1.1
+ * @version 1.2
  *
  * Everything we should need to have the bot up and running.
  *
@@ -41,6 +42,24 @@ public class Main {
 
     }
 
+    /**Method: addSlashCommands
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     *
+     * Sends all slash command information to Discord.
+     * Only want to do this once, per edit.
+     */
+    private static void addSlashCommands(JDA jda) {
+        System.out.println("Running Slash Commands, be sure to disable this on next run.");
+        CommandListUpdateAction commands = jda.updateCommands();
+
+        //Adventure Command
+        commands.addCommands(
+                new CommandData("adventure","Gets ready to go on an adventure.")
+        ).queue();
+
+    }
+
     /**Method: main
      * @author Justin Sandman
      * Written : October 17, 2021
@@ -65,6 +84,8 @@ public class Main {
             try {
                 JDA jda = jdaBuilder.build();
                 jda.awaitReady();
+
+                //addSlashCommands(jda);
 
             } catch (LoginException | InterruptedException e) {
                 e.printStackTrace();
