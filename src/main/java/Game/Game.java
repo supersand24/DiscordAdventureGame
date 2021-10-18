@@ -1,10 +1,13 @@
 package Game;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 
 /**Class: Game
- * @author Harrison Brown
- * @version 0.1
+ * @author Harrison Brown and Justin Sandman
+ * @version 0.2
  *
  * The game.
  *
@@ -13,13 +16,10 @@ public class Game {
 
     public static Guild guild;
 
-    enum gameStates {
-        NO_GAME,
-        AWAITING_START,
-        STARTED
-    }
+    public static Role roleAdventurer;
+    public static Role roleDead;
 
-    static gameStates gameState = gameStates.NO_GAME;
+    static boolean gameStarted = false;
 
     /**Method: startGame
      * @author Justin Sandman
@@ -30,12 +30,34 @@ public class Game {
      */
     public static void startGame() {
 
-        if (gameState == gameStates.NO_GAME) {
+        if (!gameStarted) {
+            gameStarted = true;
             System.out.println("Starting Game");
-            gameState = gameStates.AWAITING_START;
             sendMessage("Game Starting!");
         } else {
             System.out.println("Game Already Started");
+        }
+
+    }
+
+    /**Method: joinGame
+     * @author Justin Sandman
+     * Written : October 17, 2021
+     *
+     * Tries to join the game, if one is in progress.
+     * Is called by a Member in the server.
+     */
+    public static void joinGame(Member member, Message msg) {
+        if (!member.getRoles().contains(roleAdventurer)) {
+            if (gameStarted) {
+                System.out.println(member.getEffectiveName() + " has joined the Game.");
+                msg.reply("You joined the game!").queue();
+                guild.addRoleToMember(member, roleAdventurer).queue();
+            } else {
+                msg.reply("Game isn't active.").queue();
+            }
+        } else {
+            msg.reply("You are already in the game!").queue();
         }
 
     }
@@ -55,9 +77,9 @@ public class Game {
      * @author Harrison Brown
      * Written : October 17, 2021
      *
-     * Temporary method, to test the game portion without connecting to Discord.
+     * Temporary method, to test the game without connecting to Discord.
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
     }
 }

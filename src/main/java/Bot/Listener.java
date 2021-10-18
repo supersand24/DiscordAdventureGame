@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**Class: Listener
  * @author Justin Sandman
- * @version 1.1
+ * @version 1.2
  *
  * Where messages come in and are handled.
  *
@@ -29,8 +29,10 @@ public class Listener extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent e) {
         System.out.println("Listener is ready, running onReady()");
-        roleDeveloper = e.getJDA().getGuilds().get(0).getRoleById(899416257537908777L);
         Game.guild = e.getJDA().getGuilds().get(0);
+        roleDeveloper = Game.guild.getRoleById(899416257537908777L);
+        Game.roleAdventurer = Game.guild.getRoleById(899464047001468978L);
+        Game.roleDead = Game.guild.getRoleById(899464326086279223L);
     }
 
     /**Method: onMessageReceived
@@ -45,23 +47,27 @@ public class Listener extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         //Ignore messages sent by bots, even though there should not be any bots.
         if (!e.getAuthor().isBot()) {
-            //Ignore empty messages
-            if (!e.getMessage().getContentRaw().isEmpty()) {
-                //If in the correct channel, later will be changed to not in #meta-gaming channel, and #dev-general channels.
-                if (e.getChannel().getName().equalsIgnoreCase("testing")) {
-                    String messageRaw = e.getMessage().getContentRaw().trim();
-                    if (messageRaw.startsWith(Main.COMMAND_SIGN)) {
-                        String command = messageRaw.split("//s+")[0].substring(Main.COMMAND_SIGN.length());
+            //Member is not null.
+            if (e.getMember() != null) {
+                //Ignore empty messages.
+                if (!e.getMessage().getContentRaw().isEmpty()) {
+                    //If in the correct channel, later will be changed to not in #meta-gaming channel, and #dev-general channels.
+                    if (e.getChannel().getName().equalsIgnoreCase("testing")) {
+                        String messageRaw = e.getMessage().getContentRaw().trim();
+                        if (messageRaw.startsWith(Main.COMMAND_SIGN)) {
+                            String command = messageRaw.split("//s+")[0].substring(Main.COMMAND_SIGN.length());
 
-                        //Generic Commands
-                        switch (command) {
-                            case "test"     -> e.getMessage().reply("Message Received").queue();
-                        }
-
-                        //Developer Only Commands
-                        if ( e.getMember().getRoles().contains(roleDeveloper) ) {
+                            //Generic Commands
                             switch (command) {
-                                case "startgame"    -> Game.startGame();
+                                case "test" -> e.getMessage().reply("Message Received").queue();
+                                case "joingame" -> Game.joinGame(e.getMember(), e.getMessage());
+                            }
+
+                            //Developer Only Commands
+                            if (e.getMember().getRoles().contains(roleDeveloper)) {
+                                switch (command) {
+                                    case "startgame" -> Game.startGame();
+                                }
                             }
                         }
                     }
