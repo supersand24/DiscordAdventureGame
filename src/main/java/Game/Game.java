@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.interactions.components.Button;
 
 /**Class: Game
  * @author Harrison Brown and Justin Sandman
- * @version 0.3
+ * @version 0.3.1
  *
  * Handles everything for the game.
  *
@@ -18,9 +18,9 @@ public class Game {
     public static Guild guild;
 
     public static Role roleAdventurer;
-    public static Role roleDead;
 
     public static Category categoryAdventure;
+    public static Category categorySettlement;
 
     static boolean gameStarted = false;
 
@@ -70,24 +70,34 @@ public class Game {
      * Written : October 18, 2021
      *
      * Opens an invite for other players to join an adventure.
-     * Is called by a Member in the server, only while in a settlement.
+     * Is called by a Member in the server, only while in a settlement, and not in another party.
      */
     public static void startAdventure(SlashCommandEvent slashCommand) {
 
+        //Get user Member
         Member member = slashCommand.getMember();
 
         if (canPlayGame(member)) {
-        slashCommand.reply(member.getAsMention() + " is going on an adventure.")
-                .addActionRow(
-                        Button.primary("joinAdventure", "Join Adventure Party"),
-                        Button.primary("leaveTown","Leave Town")
-                ).queue();
-            guild.createTextChannel("party",categoryAdventure).queue(textChannel -> {
-                textChannel.createPermissionOverride(member)
-                        .setAllow(Permission.VIEW_CHANNEL)
-                        .queue();
-                textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-            });
+            //If member is in a settlement, and not on an adventure.
+            if (categorySettlement.getMembers().contains(member)) {
+                if (!categoryAdventure.getMembers().contains(member)) {
+                    slashCommand.reply(member.getAsMention() + " is going on an adventure.")
+                            .addActionRow(
+                                    Button.primary("joinAdventure", "Join Adventure Party"),
+                                    Button.danger("leaveTown", "Leave Town")
+                            ).queue();
+                    guild.createTextChannel("party", categoryAdventure).queue(textChannel -> {
+                        textChannel.createPermissionOverride(member)
+                                .setAllow(Permission.VIEW_CHANNEL)
+                                .queue();
+                        textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                    });
+                } else {
+                    slashCommand.reply("You are already in a Party!").queue();
+                }
+            } else {
+                slashCommand.reply("You are not in a Settlement.").queue();
+            }
         } else {
             slashCommand.reply("You are unable to use this command!").queue();
         }
@@ -106,17 +116,28 @@ public class Game {
         Member member = e.getMember();
 
         if (canPlayGame(member)) {
-            for (TextChannel channel : categoryAdventure.getTextChannels()) {
-                if (channel.getMembers().contains(partyLeader)) {
-                    if (!channel.getMembers().contains(member)) {
+            //If you are not already in a party.
+            if (!categoryAdventure.getMembers().contains(member)) {
+                //If the party hasn't already left yet.
+                if (categorySettlement.getMembers().contains(partyLeader)) {
+
+                    //Find the Party Channel, and add the member to it, and notify the party.
+                    TextChannel channel = findPartyChannel(partyLeader);
+                    if (channel != null) {
                         channel.sendMessage(member.getAsMention() + " has joined the Party!").queue();
+                        channel.createPermissionOverride(member)
+                                .setAllow(Permission.VIEW_CHANNEL)
+                                .queue();
                     } else {
-                        System.out.println(member.getEffectiveName() + " tried joining the party, but is already a part of it.");
+                        System.out.println("Could not find party channel.");
                     }
+                } else {
+                    e.reply("The party has already left!").queue();
                 }
+            } else {
+                e.reply("You are already in a Party!").queue();
             }
         }
-
     }
 
     /**Method: leaveTown
@@ -129,15 +150,35 @@ public class Game {
     public static void leaveTown(ButtonClickEvent e) {
 
         Member partyLeader = e.getMessage().getMentionedMembers().get(0);
-        Member member = e.getMember();
+        Member buttonClickingMember = e.getMember();
 
-        if (member.getIdLong() == partyLeader.getIdLong()) {
-            e.getMessage().editMessage("Has left the town").queue();
-            e.getTextChannel().createPermissionOverride(member)
-                    .setDeny(Permission.VIEW_CHANNEL)
-                    .queue();
+        //If the party leader clicks the leaveTown button.
+        if (buttonClickingMember.getIdLong() == partyLeader.getIdLong()) {
+            e.getMessage().editMessage(partyLeader.getAsMention() + " has left on an adventure.").queue();
+            TextChannel channel = findPartyChannel(partyLeader);
+            if (channel != null) {
+                channel.sendMessage("@everyone your party has left the town!").queue();
+                for (Member member : channel.getMembers()) {
+                    if (member.getRoles().contains(roleAdventurer)) {
+                        e.getTextChannel().createPermissionOverride(member)
+                                .setDeny(Permission.VIEW_CHANNEL)
+                                .queue();
+                    }
+                }
+            }
+        } else {
+            e.reply("You are not the party leader.").queue();
         }
 
+    }
+    
+    private static TextChannel findPartyChannel(Member member) {
+        for (TextChannel channel : categoryAdventure.getTextChannels()) {
+            if (channel.getMembers().contains(member)) {
+                return channel;
+            }
+        }
+        return null;
     }
 
     /**Method: canPlayGame

@@ -34,8 +34,8 @@ public class Listener extends ListenerAdapter {
         Game.guild = e.getJDA().getGuilds().get(0);
         roleDeveloper = Game.guild.getRoleById(899416257537908777L);
         Game.roleAdventurer = Game.guild.getRoleById(899464047001468978L);
-        Game.roleDead = Game.guild.getRoleById(899464326086279223L);
         Game.categoryAdventure = Game.guild.getCategoryById(899663492175511612L);
+        Game.categorySettlement = Game.guild.getCategoryById(899464535180718090L);
     }
 
     /**Method: onMessageReceived
@@ -62,7 +62,7 @@ public class Listener extends ListenerAdapter {
 
                             //Generic Commands
                             switch (command) {
-                                case "test" -> e.getMessage().reply("Message Received").queue();
+                                //case "test" -> Game.inSettlement(e.getMember());
                                 //case "adventure" -> Game.startAdventure(sl);
                             }
 
