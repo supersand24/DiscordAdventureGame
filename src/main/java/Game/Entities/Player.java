@@ -68,6 +68,13 @@ public class Player extends Entity {
     public void useItem() {
     }
 
+    /**
+     * toString for player
+     * <p>
+     *    gives a string that is a vertical representation of all player attributes
+     * </p>
+     * @return String
+     */
     @Override
     public String toString() {
         String out = "";
