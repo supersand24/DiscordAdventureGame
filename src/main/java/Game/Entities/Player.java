@@ -3,6 +3,7 @@ package Game.Entities;
 import Game.Items.Item;
 import Game.Items.Weapons.Sword;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -159,7 +160,7 @@ public class Player extends Entity {
         out += "Gold: " + gold + "\n";
         for (Item x : holding) {
             if (x != null) {
-                out += x.getClass() + ": " + x.getName() + "\n";
+                out += x.getType().toUpperCase() + ": " + x.getName() + "\n";
             }
         }
         out += "Def: " + def +"\n";

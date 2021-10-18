@@ -14,6 +14,7 @@ public class Sword extends Weapon {
      */
     public Sword(String name, String owner) {
         super(name,20, 15, 10, owner);
+        this.type = "Sword";
     }
 
     /*
