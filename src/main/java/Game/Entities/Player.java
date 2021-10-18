@@ -11,6 +11,7 @@ public class Player extends Entity {
      * player constructor
      * @param gold initial gold
      * @param maxHealth initial max health
+     * @see Game.Entities.Entity
      */
     public Player(int gold, int maxHealth) {
         super(gold, maxHealth);

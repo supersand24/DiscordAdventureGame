@@ -1,17 +1,16 @@
 package Game.Entities.EnemyTypes;
 
 /**
- * Dragon enemy type
+ * constructor for squirrel
  * @author Harrison Brown
  * @version 0.1
  */
-public class Dragon extends Enemy {
+public class GiantSquirrel extends Enemy {
     /**
-     * sets gold and hp to 10
-     * @see Game.Entities.EnemyTypes.Enemy
+     * constructor for squirrel
      */
-    public Dragon() {
-        super(10, 10, "Dragon");
+    public GiantSquirrel() {
+        super("Giant Squirrel");
     }
 
     @Override
@@ -26,11 +25,6 @@ public class Dragon extends Enemy {
 
     @Override
     public void useItem() {
-
-    }
-
-
-    public void fireBreath() {
 
     }
 }

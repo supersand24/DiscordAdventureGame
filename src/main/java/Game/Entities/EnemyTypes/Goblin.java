@@ -1,17 +1,16 @@
 package Game.Entities.EnemyTypes;
 
 /**
- * Dragon enemy type
+ * enemy goblin class
  * @author Harrison Brown
  * @version 0.1
  */
-public class Dragon extends Enemy {
+public class Goblin extends Enemy {
     /**
-     * sets gold and hp to 10
-     * @see Game.Entities.EnemyTypes.Enemy
+     * constructor for goblin
      */
-    public Dragon() {
-        super(10, 10, "Dragon");
+    public Goblin() {
+        super("Goblin");
     }
 
     @Override
@@ -26,11 +25,6 @@ public class Dragon extends Enemy {
 
     @Override
     public void useItem() {
-
-    }
-
-
-    public void fireBreath() {
 
     }
 }

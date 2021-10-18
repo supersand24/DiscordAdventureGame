@@ -19,6 +19,7 @@ public abstract class Weapon extends Item {
      * @param cost weapon cost
      * @param weight weapon weight
      * @param dmg weapon damage
+     * @see Game.Items.Item
      */
     Weapon(String name, int cost, int weight, int dmg) {
         super(name, cost, weight);
