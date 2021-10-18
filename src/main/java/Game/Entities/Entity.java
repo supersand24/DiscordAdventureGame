@@ -1,6 +1,7 @@
-package Game.Entity;
+package Game.Entities;
 
-import Game.Item.Item;
+import Game.Items.Item;
+import Game.Items.Weapons.Weapon;
 
 /***
  * parent class to all Entities
@@ -36,6 +37,8 @@ public abstract class Entity {
      */
     protected Item[] Inventory;
 
+    protected Weapon[] holding;
+
     //stats, will probably be changed later
     /**
      * defense stat
@@ -69,7 +72,7 @@ public abstract class Entity {
      * @param maxHealth initial max health
      */
 
-    Entity(int gold, int maxHealth) {
+    protected Entity(int gold, int maxHealth) {
         this.gold = gold;
         this.health = maxHealth;
         this.maxHealth = maxHealth;
