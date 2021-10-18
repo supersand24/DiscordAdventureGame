@@ -111,6 +111,7 @@ public class Game {
      * Temporary method, to test the game without connecting to Discord.
      */
     public static void main(String[] args) {
+        /*
         Scanner scan = new Scanner(System.in);
 
         Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
@@ -140,6 +141,9 @@ public class Game {
         } else {
             System.out.println("Enemies Win!");
         }
+         */
 
+        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
+        System.out.print(harrison);
     }
 }

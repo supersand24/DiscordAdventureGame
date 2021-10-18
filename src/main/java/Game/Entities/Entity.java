@@ -66,6 +66,11 @@ public abstract class Entity {
      */
     protected int wis; //wisdom, spell casting etc.
 
+    /**
+     * strength stat
+     */
+    protected int str; //strength
+
     //constructor
 
     /**

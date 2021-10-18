@@ -1,11 +1,14 @@
 package Game.Entities;
 
+import Game.Items.Item;
 import Game.Items.Weapons.Sword;
+
+import java.util.Random;
 
 /**
  * Player class
  * @author Harrison Brown
- * @version 0.1
+ * @version 0.2
  */
 public class Player extends Entity {
     /**
@@ -30,6 +33,22 @@ public class Player extends Entity {
         holding[0] = new Sword(weaponName, weaponOwner);
         this.name = playerName;
         this.gender = gender;
+        def = genStat();
+        spd = genStat();
+        dex = genStat();
+        wis = genStat();
+        str = genStat();
+        level = 1;
+
+    }
+
+    /**
+     * randomly generate an int for the stats
+     * @return returns a random value between 0 and 20
+     */
+    public int genStat() {
+        Random rand = new Random();
+        return rand.nextInt(1,16);
     }
 
     @Override
@@ -47,5 +66,27 @@ public class Player extends Entity {
 
     @Override
     public void useItem() {
+    }
+
+    @Override
+    public String toString() {
+        String out = "";
+        out += "Character: " + name + "\n";
+        out += "Gender: " + gender + "\n";
+        out += "Level: " + level + "\n";
+        out += "Health: " + health + " Max Health: " + maxHealth + "\n";
+        out += "Gold: " + gold + "\n";
+        for (Item x : holding) {
+            if (x != null) {
+                out += x.getClass() + ": " + x.getName() + "\n";
+            }
+        }
+        out += "Def: " + def +"\n";
+        out += "Spd: " + spd +"\n";
+        out += "Dex: " + dex +"\n";
+        out += "Wis: " + wis +"\n";
+        out += "Str: " + str +"\n";
+
+        return out;
     }
 }
