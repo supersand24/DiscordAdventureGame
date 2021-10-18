@@ -113,7 +113,7 @@ public class Game {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
 
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison");
+        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
         Enemy[] enemies = new Enemy[2];
         enemies[0] = new Goblin();
         enemies[1] = new Goblin();

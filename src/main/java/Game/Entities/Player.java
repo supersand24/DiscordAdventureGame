@@ -14,15 +14,22 @@ public class Player extends Entity {
     protected final String name;
 
     /**
+     * Gender of the character
+     */
+
+    protected String gender;
+
+    /**
      * player constructor
      * @param gold initial gold
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
      */
-    public Player(int gold, int maxHealth, String weaponName, String weaponOwner, String playerName) {
+    public Player(int gold, int maxHealth, String weaponName, String weaponOwner, String playerName, String gender) {
         super(gold, maxHealth);
         holding[0] = new Sword(weaponName, weaponOwner);
         this.name = playerName;
+        this.gender = gender;
     }
 
     @Override
