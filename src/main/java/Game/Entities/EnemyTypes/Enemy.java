@@ -42,11 +42,15 @@ public abstract class Enemy extends Entity {
 
     /**
      * attack method for enemy, takes in an entity
-     * @param p the entity to attack
+     * @param entity the entity to attack
      */
     @Override
-    public void attack(Entity p) {
-        p.setHealth(p.getHealth()-dmg);
+    public void attack(Entity entity) {
+        if (entity.isBlocking()) {
+            System.out.println(entity.getName() + " blocked!");
+        } else {
+            entity.setHealth(entity.getHealth() - dmg);
+        }
     }
 
     @Override

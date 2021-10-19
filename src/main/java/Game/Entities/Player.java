@@ -139,8 +139,11 @@ public class Player extends Entity {
 
     @Override
     public void attack(Entity entity) {
-        Weapon w = holding.get(0);
-        entity.setHealth(entity.getHealth()-w.getDmg());
+        if (entity.isBlocking()) {
+            System.out.println(entity.getName() + " blocked!");
+        } else {
+            entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
+        }
     }
 
     @Override
@@ -149,6 +152,8 @@ public class Player extends Entity {
 
     @Override
     public void block() {
+        block = true;
+        System.out.println(name + "braced for an attack!");
     }
 
     @Override

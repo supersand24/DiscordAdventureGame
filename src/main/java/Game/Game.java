@@ -239,10 +239,44 @@ public class Game {
      * Temporary method, to test the game without connecting to Discord.
      */
     public static void main(String[] args) {
-        /*
+
         Scanner scan = new Scanner(System.in);
 
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
+        int playerNum;
+        int enemyNum;
+
+        System.out.println("How many people are going to play? ");
+        playerNum = scan.nextInt();
+        scan.reset();
+
+        System.out.println("How many goblins do you want to fight? ");
+        enemyNum = scan.nextInt();
+        scan.reset();
+
+        Player[] players = new Player[playerNum];
+        Enemy[] enemies = new Enemy[enemyNum];
+
+
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player("PLAYER" + i);
+        }
+
+        for (int i = 0; i < enemies.length; i++) {
+            enemies[i] = new Goblin("GOBLIN" + i);
+        }
+
+        Entity[] order = BattleSystem.makeTurnOrder(players, enemies);
+
+        System.out.println("The turn order is:");
+        for (Entity e : order) {
+            System.out.println(e.getName());
+        }
+
+
+
+
+        /*
+        Player harrison = new Player(100, 50, "Harrison", "Male");
         Enemy[] enemies = new Enemy[2];
         enemies[0] = new Goblin();
         enemies[1] = new Goblin();
@@ -271,9 +305,10 @@ public class Game {
         }
 
 
+
         Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
         System.out.print(harrison);
-         */
+
 
         Player[] players = new Player[4];
         for (int i = 0; i < players.length; i++) {
@@ -291,7 +326,7 @@ public class Game {
             System.out.println(e);
             System.out.println();
         }
-
+        */
 
     }
 }

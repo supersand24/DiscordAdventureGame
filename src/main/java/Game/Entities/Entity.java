@@ -23,6 +23,11 @@ public abstract class Entity implements Comparable<Entity> {
     protected String name;
 
     /**
+     * holds if the entity is blocking or not
+     */
+    protected boolean block;
+
+    /**
      * if the entity is alive
      */
     protected boolean isAlive = true;
@@ -196,6 +201,9 @@ public abstract class Entity implements Comparable<Entity> {
         this.name = name;
     }
 
+    public boolean isBlocking() {
+        return block;
+    }
     public void setGold(int gold) {
         this.gold = gold;
     }

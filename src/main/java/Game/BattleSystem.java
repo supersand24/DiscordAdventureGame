@@ -19,17 +19,17 @@ public class BattleSystem {
     /**
      * returns an entity array sorted based on speed to be used as the turn order in battle
      */
-    public static Entity[] makeTurnOrder(Enemy[] arr1, Player[] arr2) {
+    public static Entity[] makeTurnOrder(Entity[] arr1, Entity[] arr2) {
         Entity[] order = new Entity[arr1.length + arr2.length];
 
         int i = 0;
 
-        for (Enemy e : arr1) {
+        for (Entity e : arr1) {
                 order[i] = e;
                 i++;
         }
 
-        for (Player p : arr2) {
+        for (Entity p : arr2) {
             order[i] = p;
             i++;
         }

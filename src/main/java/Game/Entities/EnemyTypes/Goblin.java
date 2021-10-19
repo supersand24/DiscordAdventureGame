@@ -26,7 +26,8 @@ public class Goblin extends Enemy {
 
     @Override
     public void block() {
-
+        block = true;
+        System.out.println(name + "braced for an attack!");
     }
 
     @Override
