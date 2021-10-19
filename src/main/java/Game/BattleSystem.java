@@ -41,6 +41,8 @@ public class BattleSystem {
 
     /**
      * sets the decisions for enemies and players
+     * @param choice a string representation of the choice the entity wants to make
+     * @param e a nullable array of entities, the first one is the calling entity, the second should be a target if applicable to the action
      */
     public static void makeChoice(String choice, Entity... e) {
         switch (choice) {
