@@ -4,6 +4,8 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Items.Item;
 import Game.Items.Weapons.Weapon;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /***
@@ -12,7 +14,7 @@ import java.util.HashMap;
  * @version 0.1
  */
 
-public abstract class Entity {
+public abstract class Entity implements Comparable<Entity> {
     //properties
 
     /**
@@ -20,6 +22,10 @@ public abstract class Entity {
      */
     protected boolean isAlive = true;
 
+    /**
+     * true if it is the entities turn
+     */
+    protected boolean myTurn = false;
     /**
      * amount of gold the entity has
      */
@@ -45,7 +51,7 @@ public abstract class Entity {
      */
     protected Item[] Inventory;
 
-    protected Weapon[] holding = new Weapon[2];
+    protected ArrayList<Weapon> holding = new ArrayList<>(2);
 
     //stats, will probably be changed later
     /**
@@ -94,6 +100,13 @@ public abstract class Entity {
 
     }
 
+    protected Entity() {
+        this.gold = 10;
+        this.maxHealth = 50;
+        this.health = maxHealth;
+        this.level = 1;
+    }
+
     //abstract methods
 
     /**
@@ -126,6 +139,8 @@ public abstract class Entity {
     }
 
     //gets and sets
+
+    public boolean getMyTurn() {return myTurn; }
 
     public boolean getIsAlive() {
         return isAlive;
@@ -202,5 +217,44 @@ public abstract class Entity {
     public void setWis(int wis) {
         this.wis = wis;
     }
+
+    /**
+     * sorts based on speed, Arrays.sort(Entity[] array)
+     * @param compareEntity the entity to compare
+     * @return return value
+     */
+    @Override
+    public int compareTo(Entity compareEntity) {
+
+        int compareSpd = (compareEntity).getSpd();
+
+        //ascending order
+        //return this.quantity - compareQuantity;
+
+        //descending order
+        return compareSpd - this.spd;
+
+    }
+
+    //a  method skeleton base static methods on to compare entities based on different properties
+    /*
+    public static Comparator<Entity> EntityNameComparator
+            = new Comparator<Entity>() {
+
+        public int compare(Entity fruit1, Entity fruit2) {
+
+            String fruitName1 = fruit1.getEnityName().toUpperCase();
+            String fruitName2 = fruit2.getEntityName().toUpperCase();
+
+            //ascending order
+            return fruitName1.compareTo(fruitName2);
+
+            //descending order
+            //return fruitName2.compareTo(fruitName1);
+        }
+
+    };
+    */
+
 
 }

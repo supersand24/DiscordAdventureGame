@@ -8,8 +8,9 @@ import Game.Entities.Entity;
  * @version 0.1
  */
 public abstract class Enemy extends Entity {
-    int dmg;
-    String type;
+    protected String called;
+    protected int dmg;
+
     /**
      * constructor for basic enemy
      * @param gold current gold amount
@@ -18,7 +19,6 @@ public abstract class Enemy extends Entity {
      */
     Enemy(int gold, int maxHealth, String type, int dmg) {
         super(gold, maxHealth);
-        this.type = type;
         this.dmg = dmg;
     }
 
@@ -29,7 +29,6 @@ public abstract class Enemy extends Entity {
      */
     Enemy(String type, int dmg) {
         super(10,10);
-        this.type = type;
         this.dmg = dmg;
     }
 
@@ -39,7 +38,6 @@ public abstract class Enemy extends Entity {
      */
     Enemy(String type) {
         super(10,10);
-        this.type = type;
         this.dmg = 5;
     }
 
@@ -50,5 +48,14 @@ public abstract class Enemy extends Entity {
     @Override
     public void attack(Entity p) {
         p.setHealth(p.getHealth()-dmg);
+    }
+
+    @Override
+    public String toString() {
+        String msg = "";
+        msg += "TYPE: " + getClass().getSimpleName() + "\n";
+        msg += "CALLED: " + called + "\n";
+        msg += "SPEED: " + spd + "\n";
+        return msg;
     }
 }

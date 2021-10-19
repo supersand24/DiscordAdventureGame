@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Entities.EnemyTypes.*;
+import Game.Entities.Entity;
 import Game.Entities.Player;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -208,7 +209,6 @@ public class Game {
 
     /**
      * @author Harrison Brown
-     * @version 1.0
      * @param enemies an array of enemies
      * @return returns true if an enemy in the array is alive
      */
@@ -234,7 +234,6 @@ public class Game {
 
     /**Method: main
      * @author Harrison Brown
-     * @version 0.2
      * Written : October 17, 2021
      *
      * Temporary method, to test the game without connecting to Discord.
@@ -270,9 +269,29 @@ public class Game {
         } else {
             System.out.println("Enemies Win!");
         }
-         */
+
 
         Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
         System.out.print(harrison);
+         */
+
+        Player[] players = new Player[4];
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player("PLAYER" + i);
+        }
+
+        Enemy[] enemies = new Enemy[7];
+        for (int i = 0; i < enemies.length; i++) {
+            enemies[i] = new Goblin("GOBLIN" + i);
+        }
+
+        Entity[] turns = BattleSystem.makeTurnOrder(enemies, players);
+
+        for (Entity e : turns) {
+            System.out.println(e);
+            System.out.println();
+        }
+
+
     }
 }

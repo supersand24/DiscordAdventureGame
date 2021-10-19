@@ -2,10 +2,12 @@ package Game.Entities;
 
 import Game.Items.Item;
 import Game.Items.Weapons.Sword;
+import Game.Items.Weapons.Weapon;
 
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
 
 /**
  * Player class
@@ -22,7 +24,7 @@ public class Player extends Entity {
      * Gender of the character
      */
 
-    protected String gender;
+    protected String gender = "male";
 
     /**
      * player constructor
@@ -30,18 +32,24 @@ public class Player extends Entity {
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
      */
-    public Player(int gold, int maxHealth, String weaponName, String weaponOwner, String playerName, String gender) {
+    public Player(int gold, int maxHealth, String playerName, String gender) {
         super(gold, maxHealth);
-        holding[0] = new Sword(weaponName, weaponOwner);
         this.name = playerName;
         this.gender = gender;
         genStats();
 
     }
 
+    public Player(String playerName) {
+        super();
+        this.name = playerName;
+        genStats();
+        Sword s = new Sword();
+        holding.add(s);
+    }
+
     /**
      * sets the stats of the player
-     * @version 0.4
      */
     private void genStats() {
         Random rand = new Random();
@@ -97,7 +105,6 @@ public class Player extends Entity {
     /**
      * a method for a Fisher-Yates shuffle
      * @param ar the array to shuffle
-     * @version 1.0
      */
     private void shuffleArray(int[] ar)
     {
@@ -116,7 +123,6 @@ public class Player extends Entity {
     /***
      * if the value of the sats is greater than 15, sets then to 15
      * @param ar the array of stats to check
-     * @version 1.0
      */
     private void checkMax(int[] ar) {
         for (int i = 0; i < ar.length; i++) {
@@ -126,9 +132,20 @@ public class Player extends Entity {
         }
     }
 
+    public void addWeapon(Weapon weapon) {
+        holding.add(weapon);
+    }
+
+    public void switchActiveWeapon() {
+        Weapon temp = holding.get(0);
+        holding.remove(0);
+        holding.add(temp);
+    }
+
     @Override
     public void attack(Entity entity) {
-        entity.setHealth(entity.getHealth()-holding[0].getDmg());
+        Weapon w = holding.get(0);
+        entity.setHealth(entity.getHealth()-10);
     }
 
     @Override
@@ -158,11 +175,12 @@ public class Player extends Entity {
         out += "Level: " + level + "\n";
         out += "Health: " + health + " Max Health: " + maxHealth + "\n";
         out += "Gold: " + gold + "\n";
+
         for (Item x : holding) {
-            if (x != null) {
-                out += x.getType().toUpperCase() + ": " + x.getName() + "\n";
-            }
+            out += x.getClass().getSimpleName() + ": " + x.getName() + "\n";
         }
+
+
         out += "Def: " + def +"\n";
         out += "Spd: " + spd +"\n";
         out += "Dex: " + dex +"\n";

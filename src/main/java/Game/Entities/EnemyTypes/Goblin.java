@@ -1,5 +1,9 @@
 package Game.Entities.EnemyTypes;
 
+import Game.BattleSystem;
+
+import java.util.Random;
+
 /**
  * enemy goblin class
  * @author Harrison Brown
@@ -9,8 +13,10 @@ public class Goblin extends Enemy {
     /**
      * constructor for goblin
      */
-    public Goblin() {
+    public Goblin(String name) {
         super("Goblin");
+        this.called = name;
+        this.spd = BattleSystem.randomVal(3, 9);
     }
 
     @Override
