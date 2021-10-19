@@ -9,37 +9,36 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-/**Class: Listener
+/**
+ * Where messages come in and are handled.
+ *
  * @author Justin Sandman
  * @version 1.3
- *
- * Where messages come in and are handled.
  *
  */
 public class Listener extends ListenerAdapter {
 
     Role roleDeveloper;
 
-    /**Method: onReady
+    /**
+     * Runs as soon as the Listener is ready to go.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Runs as soon as the Listener is ready to go.
-     * Gets the Developer Role ready, so Listener can check members for it.
-     * Sends the Guild to the Game, so Game can send messages as needed.
      */
     @Override
     public void onReady(@NotNull ReadyEvent e) {
         roleDeveloper = e.getJDA().getGuilds().get(0).getRoleById(899416257537908777L);
     }
 
-    /**Method: onMessageReceived
+    /**
+     * This method is run whenever a message is sent in a channel.
+     * It checks the message if there is a command keyword, and it starts with Main.COMMAND_SIGN.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * This method is run whenever a message is sent in a channel.
-     * It checks the message if there is a command keyword, and starts with Main.COMMAND_SIGN
-     * Then it runs the proper command.
      */
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
@@ -84,6 +83,14 @@ public class Listener extends ListenerAdapter {
         }
     }
 
+    /**
+     * Runs whenever a slash command is sent.
+     * It checks the message if there is a command keyword.
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     *
+     */
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
         switch (slashCommand.getName()) {
@@ -92,6 +99,13 @@ public class Listener extends ListenerAdapter {
         }
     }
 
+    /**
+     * Runs whenever a button is pressed in discord.
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     *
+     */
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         switch (e.getButton().getId()) {

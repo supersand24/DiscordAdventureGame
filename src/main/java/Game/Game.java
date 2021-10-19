@@ -15,11 +15,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-/**Class: Game
- * @author Harrison Brown and Justin Sandman
- * @version 0.3.1
- *
+/**
  * Handles everything for the game.
+ *
+ * @author Harrison Brown
+ * @author Justin Sandman
+ * @version 0.3.1
  *
  */
 public class Game {
@@ -36,12 +37,13 @@ public class Game {
     static List<Player> players = new ArrayList<>();
     static List<Party> parties = new ArrayList<>();
 
-    /**Method: startGame
+    /**
+     * Tries to start the game, if one is not in progress.
+     * Is called by a Developer in the server.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Tries to start the game, if one is not in progress.
-     * Is called by a Developer in the server.
      */
     public static void startGame() {
 
@@ -55,12 +57,13 @@ public class Game {
 
     }
 
-    /**Method: joinGame
+    /**
+     * Tries to join the game, if one is in progress.
+     * Is called by a Member in the server.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Tries to join the game, if one is in progress.
-     * Is called by a Member in the server.
      */
     public static void joinGame(Member member, Message msg) {
         if (!member.getRoles().contains(roleAdventurer)) {
@@ -77,12 +80,13 @@ public class Game {
 
     }
 
-    /**Method: startAdventure
+    /**
+     * Opens an invite for other players to join an adventure.
+     * Is called by a Member in the server, only while in a settlement, and not in another party.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Opens an invite for other players to join an adventure.
-     * Is called by a Member in the server, only while in a settlement, and not in another party.
      */
     public static void startAdventure(SlashCommandEvent slashCommand) {
 
@@ -118,12 +122,13 @@ public class Game {
         }
     }
 
-    /**Method: joinAdventure
+    /**
+     * Joins an existing party, if they have not left yet.
+     * Is called by a Member that presses a button.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Joins an existing party, if they have not left yet.
-     * Is called by a Member that presses a button.
      */
     public static void joinAdventure(ButtonClickEvent e) {
 
@@ -155,12 +160,13 @@ public class Game {
         }
     }
 
-    /**Method: leaveTown
+    /**
+     * The party leaves town and goes on an adventure.
+     * Is called by a Member that presses a button, makes sure the party leader pressed the button.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * The party leaves town and goes on an adventure.
-     * Is called by a Member that presses a button, makes sure the party leader pressed the button.
      */
     public static void leaveTown(ButtonClickEvent e) {
 
@@ -188,12 +194,13 @@ public class Game {
 
     }
 
-    /**Method: adventureEvent
+    /**
+     * Basic processing of an adventure event.
+     * This case is a battle.
+     *
      * @author Justin Sandman
      * Written : October 19, 2021
      *
-     * Basic processing of an adventure event.
-     * This case is a battle.
      */
     private static void adventureEvent(TextChannel textChannel) {
         textChannel.sendMessage("Everyone walked down the long road.").queue();
@@ -209,7 +216,17 @@ public class Game {
         parties.get(0).enemies.clear();
         textChannel.sendMessage("Take time to heal up, when ready cast a group vote on what to do next.").queue();
     }
-    
+
+    /**
+     * Goes through all the channels under the adventure category,
+     * and finds the one channel that the member is present in.
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     * @param member The member to check for.
+     * @return The text channel that the member is in.
+     *
+     */
     private static TextChannel findPartyChannel(Member member) {
         for (TextChannel channel : categoryAdventure.getTextChannels()) {
             if (channel.getMembers().contains(member)) {
@@ -219,21 +236,23 @@ public class Game {
         return null;
     }
 
-    /**Method: canPlayGame
+    /**
+     * Simple check to make sure the game is active, and the player is picked up by the Game.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Simple check to make sure the game is active, and the player is picked up by the Game.
      */
     private static boolean canPlayGame(Member member) {
         return (member.getRoles().contains(roleAdventurer) && gameStarted);
     }
 
-    /**Method: sendMessage
+    /**
+     * Sends a message to the testing channel.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Sends a message to the testing channel.
      */
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
@@ -241,12 +260,13 @@ public class Game {
     }
 
     /**
+     * Runs at app start, will load any needed files.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      * @param guild The guild object of the Discord Server.
      * @return Returns true if no errors are present.
      *
-     * Runs at app start, will load any needed files.
      */
     public static boolean setUp(Guild guild) {
 
@@ -297,6 +317,13 @@ public class Game {
 
     }
 
+    /**
+     * Saves all the lists needed for the game to run properly.
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     *
+     */
     public static void save() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("parties.dat"));
@@ -312,8 +339,9 @@ public class Game {
     }
 
     /**
+     * A simple check to see if there are any enemies alive.
+     *
      * @author Harrison Brown
-     * @version 1.0
      * @param enemies an array of enemies
      * @return returns true if an enemy in the array is alive
      */
@@ -337,11 +365,12 @@ public class Game {
         }
     }
 
-    /**Method: main
+    /**
+     * Temporary method, to test the game without connecting to Discord.
+     *
      * @author Harrison Brown
      * Written : October 17, 2021
      *
-     * Temporary method, to test the game without connecting to Discord.
      */
     public static void main(String[] args) {
         /*
