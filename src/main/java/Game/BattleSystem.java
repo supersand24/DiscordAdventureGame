@@ -48,6 +48,7 @@ public class BattleSystem {
         switch (choice) {
             case "attack" :
                 e[0].attack(e[1]);
+                e[1].checkHealth();
                 break;
 
             case "block" :

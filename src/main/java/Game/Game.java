@@ -258,10 +258,11 @@ public class Game {
                         } else {
                             BattleSystem.makeChoice("attack", e, players[BattleSystem.randomVal(0, playerNum - 1)]);
                         }
+
                     } else {
                         BattleSystem.makeChoice("block", e);
                     }
-                } else {
+                } else if (e instanceof Player && e.getIsAlive()){
                     System.out.println(e.getName() + ", its your turn!");
                     System.out.println("Do you want to attack or block? (0 or 1): ");
                     act = scan.nextInt();
@@ -281,7 +282,14 @@ public class Game {
                         BattleSystem.makeChoice("block", e);
                     }
                 }
+
             }
+        }
+
+        if (!BattleSystem.entitiesLive(enemies)) {
+            System.out.println("Players win!!!");
+        } else {
+            System.out.println("Players lose!!!");
         }
 
 

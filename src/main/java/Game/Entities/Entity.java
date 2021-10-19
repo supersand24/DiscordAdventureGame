@@ -142,7 +142,7 @@ public abstract class Entity implements Comparable<Entity> {
     /**
      * if the entities' health is 0 or less, isAlive is set to false
      */
-    public void checkHealthStatus() {
+    public void checkHealth() {
         if (health <= 0) {
             isAlive = false;
         }
