@@ -127,10 +127,17 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * a method to add a weapon to the players equips
+     * @param weapon the weapon to add
+     */
     public void addWeapon(Weapon weapon) {
         holding.add(weapon);
     }
 
+    /**
+     * a method to switch the active weapon the secondary one
+     */
     public void switchActiveWeapon() {
         Weapon temp = holding.get(0);
         holding.remove(0);
