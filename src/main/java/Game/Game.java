@@ -265,7 +265,10 @@ public class Game {
                         if (players.length == 1) {
                             BattleSystem.makeChoice("attack", e, players[0]);
                             if (!players[0].getIsAlive()) {
-                                System.out.println(players[0].getName() + "You died");
+                                System.out.println(players[0].getName() + " You died");
+                                if (!BattleSystem.entitiesLive(players)) {
+                                    break;
+                                }
                             }
                         } else {
                             int p = BattleSystem.randomVal(0, playerNum - 1);
