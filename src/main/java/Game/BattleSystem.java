@@ -57,6 +57,17 @@ public class BattleSystem {
 
             case "checkHealth" :
                 System.out.println("Your health is " + e[0].getHealth() + "/" + e[0].getMaxHealth());
+                break;
+
+            case "turnOrder" :
+                System.out.println("The turn order is:");
+                for (Entity entity : e) {
+                    if (entity.getIsAlive()) {
+                        System.out.println(entity.getName());
+                    }
+                }
+                System.out.println();
+                break;
         }
     }
 

@@ -220,13 +220,15 @@ public class Game {
         int playerNum;
         int enemyNum;
 
-        System.out.println("How many people are going to play? ");
+        System.out.print("How many people are going to play? ");
         playerNum = scan.nextInt();
         scan.reset();
+        System.out.println();
 
-        System.out.println("How many goblins do you want to fight? ");
+        System.out.print("How many goblins do you want to fight? ");
         enemyNum = scan.nextInt();
         scan.reset();
+        System.out.println();
 
         Player[] players = new Player[playerNum];
         Enemy[] enemies = new Enemy[enemyNum];
@@ -247,108 +249,63 @@ public class Game {
         for (Entity e : order) {
             System.out.println(e.getName());
         }
+        System.out.println();
         int act;
+
         while (BattleSystem.entitiesLive(enemies) && BattleSystem.entitiesLive(players)) {
             for (Entity e : order) {
                 if (e instanceof Enemy && e.getIsAlive()) {
-                    act = BattleSystem.randomVal(0,1);
+                    act = BattleSystem.randomVal(0, 1);
                     if (act == 0) {
                         if (players.length == 1) {
                             BattleSystem.makeChoice("attack", e, players[0]);
+                            if (!players[0].getIsAlive()) {
+                                System.out.println(players[0].getName() + "You died");
+                            }
                         } else {
-                            BattleSystem.makeChoice("attack", e, players[BattleSystem.randomVal(0, playerNum - 1)]);
+                            int p = BattleSystem.randomVal(0, playerNum - 1);
+                            BattleSystem.makeChoice("attack", e, players[p]);
+                            if (!players[p].getIsAlive()) {
+                                System.out.println(players[p].getName() + "You died");
+                            }
                         }
 
                     } else {
                         BattleSystem.makeChoice("block", e);
                     }
-                } else if (e instanceof Player && e.getIsAlive()){
+                } else if (e instanceof Player && e.getIsAlive()) {
                     System.out.println(e.getName() + ", its your turn!");
-                    System.out.println("Do you want to attack, block or check your health? (0, 1 or 2): ");
-                    act = scan.nextInt();
-                    scan.reset();
-
-                    if (act == 0) {
-                        System.out.println("This is the current health of the enemies:");
-                        for (Enemy x : enemies) {
-                            System.out.print(x.getHealth() + " | ");
-                        }
-                        System.out.println();
-                        System.out.println("Which do you want to attack? (0 - (enemy count-1)");
-                        int choice = scan.nextInt();
+                    do {
+                        System.out.print("Do you want to attack, block, check your health, or check turn order? (0 - 3): ");
+                        act = scan.nextInt();
                         scan.reset();
-                        BattleSystem.makeChoice("attack", e, enemies[choice]);
-                    } else if (act == 1) {
-                        BattleSystem.makeChoice("block", e);
-                    } else if (act == 2) {
-                        BattleSystem.makeChoice("checkHealth", e);
-                    }
+                        if (act == 0) {
+                            System.out.println("This is the current health of the enemies:");
+                            for (Enemy x : enemies) {
+                                System.out.print(x.getHealth() + " | ");
+                            }
+                            System.out.println();
+                            System.out.println("Which do you want to attack? (0 - (enemy count-1)");
+                            int choice = scan.nextInt();
+                            scan.reset();
+                            BattleSystem.makeChoice("attack", e, enemies[choice]);
+                        } else if (act == 1) {
+                            BattleSystem.makeChoice("block", e);
+                        } else if (act == 2) {
+                            BattleSystem.makeChoice("checkHealth", e);
+                        } else if (act == 3) {
+                            BattleSystem.makeChoice("turnOrder", order);
+                        }
+                    } while (act > 1);
+
                 }
+            }
 
+            if (!BattleSystem.entitiesLive(enemies)) {
+                System.out.println("Players win!!!");
+            } else {
+                System.out.println("Players lose!!!");
             }
         }
-
-        if (!BattleSystem.entitiesLive(enemies)) {
-            System.out.println("Players win!!!");
-        } else {
-            System.out.println("Players lose!!!");
-        }
-
-
-
-
-        /*
-        Player harrison = new Player(100, 50, "Harrison", "Male");
-        Enemy[] enemies = new Enemy[2];
-        enemies[0] = new Goblin();
-        enemies[1] = new Goblin();
-
-        do {
-
-            for (Enemy x : enemies) {
-                System.out.print(x.getHealth() + " | ");
-                x.attack(harrison);
-            }
-            System.out.println();
-            System.out.println("Which Goblin do you want to attack? (0 or 1) ");
-            int choice = scan.nextInt();
-            scan.reset();
-            harrison.attack(enemies[choice]);
-            for (Enemy x : enemies) {
-                x.checkHealthStatus();
-            }
-            harrison.checkHealthStatus();
-
-        } while (enemiesLive(enemies) && harrison.getIsAlive());
-        if (harrison.getIsAlive()) {
-            System.out.println("You Win!");
-        } else {
-            System.out.println("Enemies Win!");
-        }
-
-
-
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
-        System.out.print(harrison);
-
-
-        Player[] players = new Player[4];
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player("PLAYER" + i);
-        }
-
-        Enemy[] enemies = new Enemy[7];
-        for (int i = 0; i < enemies.length; i++) {
-            enemies[i] = new Goblin("GOBLIN" + i);
-        }
-
-        Entity[] turns = BattleSystem.makeTurnOrder(enemies, players);
-
-        for (Entity e : turns) {
-            System.out.println(e);
-            System.out.println();
-        }
-        */
-
     }
 }
