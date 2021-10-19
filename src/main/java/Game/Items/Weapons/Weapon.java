@@ -8,6 +8,10 @@ import Game.Items.Item;
  * @version 0.1
  */
 public abstract class Weapon extends Item {
+    /**
+     * actions specific to each weapon type
+     */
+    protected String[] moves = null;
     /***
      * damage value of weapon
      */
