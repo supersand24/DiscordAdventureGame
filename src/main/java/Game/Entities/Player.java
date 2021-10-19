@@ -15,10 +15,6 @@ import java.util.ArrayList;
  * @version 0.2
  */
 public class Player extends Entity {
-    /**
-     * The name of the character
-     */
-    protected final String name;
 
     /**
      * Gender of the character
