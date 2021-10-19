@@ -42,9 +42,15 @@ public class BattleSystem {
     /**
      * sets the decisions for enemies and players
      */
-    public static void makeChoice() {
-
+    public static void makeChoice(String choice, Entity self, Entity target) {
+        switch (choice) {
+            case "attack" :
+                self.attack(target);
+                break;
+        }
     }
+
+
 
 
     /**
