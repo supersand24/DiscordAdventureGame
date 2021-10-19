@@ -48,7 +48,9 @@ public abstract class Enemy extends Entity {
     public void attack(Entity entity) {
         if (entity.isBlocking()) {
             System.out.println(entity.getName() + " blocked!");
+            entity.switchBlock();
         } else {
+            System.out.println(name + " attacked " + entity.getName() + " for " + dmg + " damage!");
             entity.setHealth(entity.getHealth() - dmg);
         }
     }

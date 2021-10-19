@@ -240,6 +240,10 @@ public abstract class Entity implements Comparable<Entity> {
         this.wis = wis;
     }
 
+    public void switchBlock() {
+        block = !block;
+    }
+
     /**
      * sorts based on speed, Arrays.sort(Entity[] array)
      * @param compareEntity the entity to compare

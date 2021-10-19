@@ -207,31 +207,6 @@ public class Game {
         guild.getTextChannelById(899417703486455848L).sendMessage(msg).queue();
     }
 
-    /**
-     * @author Harrison Brown
-     * @param enemies an array of enemies
-     * @return returns true if an enemy in the array is alive
-     */
-    private static boolean enemiesLive (Enemy[] enemies)
-    {
-        int alive = enemies.length;
-        for (int i = 0; i < enemies.length; i++)
-        {
-            if (!enemies[i].getIsAlive())
-            {
-                alive -= 1;
-            }
-        }
-        if (alive == 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
     /**Method: main
      * @author Harrison Brown
      * Written : October 17, 2021
@@ -267,9 +242,46 @@ public class Game {
 
         Entity[] order = BattleSystem.makeTurnOrder(players, enemies);
 
+        System.out.println();
         System.out.println("The turn order is:");
         for (Entity e : order) {
             System.out.println(e.getName());
+        }
+        int act;
+        while (BattleSystem.entitiesLive(enemies) && BattleSystem.entitiesLive(players)) {
+            for (Entity e : order) {
+                if (e instanceof Enemy && e.getIsAlive()) {
+                    act = BattleSystem.randomVal(0,1);
+                    if (act == 0) {
+                        if (players.length == 1) {
+                            BattleSystem.makeChoice("attack", e, players[0]);
+                        } else {
+                            BattleSystem.makeChoice("attack", e, players[BattleSystem.randomVal(0, playerNum - 1)]);
+                        }
+                    } else {
+                        BattleSystem.makeChoice("block", e);
+                    }
+                } else {
+                    System.out.println(e.getName() + ", its your turn!");
+                    System.out.println("Do you want to attack or block? (0 or 1): ");
+                    act = scan.nextInt();
+                    scan.reset();
+
+                    if (act == 0) {
+                        System.out.println("This is the current health of the enemies:");
+                        for (Enemy x : enemies) {
+                            System.out.print(x.getHealth() + " | ");
+                        }
+                        System.out.println();
+                        System.out.println("Which do you want to attack? (0 - (enemy count-1)");
+                        int choice = scan.nextInt();
+                        scan.reset();
+                        BattleSystem.makeChoice("attack", e, enemies[choice]);
+                    } else {
+                        BattleSystem.makeChoice("block", e);
+                    }
+                }
+            }
         }
 
 

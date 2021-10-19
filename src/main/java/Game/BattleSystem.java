@@ -56,7 +56,30 @@ public class BattleSystem {
         }
     }
 
-
+    /**
+     * @author Harrison Brown
+     * @param e an array of enemies
+     * @return returns true if an enemy in the array is alive
+     */
+    public static boolean entitiesLive (Entity[] e)
+    {
+        int alive = e.length;
+        for (int i = 0; i < e.length; i++)
+        {
+            if (!e[i].getIsAlive())
+            {
+                alive -= 1;
+            }
+        }
+        if (alive == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 
 
 

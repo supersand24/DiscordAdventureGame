@@ -141,7 +141,9 @@ public class Player extends Entity {
     public void attack(Entity entity) {
         if (entity.isBlocking()) {
             System.out.println(entity.getName() + " blocked!");
+            entity.switchBlock();
         } else {
+            System.out.println("You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + "!");
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
         }
     }
@@ -152,6 +154,9 @@ public class Player extends Entity {
 
     @Override
     public void block() {
+        if (block) {
+            System.out.println("You are already braced for an attack");
+        }
         block = true;
         System.out.println(name + "braced for an attack!");
     }
