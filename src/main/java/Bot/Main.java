@@ -1,5 +1,6 @@
 package Bot;
 
+import Game.Game;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -86,6 +87,12 @@ public class Main {
                 jda.awaitReady();
 
                 //addSlashCommands(jda);
+
+                //Sets up the Game, if there is an error, app will exit.
+                if ( !Game.setUp(jda.getGuildById(899410801906044991L)) ) {
+                    System.out.println("An error occurred, app will stop running.");
+                    System.exit(404);
+                }
 
             } catch (LoginException | InterruptedException e) {
                 e.printStackTrace();

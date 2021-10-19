@@ -30,12 +30,7 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onReady(@NotNull ReadyEvent e) {
-        System.out.println("Listener is ready, running onReady()");
-        Game.guild = e.getJDA().getGuilds().get(0);
-        roleDeveloper = Game.guild.getRoleById(899416257537908777L);
-        Game.roleAdventurer = Game.guild.getRoleById(899464047001468978L);
-        Game.categoryAdventure = Game.guild.getCategoryById(899663492175511612L);
-        Game.categorySettlement = Game.guild.getCategoryById(899464535180718090L);
+        roleDeveloper = e.getJDA().getGuilds().get(0).getRoleById(899416257537908777L);
     }
 
     /**Method: onMessageReceived

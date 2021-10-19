@@ -26,7 +26,7 @@ public class Game {
     public static Category categoryAdventure;
     public static Category categorySettlement;
 
-    static boolean gameStarted = false;
+    static boolean gameStarted;
 
     /**Method: startGame
      * @author Justin Sandman
@@ -204,6 +204,35 @@ public class Game {
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
         guild.getTextChannelById(899417703486455848L).sendMessage(msg).queue();
+    }
+
+    /**
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     * @param guild The guild object of the Discord Server.
+     * @return Returns true if no errors are present.
+     *
+     * Runs at app start, will load any needed files.
+     */
+    public static boolean setUp(Guild guild) {
+
+        System.out.println("Starting Game Set Up...");
+
+        Game.guild = guild;
+
+        roleAdventurer      = Game.guild.getRoleById(899464047001468978L);
+
+        categoryAdventure   = Game.guild.getCategoryById(899663492175511612L);
+        categorySettlement  = Game.guild.getCategoryById(899464535180718090L);
+
+        //Load any saved files
+        //If save file is found, load all that and then set gameStarted true.
+        //If no save file is found, keep default and leave gameStarted false.
+        gameStarted = false;
+
+        //No errors occurred, game is set up properly.
+        return true;
+
     }
 
     /**
