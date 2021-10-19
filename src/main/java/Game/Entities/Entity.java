@@ -117,22 +117,22 @@ public abstract class Entity implements Comparable<Entity> {
     /**
      * Generic attack for all entities to implement
      */
-    abstract protected void attack(Entity entity);
+    abstract public void attack(Entity entity);
 
     /**
      * Generic move for all entities to implement
      */
-    abstract protected void move();
+    abstract public void move();
 
     /**
      * Generic block for all entities to implement
      */
-    abstract protected void block();
+    abstract public void block();
 
     /**
      * Generic useItem for all entities to implement
      */
-    abstract protected void useItem();
+    abstract public void useItem();
 
     /**
      * if the entities' health is 0 or less, isAlive is set to false

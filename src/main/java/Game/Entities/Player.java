@@ -140,7 +140,7 @@ public class Player extends Entity {
     @Override
     public void attack(Entity entity) {
         Weapon w = holding.get(0);
-        entity.setHealth(entity.getHealth()-10);
+        entity.setHealth(entity.getHealth()-w.getDmg());
     }
 
     @Override
