@@ -65,6 +65,7 @@ public class Listener extends ListenerAdapter {
                             if (e.getMember().getRoles().contains(roleDeveloper)) {
                                 switch (command) {
                                     case "startgame" -> Game.startGame();
+                                    case "save"      -> Game.save();
                                 }
                             }
                         } else {

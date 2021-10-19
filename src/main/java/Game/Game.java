@@ -2,12 +2,17 @@ package Game;
 
 import Game.Entities.EnemyTypes.*;
 import Game.Entities.Player;
+import Game.Items.Item;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 /**Class: Game
@@ -27,6 +32,8 @@ public class Game {
     public static Category categorySettlement;
 
     static boolean gameStarted;
+
+    static List<Party> parties = new ArrayList<>();
 
     /**Method: startGame
      * @author Justin Sandman
@@ -95,6 +102,9 @@ public class Game {
                                 .setAllow(Permission.VIEW_CHANNEL)
                                 .queue();
                         textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                        parties.add(new Party(textChannel.getIdLong()));
+
+                        System.out.println(parties);
                     });
                 } else {
                     slashCommand.reply("You are already in a Party!").queue();
@@ -169,11 +179,34 @@ public class Game {
                                 .queue();
                     }
                 }
+                adventureEvent(findPartyChannel(partyLeader));
             }
         } else {
             e.reply("You are not the party leader.").queue();
         }
 
+    }
+
+    /**Method: adventureEvent
+     * @author Justin Sandman
+     * Written : October 19, 2021
+     *
+     * Basic processing of an adventure event.
+     * This case is a battle.
+     */
+    private static void adventureEvent(TextChannel textChannel) {
+        textChannel.sendMessage("Everyone walked down the long road.").queue();
+        parties.get(0).enemies.add(new Dragon());
+        parties.get(0).enemies.add(new Goblin());
+        parties.get(0).enemies.add(new Rat());
+        textChannel.sendMessage("A battle occurs, the enemies died.").queue();
+        //PLACE BattleHandler here.
+        //Potentially get a list of dead people from BattleHandler
+        for (Enemy en : parties.get(0).enemies) {
+            Collections.addAll(parties.get(0).loot, en.getInventory());
+        }
+        parties.get(0).enemies.clear();
+        textChannel.sendMessage("Take time to heal up, when ready cast a group vote on what to do next.").queue();
     }
     
     private static TextChannel findPartyChannel(Member member) {
@@ -228,11 +261,53 @@ public class Game {
         //Load any saved files
         //If save file is found, load all that and then set gameStarted true.
         //If no save file is found, keep default and leave gameStarted false.
-        gameStarted = false;
+
+        //Read from Party File
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream("parties.dat"));
+            do {
+                parties.add((Party) ois.readObject());
+            } while (true);
+        } catch (EOFException e) {
+            System.out.println(parties);
+            try {
+                assert ois != null;
+                ois.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found...");
+            e.printStackTrace();
+            return false;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        //CHECK IF THE PARTY CHANNEL STILL EXISTS, JUST IN CASE ITS OLD DATA
+
+
+
+        gameStarted = true;
 
         //No errors occurred, game is set up properly.
         return true;
 
+    }
+
+    public static void save() {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("parties.dat"));
+            for (Party party : parties) {
+                oos.writeObject(party);
+            }
+            oos.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
