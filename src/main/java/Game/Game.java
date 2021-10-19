@@ -33,6 +33,7 @@ public class Game {
 
     static boolean gameStarted;
 
+    static List<Player> players = new ArrayList<>();
     static List<Party> parties = new ArrayList<>();
 
     /**Method: startGame
@@ -338,7 +339,6 @@ public class Game {
 
     /**Method: main
      * @author Harrison Brown
-     * @version 0.2
      * Written : October 17, 2021
      *
      * Temporary method, to test the game without connecting to Discord.
