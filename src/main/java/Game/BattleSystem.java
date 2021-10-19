@@ -4,10 +4,7 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * All Battle System methods for the game (includes some static utilities as well)
@@ -74,25 +71,105 @@ public class BattleSystem {
     /**
      * @author Harrison Brown
      * @param e an array of enemies
-     * @return returns true if an enemy in the array is alive
+     * @return returns true if an entity in the array is alive
      */
-    public static boolean entitiesLive (Entity[] e)
-    {
+    public static boolean entitiesLive (Entity[] e) {
         int alive = e.length;
-        for (int i = 0; i < e.length; i++)
-        {
-            if (!e[i].getIsAlive())
-            {
+        for (int i = 0; i < e.length; i++) {
+            if (!e[i].getIsAlive()) {
                 alive -= 1;
             }
         }
-        if (alive == 0)
-        {
+        if (alive == 0) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
+        }
+    }
+
+    /**
+     * method to control the flow of combat
+     * @param players array of players
+     * @param enemies array of enemies
+     */
+    public static void activeCombat(Player[] players, Enemy[] enemies) {
+        Scanner scan = new Scanner(System.in);
+
+        Entity[] order = BattleSystem.makeTurnOrder(players, enemies);
+
+        System.out.println();
+        System.out.println("The turn order is:");
+        for (Entity e : order) {
+            System.out.println(e.getName());
+        }
+        System.out.println();
+        int act;
+
+        while (BattleSystem.entitiesLive(enemies) && BattleSystem.entitiesLive(players)) {
+            for (Entity e : order) {
+                if (e.isBlocking()) {
+                    System.out.println(e.getName() + " got tired from bracing for an attack that never came");
+                    e.switchBlock();
+                    System.out.println();
+                }
+                if (e instanceof Enemy && e.getIsAlive()) {
+                    act = BattleSystem.randomVal(0, 1);
+                    if (act == 0) {
+                        if (players.length == 1) {
+                            BattleSystem.makeChoice("attack", e, players[0]);
+                            if (!players[0].getIsAlive()) {
+                                System.out.println(players[0].getName() + " You died");
+                                if (!BattleSystem.entitiesLive(players)) {
+                                    break;
+                                }
+                            }
+                        } else {
+                            int p = BattleSystem.randomVal(0, players.length - 1);
+                            BattleSystem.makeChoice("attack", e, players[p]);
+                            if (!players[p].getIsAlive()) {
+                                System.out.println(players[p].getName() + "You died");
+                            }
+                        }
+                        System.out.println();
+
+                    } else {
+                        BattleSystem.makeChoice("block", e);
+                        System.out.println();
+                    }
+                } else if (e instanceof Player && e.getIsAlive()) {
+                    System.out.println(e.getName() + ", its your turn!");
+                    do {
+                        System.out.print("Do you want to attack, block, check your health, or check turn order? (0 - 3): ");
+                        act = scan.nextInt();
+                        scan.reset();
+                        if (act == 0) {
+                            System.out.println("This is the current health of the enemies:");
+                            for (Enemy x : enemies) {
+                                System.out.print(x.getHealth() + " | ");
+                            }
+                            System.out.println();
+                            System.out.println("Which do you want to attack? (0 - (enemy count-1)");
+                            int choice = scan.nextInt();
+                            scan.reset();
+                            BattleSystem.makeChoice("attack", e, enemies[choice]);
+                        } else if (act == 1) {
+                            BattleSystem.makeChoice("block", e);
+                        } else if (act == 2) {
+                            BattleSystem.makeChoice("checkHealth", e);
+                        } else if (act == 3) {
+                            BattleSystem.makeChoice("turnOrder", order);
+                        }
+                    } while (act > 1);
+                    System.out.println();
+
+                }
+            }
+        }
+
+        if (!BattleSystem.entitiesLive(enemies)) {
+            System.out.println("Players win!!!");
+        } else {
+            System.out.println("Players lose!!!");
         }
     }
 
