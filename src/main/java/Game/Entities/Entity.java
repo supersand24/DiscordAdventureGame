@@ -18,6 +18,11 @@ public abstract class Entity implements Comparable<Entity> {
     //properties
 
     /**
+     * name
+     */
+    protected String name;
+
+    /**
      * if the entity is alive
      */
     protected boolean isAlive = true;
@@ -140,6 +145,11 @@ public abstract class Entity implements Comparable<Entity> {
 
     //gets and sets
 
+
+    public String getName() {
+        return name;
+    }
+
     public boolean getMyTurn() {return myTurn; }
 
     public boolean getIsAlive() {
@@ -180,6 +190,10 @@ public abstract class Entity implements Comparable<Entity> {
 
     public int getWis() {
         return wis;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setGold(int gold) {

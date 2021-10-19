@@ -15,7 +15,7 @@ public class Goblin extends Enemy {
      */
     public Goblin(String name) {
         super("Goblin");
-        this.called = name;
+        this.name = name;
         this.spd = BattleSystem.randomVal(3, 9);
     }
 

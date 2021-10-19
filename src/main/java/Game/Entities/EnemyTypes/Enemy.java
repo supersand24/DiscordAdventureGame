@@ -8,7 +8,6 @@ import Game.Entities.Entity;
  * @version 0.1
  */
 public abstract class Enemy extends Entity {
-    protected String called;
     protected int dmg;
 
     /**
@@ -54,7 +53,7 @@ public abstract class Enemy extends Entity {
     public String toString() {
         String msg = "";
         msg += "TYPE: " + getClass().getSimpleName() + "\n";
-        msg += "CALLED: " + called + "\n";
+        msg += "CALLED: " + name + "\n";
         msg += "SPEED: " + spd + "\n";
         return msg;
     }
