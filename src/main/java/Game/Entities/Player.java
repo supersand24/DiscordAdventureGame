@@ -152,6 +152,10 @@ public class Player extends Entity {
         } else {
             System.out.println("You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + "!");
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
+            entity.checkHealth();
+            if (!entity.getIsAlive()) {
+                holding.get(0).setKillCnt(holding.get(0).getKillCnt()+1);
+            }
         }
     }
 
