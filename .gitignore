@@ -1,3 +1,4 @@
 
 *.token
 *.class
+target/classes/**
