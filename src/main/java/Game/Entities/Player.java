@@ -19,7 +19,6 @@ public class Player extends Entity {
     /**
      * Gender of the character
      */
-
     protected String gender = "male";
 
     /**
