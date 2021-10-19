@@ -264,7 +264,7 @@ public class Game {
                     }
                 } else if (e instanceof Player && e.getIsAlive()){
                     System.out.println(e.getName() + ", its your turn!");
-                    System.out.println("Do you want to attack or block? (0 or 1): ");
+                    System.out.println("Do you want to attack, block or check your health? (0, 1 or 2): ");
                     act = scan.nextInt();
                     scan.reset();
 
@@ -278,8 +278,10 @@ public class Game {
                         int choice = scan.nextInt();
                         scan.reset();
                         BattleSystem.makeChoice("attack", e, enemies[choice]);
-                    } else {
+                    } else if (act == 1) {
                         BattleSystem.makeChoice("block", e);
+                    } else if (act == 2) {
+                        BattleSystem.makeChoice("checkHealth", e);
                     }
                 }
 

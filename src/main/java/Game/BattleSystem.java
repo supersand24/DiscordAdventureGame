@@ -54,6 +54,9 @@ public class BattleSystem {
             case "block" :
                 e[0].block();
                 break;
+
+            case "checkHealth" :
+                System.out.println("Your health is " + e[0].getHealth() + "/" + e[0].getMaxHealth());
         }
     }
 
