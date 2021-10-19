@@ -254,6 +254,11 @@ public class Game {
 
         while (BattleSystem.entitiesLive(enemies) && BattleSystem.entitiesLive(players)) {
             for (Entity e : order) {
+                if (e.isBlocking()) {
+                    System.out.println(e.getName() + " got tired from bracing for an attack that never came");
+                    e.switchBlock();
+                    System.out.println();
+                }
                 if (e instanceof Enemy && e.getIsAlive()) {
                     act = BattleSystem.randomVal(0, 1);
                     if (act == 0) {
@@ -269,9 +274,11 @@ public class Game {
                                 System.out.println(players[p].getName() + "You died");
                             }
                         }
+                        System.out.println();
 
                     } else {
                         BattleSystem.makeChoice("block", e);
+                        System.out.println();
                     }
                 } else if (e instanceof Player && e.getIsAlive()) {
                     System.out.println(e.getName() + ", its your turn!");
@@ -297,15 +304,17 @@ public class Game {
                             BattleSystem.makeChoice("turnOrder", order);
                         }
                     } while (act > 1);
+                    System.out.println();
 
                 }
             }
-
-            if (!BattleSystem.entitiesLive(enemies)) {
-                System.out.println("Players win!!!");
-            } else {
-                System.out.println("Players lose!!!");
-            }
         }
+
+        if (!BattleSystem.entitiesLive(enemies)) {
+            System.out.println("Players win!!!");
+        } else {
+            System.out.println("Players lose!!!");
+        }
+
     }
 }

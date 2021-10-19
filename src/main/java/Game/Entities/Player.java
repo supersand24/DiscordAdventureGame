@@ -158,7 +158,7 @@ public class Player extends Entity {
             System.out.println("You are already braced for an attack");
         }
         block = true;
-        System.out.println(name + "braced for an attack!");
+        System.out.println(name + " braced for an attack!");
     }
 
     @Override
