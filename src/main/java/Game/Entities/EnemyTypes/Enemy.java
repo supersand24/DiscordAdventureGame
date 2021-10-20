@@ -11,36 +11,11 @@ public abstract class Enemy extends Entity {
     protected int dmg;
 
     /**
-     * constructor for basic enemy
-     * @author Harrison Brown
-     * @param gold current gold amount
-     * @param maxHealth enemy maxHealth
-     * @see Game.Entities.Entity
-     */
-    Enemy(int gold, int maxHealth, String type, int dmg) {
-        super(gold, maxHealth);
-        this.dmg = dmg;
-    }
-
-    /**
-     * constructor for enemy
-     * @author Harrison Brown
-     * @param type the enemy type
-     * @param dmg the damage value of the enemy
-     */
-    Enemy(String type, int dmg) {
-        super(10,10);
-        this.dmg = dmg;
-    }
-
-    /**
      * Constructor for enemy
      * @author Harrison Brown
-     * @param type the string of the type of enemy
      */
-    Enemy(String type) {
-        super(10,10);
-        this.dmg = 5;
+    Enemy() {
+        super();
     }
 
     /**
@@ -49,14 +24,14 @@ public abstract class Enemy extends Entity {
      * @param entity the entity to attack
      */
     @Override
-    public String attack(Entity entity) {
+    public void attack(Entity entity) {
         if (entity.isBlocking()) {
-            return entity.ifBlock();
+            this.setLastAction(entity.ifBlock());
         } else {
             String msg = name + " attacked " + entity.getName() + " for " + dmg + " damage!";
             System.out.println(msg);
             entity.setHealth(entity.getHealth() - dmg);
-            return msg;
+            this.setLastAction(msg);
         }
     }
 
@@ -65,11 +40,11 @@ public abstract class Enemy extends Entity {
      * @author Harrison Brown
      */
     @Override
-    public String block() {
+    public void block() {
         this.switchBlock();
         String msg = name + "braced for an attack!";
         System.out.println(msg);
-        return msg;
+        this.setLastAction(msg);
     }
 
     /**

@@ -18,6 +18,11 @@ public abstract class Entity implements Comparable<Entity> {
     //properties
 
     /**
+     * last action of the entity
+     */
+    protected String lastAction;
+
+    /**
      * name
      */
     protected String name;
@@ -114,10 +119,11 @@ public abstract class Entity implements Comparable<Entity> {
      * @author Harrison Brown
      */
     protected Entity() {
-        this.gold = 10;
-        this.maxHealth = 50;
-        this.health = maxHealth;
         this.level = 1;
+    }
+
+    protected Entity(int lvl) {
+        this.level = lvl;
     }
 
     //abstract methods
@@ -126,7 +132,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic attack for all entities to implement
      * @author Harrison Brown
      */
-    abstract public String attack(Entity entity);
+    abstract public void attack(Entity entity);
 
     /**
      * Generic move for all entities to implement
@@ -138,7 +144,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic block for all entities to implement
      * @author Harrison Brown
      */
-    abstract public String block();
+    abstract public void block();
 
     /**
      * Generic useItem for all entities to implement
@@ -372,8 +378,15 @@ public abstract class Entity implements Comparable<Entity> {
             System.out.println(this.getName() + " blocked!");
             this.switchBlock();
             return (this.getName() + " blocked!");
-        }
+    }
 
+    public String getLastAction() {
+        return lastAction;
+    }
+
+    public void setLastAction(String lastAction) {
+        this.lastAction = lastAction;
+    }
 
     /**
      * sorts based on speed, Arrays.sort(Entity[] array)
