@@ -212,9 +212,6 @@ public class Game {
         party.enemies.add(new Goblin("Goblin"));
         party.enemies.add(new Goblin("Goblin"));
         party.enemies.add(new Goblin("Goblin"));
-        party.enemies.add(new Goblin("Goblin"));
-        party.enemies.add(new Goblin("Goblin"));
-        party.enemies.add(new Goblin("Goblin"));
         //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
         //PLACE BattleHandler here.
         BattleSystem.startBattle(party);
@@ -238,7 +235,10 @@ public class Game {
             );
         }
 
-        textChannel.sendMessageEmbeds(embed.build()).queue();
+        //Save embed for future edits.
+        party.embed = embed;
+        //Send message and save location.
+        textChannel.sendMessageEmbeds(embed.build()).queue(message -> party.battleMessage = message);
 
         //Potentially get a list of dead people from BattleHandler
         /*

@@ -184,13 +184,15 @@ public class BattleSystem {
                     case CHECK_HEALTH -> checkHealth(player);
                     case TURN_ORDER -> turnOrder(party.getTurnOrder());
                 }
-
+                
                 slashCommand
                         .getHook()
-                        .sendMessage("Testing!")
+                        .sendMessage(player.getLastAction())
                         .queue();
 
                 processTurn(party, party.getTurnIndex() + 1);
+
+                party.updateBattle();
 
             } else {
                 slashCommand

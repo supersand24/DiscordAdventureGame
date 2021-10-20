@@ -4,8 +4,10 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
@@ -29,6 +31,8 @@ public class Party implements Serializable {
 
     private Entity[] turnOrder = null;
     private int turnIndex = 0;
+    public EmbedBuilder embed = null;
+    public Message battleMessage = null;
 
     public Party(long id) {
         this.channelId = id;
@@ -38,6 +42,13 @@ public class Party implements Serializable {
      * Testing Purposes only.
      */
     public Party() {}
+
+    public void updateBattle() {
+
+        embed.setAuthor(turnOrder[turnIndex].getName());
+
+        battleMessage.editMessageEmbeds(embed.build()).queue();
+    }
 
     /**
      * Goes through the whole player list and finds a match, using member nickname.
