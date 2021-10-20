@@ -138,10 +138,20 @@ public class Party implements Serializable {
         turnOrder = e;
     }
 
+    /**
+     * getter for turnIndex
+     * @author Harrison Brown
+     * @return returns turnIndex
+     */
     public int getTurnIndex() {
         return turnIndex;
     }
 
+    /**
+     * setter for turnIndex
+     * @author Harrison Brown
+     * @param turnIndex the new value
+     */
     public void setTurnIndex(int turnIndex) {
         this.turnIndex = turnIndex;
     }

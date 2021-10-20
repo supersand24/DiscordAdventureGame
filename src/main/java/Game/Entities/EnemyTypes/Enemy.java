@@ -12,6 +12,7 @@ public abstract class Enemy extends Entity {
 
     /**
      * constructor for basic enemy
+     * @author Harrison Brown
      * @param gold current gold amount
      * @param maxHealth enemy maxHealth
      * @see Game.Entities.Entity
@@ -23,8 +24,9 @@ public abstract class Enemy extends Entity {
 
     /**
      * constructor for enemy
+     * @author Harrison Brown
      * @param type the enemy type
-     * @param dmg the damage of the enemy
+     * @param dmg the damage value of the enemy
      */
     Enemy(String type, int dmg) {
         super(10,10);
@@ -33,6 +35,7 @@ public abstract class Enemy extends Entity {
 
     /**
      * Constructor for enemy
+     * @author Harrison Brown
      * @param type the string of the type of enemy
      */
     Enemy(String type) {
@@ -42,6 +45,7 @@ public abstract class Enemy extends Entity {
 
     /**
      * attack method for enemy, takes in an entity
+     * @author Harrison Brown
      * @param entity the entity to attack
      */
     @Override
@@ -55,12 +59,28 @@ public abstract class Enemy extends Entity {
         }
     }
 
+    /**
+     * block method for enemy
+     * @author Harrison Brown
+     */
+    @Override
+    public void block() {
+        block = true;
+        System.out.println(name + "braced for an attack!");
+    }
+
+    /**
+     * toString for Enemy
+     * @author Harrison Brown
+     * @return string
+     */
     @Override
     public String toString() {
-        String msg = "";
-        msg += "TYPE: " + getClass().getSimpleName() + "\n";
-        msg += "CALLED: " + name + "\n";
-        msg += "SPEED: " + spd + "\n";
-        return msg;
+        StringBuilder msg = new StringBuilder();
+        msg.append("TYPE: ").append(getClass().getSimpleName()).append("\n");
+        msg.append("CALLED: ").append(name).append("\n");
+        msg.append("SPEED: ").append(spd).append("\n");
+        return msg.toString();
+
     }
 }

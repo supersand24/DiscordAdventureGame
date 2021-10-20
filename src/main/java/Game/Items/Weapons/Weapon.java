@@ -33,20 +33,29 @@ public abstract class Weapon extends Item {
     protected String foundBy;
 
     /***
-     * sets the name, cost, weight, and damage of the weapon
+     * sets the name, cost, weight, and damage values of the weapon
+     * @author Harrison Brown
      * @param name weapon name
      * @param cost weapon cost
      * @param weight weapon weight
      * @param dmg weapon damage
+     * @param ogOwner original owner of weapon
      * @see Game.Items.Item
      */
-
     Weapon(String name, int cost, int weight, int dmg, String ogOwner) {
         super(name, cost, weight);
         this.dmg = dmg;
         this.ogOwner = ogOwner;
     }
 
+    /**
+     * weapon constructor with predefined
+     * @author Harrison Brown
+     * @param name weapon name
+     * @param cost weapon cost
+     * @param weight weapon weight
+     * @param dmg weapon damage
+     */
     Weapon(String name, int cost, int weight, int dmg) {
 
         super(name, cost, weight);
@@ -54,27 +63,55 @@ public abstract class Weapon extends Item {
         this.ogOwner = "Harrison"; //it is me by default cause im awesome
     }
 
+    /**
+     * getter for weapon damage
+     * @author Harrison Brown
+     * @return int damage
+     */
     public int getDmg() {
         return dmg;
     }
 
+    /**
+     * getter for the weapons original owner
+     * @author Harrison Brown
+     * @return String
+     */
     public String getOgOwner() {
         return ogOwner;
     }
 
+    /**
+     * getter for the weapons kill count
+     * @author Harrison Brown
+     * @return int
+     */
     public int getKillCnt() {
         return killCnt;
     }
 
+    /**
+     * returns the adventurer that found the weapon
+     * @author Harrison Brown
+     * @return string player name
+     */
     public String getFoundBy() {
         return foundBy;
     }
 
-
-    public void setKillCnt(int killCnt) {
-        this.killCnt = killCnt;
+    /**
+     * raises the weapons kill count by one
+     * @author Harrison Brown
+     */
+    public void upKillCnt() {
+        this.killCnt++;
     }
 
+    /**
+     * set the adventurer that found the weapon
+     * @author Harrison Brown
+     * @param foundBy string of the adventurers name
+     */
     public void setFoundBy(String foundBy) {
         this.foundBy = foundBy;
     }

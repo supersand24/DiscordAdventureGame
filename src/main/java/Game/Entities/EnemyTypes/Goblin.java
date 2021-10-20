@@ -12,6 +12,7 @@ import java.util.Random;
 public class Goblin extends Enemy {
     /**
      * constructor for goblin
+     * @author Harrison Brown
      */
     public Goblin(String name) {
         super("Goblin");
@@ -22,12 +23,6 @@ public class Goblin extends Enemy {
     @Override
     public void move() {
 
-    }
-
-    @Override
-    public void block() {
-        block = true;
-        System.out.println(name + "braced for an attack!");
     }
 
     @Override

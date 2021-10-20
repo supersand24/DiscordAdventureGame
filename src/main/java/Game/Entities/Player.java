@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Player class
  * @author Harrison Brown
- * @version 0.2
+ * @version 0.3
  */
 public class Player extends Entity {
 
@@ -23,6 +23,7 @@ public class Player extends Entity {
 
     /**
      * player constructor
+     * @author Harrison Brown
      * @param gold initial gold
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
@@ -35,6 +36,11 @@ public class Player extends Entity {
 
     }
 
+    /**
+     * a default constructor for quickly creating a default character
+     * @author Harrison Brown
+     * @param playerName the name of the player
+     */
     public Player(String playerName) {
         super();
         this.name = playerName;
@@ -45,6 +51,7 @@ public class Player extends Entity {
 
     /**
      * sets the stats of the player
+     * @author Harrison Brown
      */
     private void genStats() {
         Random rand = new Random();
@@ -64,11 +71,7 @@ public class Player extends Entity {
                 if (pool < 0) {
                     break;
                 }
-                /*
-                if (pool <= 3) {
-                    min = 0;
-                }
-                */
+
                 if (stats[i] >= 15) {
                     i++;
                     continue;
@@ -99,6 +102,7 @@ public class Player extends Entity {
 
     /**
      * a method for a Fisher-Yates shuffle
+     * @author Harrison Brown
      * @param ar the array to shuffle
      */
     private void shuffleArray(int[] ar)
@@ -117,6 +121,7 @@ public class Player extends Entity {
 
     /***
      * if the value of the sats is greater than 15, sets then to 15
+     * @author Harrison Brown
      * @param ar the array of stats to check
      */
     private void checkMax(int[] ar) {
@@ -129,6 +134,7 @@ public class Player extends Entity {
 
     /**
      * a method to add a weapon to the players equips
+     * @author Harrison Brown
      * @param weapon the weapon to add
      */
     public void addWeapon(Weapon weapon) {
@@ -137,6 +143,7 @@ public class Player extends Entity {
 
     /**
      * a method to switch the active weapon the secondary one
+     * @author Harrison Brown
      */
     public void switchActiveWeapon() {
         Weapon temp = holding.get(0);
@@ -144,6 +151,15 @@ public class Player extends Entity {
         holding.add(temp);
     }
 
+    /**
+     * override for attack method
+     * @author Harrison Brown
+     * <p>
+     *     checks if the target is blocking and acts accordingly
+     *     if the target dies the equipped weapons kill count is incremented
+     * </p>
+     * @param entity the entity to target
+     */
     @Override
     public void attack(Entity entity) {
         if (entity.isBlocking()) {
@@ -154,15 +170,23 @@ public class Player extends Entity {
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
             entity.checkHealth();
             if (!entity.getIsAlive()) {
-                holding.get(0).setKillCnt(holding.get(0).getKillCnt()+1);
+                holding.get(0).upKillCnt();
             }
         }
     }
 
+    /**
+     * override for the move method
+     * @author Harrison Brown
+     */
     @Override
     public void move() {
     }
 
+    /**
+     * override for the block method
+     * @author Harrison Brown
+     */
     @Override
     public void block() {
         if (block) {
@@ -172,12 +196,17 @@ public class Player extends Entity {
         System.out.println(name + " braced for an attack!");
     }
 
+    /**
+     * override for the useItem method
+     * @author Harrison Brown
+     */
     @Override
     public void useItem() {
     }
 
     /**
      * toString for player
+     * @author Harrison Brown
      * <p>
      *    gives a string that is a vertical representation of all player attributes
      * </p>
@@ -185,24 +214,22 @@ public class Player extends Entity {
      */
     @Override
     public String toString() {
-        String out = "";
-        out += "Character: " + name + "\n";
-        out += "Gender: " + gender + "\n";
-        out += "Level: " + level + "\n";
-        out += "Health: " + health + " Max Health: " + maxHealth + "\n";
-        out += "Gold: " + gold + "\n";
+        StringBuilder out = new StringBuilder();
+        out.append("Character: ");
+        out.append(name);
+        out.append("\n");
+        out.append("Gender: ");
+        out.append(gender);
+        out.append("\n");
+        out.append("Level: ").append(level).append("\n");
+        out.append("Health: ").append(health).append(" Max Health: ").append(maxHealth).append("\n");
+        out.append("Gold: ").append(gold).append("\n");
 
         for (Item x : holding) {
-            out += x.getClass().getSimpleName() + ": " + x.getName() + "\n";
+            out.append(x.getClass().getSimpleName()).append(": ").append(x.getName()).append("\n");
         }
+        out.append("Def: ").append(def).append("\n").append("Spd: ").append(spd).append("\n").append("Dex: ").append(dex).append("\n").append("Wis: ").append(wis).append("\n").append("Str: ").append(str).append("\n");
 
-
-        out += "Def: " + def +"\n";
-        out += "Spd: " + spd +"\n";
-        out += "Dex: " + dex +"\n";
-        out += "Wis: " + wis +"\n";
-        out += "Str: " + str +"\n";
-
-        return out;
+        return out.toString();
     }
 }
