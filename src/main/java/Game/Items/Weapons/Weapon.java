@@ -8,6 +8,10 @@ import Game.Items.Item;
  * @version 0.1
  */
 public abstract class Weapon extends Item {
+    /**
+     * actions specific to each weapon type
+     */
+    protected String[] moves = null;
     /***
      * damage value of weapon
      */
@@ -36,16 +40,18 @@ public abstract class Weapon extends Item {
      * @param dmg weapon damage
      * @see Game.Items.Item
      */
-    Weapon(String name, int cost, int weight, int dmg) {
-        super(name, cost, weight);
-        this.dmg = dmg;
-        this.ogOwner = "Harrison"; //it is me by default cause im awesome
-    }
 
     Weapon(String name, int cost, int weight, int dmg, String ogOwner) {
         super(name, cost, weight);
         this.dmg = dmg;
         this.ogOwner = ogOwner;
+    }
+
+    Weapon(String name, int cost, int weight, int dmg) {
+
+        super(name, cost, weight);
+        this.dmg = dmg;
+        this.ogOwner = "Harrison"; //it is me by default cause im awesome
     }
 
     public int getDmg() {

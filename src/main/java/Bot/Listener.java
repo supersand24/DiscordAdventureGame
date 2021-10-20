@@ -20,31 +20,25 @@ public class Listener extends ListenerAdapter {
 
     Role roleDeveloper;
 
-    /**Method: onReady
+    /**
+     * Runs as soon as the Listener is ready to go.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Runs as soon as the Listener is ready to go.
-     * Gets the Developer Role ready, so Listener can check members for it.
-     * Sends the Guild to the Game, so Game can send messages as needed.
      */
     @Override
     public void onReady(@NotNull ReadyEvent e) {
-        System.out.println("Listener is ready, running onReady()");
-        Game.guild = e.getJDA().getGuilds().get(0);
-        roleDeveloper = Game.guild.getRoleById(899416257537908777L);
-        Game.roleAdventurer = Game.guild.getRoleById(899464047001468978L);
-        Game.categoryAdventure = Game.guild.getCategoryById(899663492175511612L);
-        Game.categorySettlement = Game.guild.getCategoryById(899464535180718090L);
+        roleDeveloper = e.getJDA().getGuilds().get(0).getRoleById(899416257537908777L);
     }
 
-    /**Method: onMessageReceived
+    /**
+     * This method is run whenever a message is sent in a channel.
+     * It checks the message if there is a command keyword, and starts with Main.COMMAND_SIGN.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * This method is run whenever a message is sent in a channel.
-     * It checks the message if there is a command keyword, and starts with Main.COMMAND_SIGN
-     * Then it runs the proper command.
      */
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
@@ -70,6 +64,8 @@ public class Listener extends ListenerAdapter {
                             if (e.getMember().getRoles().contains(roleDeveloper)) {
                                 switch (command) {
                                     case "startgame" -> Game.startGame();
+                                    case "save"      -> Game.save();
+                                    case "players"   -> System.out.println(Game.players.toString());
                                 }
                             }
                         } else {
@@ -88,6 +84,14 @@ public class Listener extends ListenerAdapter {
         }
     }
 
+    /**
+     * This method is run whenever a slash command is sent.
+     * It checks the message if there is a command keyword.
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     *
+     */
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
         switch (slashCommand.getName()) {
@@ -96,6 +100,13 @@ public class Listener extends ListenerAdapter {
         }
     }
 
+    /**
+     * Runs whenever a button is pressed in discord
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     *
+     */
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         switch (e.getButton().getId()) {

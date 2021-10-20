@@ -1,8 +1,11 @@
 package Bot;
 
+import Game.Game;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -12,11 +15,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**Class: Main
+/**
+ * Everything we should need to have the bot up and running.
+ *
  * @author Justin Sandman
  * @version 1.2
- *
- * Everything we should need to have the bot up and running.
  *
  */
 public class Main {
@@ -24,11 +27,12 @@ public class Main {
     private static String token;
     public final static String COMMAND_SIGN = "!";
 
-    /**Method: setToken
+    /**
+     * Grabs the token from the BOT.token file.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Grabs the token from the BOT.token file.
      */
     private static void setToken() {
 
@@ -42,12 +46,13 @@ public class Main {
 
     }
 
-    /**Method: addSlashCommands
+    /**
+     * Sends all slash command information to Discord.
+     * Only want to do this once, per edit.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Sends all slash command information to Discord.
-     * Only want to do this once, per edit.
      */
     private static void addSlashCommands(JDA jda) {
         System.out.println("Running Slash Commands, be sure to disable this on next run.");
@@ -58,13 +63,31 @@ public class Main {
                 new CommandData("adventure","Gets ready to go on an adventure.")
         ).queue();
 
+        //Attack Command
+        commands.addCommands(
+                new CommandData("attack","Attacks an enemy.").addOptions(
+                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                )
+        ).queue();
+
+        //Block Command
+        commands.addCommands(
+                new CommandData("block","Blocks next attack.")
+        ).queue();
+
+        //Use Item Command
+        commands.addCommands(
+                new CommandData("use_item","Uses an item from your inventory.")
+        ).queue();
+
     }
 
-    /**Method: main
+    /**
+     * Starts the bot and the game.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Starts the bot.
      */
     public static void main(String[] args) {
 
@@ -86,6 +109,12 @@ public class Main {
                 jda.awaitReady();
 
                 //addSlashCommands(jda);
+
+                //Sets up the Game, if there is an error, app will exit.
+                if ( !Game.setUp(jda.getGuildById(899410801906044991L)) ) {
+                    System.out.println("An error occurred, app will stop running.");
+                    System.exit(404);
+                }
 
             } catch (LoginException | InterruptedException e) {
                 e.printStackTrace();

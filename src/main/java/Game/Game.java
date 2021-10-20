@@ -1,20 +1,28 @@
 package Game;
 
 import Game.Entities.EnemyTypes.*;
+import Game.Entities.Entity;
 import Game.Entities.Player;
+import Game.Items.Item;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
-/**Class: Game
- * @author Harrison Brown and Justin Sandman
- * @version 0.3.1
- *
+/**
  * Handles everything for the game.
+ *
+ * @author Harrison Brown
+ * @author Justin Sandman
+ * @version 0.3.1
  *
  */
 public class Game {
@@ -26,14 +34,18 @@ public class Game {
     public static Category categoryAdventure;
     public static Category categorySettlement;
 
-    static boolean gameStarted = false;
+    static boolean gameStarted;
 
-    /**Method: startGame
+    public static List<Player> players = new ArrayList<>();
+    static List<Party> parties = new ArrayList<>();
+
+    /**
+     * Tries to start the game, if one is not in progress.
+     * Is called by a Developer in the server.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Tries to start the game, if one is not in progress.
-     * Is called by a Developer in the server.
      */
     public static void startGame() {
 
@@ -47,12 +59,13 @@ public class Game {
 
     }
 
-    /**Method: joinGame
+    /**
+     * Tries to join the game, if one is in progress.
+     * Is called by a Member in the server.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Tries to join the game, if one is in progress.
-     * Is called by a Member in the server.
      */
     public static void joinGame(Member member, Message msg) {
         if (!member.getRoles().contains(roleAdventurer)) {
@@ -69,12 +82,13 @@ public class Game {
 
     }
 
-    /**Method: startAdventure
+    /**
+     * Opens an invite for other players to join an adventure.
+     * Is called by a Member in the server, only while in a settlement, and not in another party
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Opens an invite for other players to join an adventure.
-     * Is called by a Member in the server, only while in a settlement, and not in another party.
      */
     public static void startAdventure(SlashCommandEvent slashCommand) {
 
@@ -95,6 +109,9 @@ public class Game {
                                 .setAllow(Permission.VIEW_CHANNEL)
                                 .queue();
                         textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                        parties.add(new Party(textChannel.getIdLong()));
+
+                        System.out.println(parties);
                     });
                 } else {
                     slashCommand.reply("You are already in a Party!").queue();
@@ -107,12 +124,13 @@ public class Game {
         }
     }
 
-    /**Method: joinAdventure
+    /**
+     * Joins an existing party, if they have not left yet.
+     * Is called by a Member that presses a button.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Joins an existing party, if they have not left yet.
-     * Is called by a Member that presses a button.
      */
     public static void joinAdventure(ButtonClickEvent e) {
 
@@ -144,12 +162,13 @@ public class Game {
         }
     }
 
-    /**Method: leaveTown
+    /**
+     * The party leaves town and goes on an adventure.
+     * Is called by a Member that presses a button, makes sure the party leader pressed the button.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * The party leaves town and goes on an adventure.
-     * Is called by a Member that presses a button, makes sure the party leader pressed the button.
      */
     public static void leaveTown(ButtonClickEvent e) {
 
@@ -169,13 +188,82 @@ public class Game {
                                 .queue();
                     }
                 }
+                adventureEvent(findPartyChannel(partyLeader));
             }
         } else {
             e.reply("You are not the party leader.").queue();
         }
 
     }
-    
+
+    /**
+     * Basic processing of an adventure event.
+     * This case is a battle.
+     *
+     * @author Justin Sandman
+     * Written : October 19, 2021
+     *
+     */
+    private static void adventureEvent(TextChannel textChannel) {
+        textChannel.sendMessage("Everyone walked down the long road.").queue();
+
+        Party party = parties.get(0);
+
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
+        //PLACE BattleHandler here.
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.addField(
+                "Turn Order",
+                party.getTurnOrder(
+                        party.getPlayers(guild).toArray(new Player[0]),
+                        party.enemies.toArray(new Enemy[0])
+                ),
+                false
+        );
+        embed.setTitle("BATTLE!");
+        for (Player player : party.getPlayers(guild)) {
+            embed.addField(
+                    player.getName(),
+                    player.getHealth() + "/" + player.getMaxHealth() + " HP",
+                    true);
+        }
+
+        for (int i = 0; i < party.enemies.size(); i++) {
+            Enemy enemy = party.enemies.get(i);
+            embed.addField(
+                    "#" + (i + 1) + " " + enemy.getName(),
+                    enemy.getHealth() + "/" + enemy.getMaxHealth() + " HP",
+                    true
+            );
+        }
+
+        textChannel.sendMessageEmbeds(embed.build()).queue();
+
+        //Potentially get a list of dead people from BattleHandler
+        /*
+        for (Enemy en : parties.get(0).enemies) {
+            Collections.addAll(parties.get(0).loot, en.getInventory());
+        }
+        */
+
+        party.enemies.clear();
+        textChannel.sendMessage("Take time to heal up, when ready cast a group vote on what to do next.").queue();
+    }
+
+    /**
+     * Goes through all the channels under the adventure category,
+     * and finds the one channel that the member is present in.
+     *
+     * @author Justin Sandman
+     * Written : October 19, 2021
+     *
+     */
     private static TextChannel findPartyChannel(Member member) {
         for (TextChannel channel : categoryAdventure.getTextChannels()) {
             if (channel.getMembers().contains(member)) {
@@ -185,94 +273,157 @@ public class Game {
         return null;
     }
 
-    /**Method: canPlayGame
+    /**
+     * Checks to make sure the game is active, and the player is picked up by the Game.
+     *
      * @author Justin Sandman
      * Written : October 18, 2021
      *
-     * Simple check to make sure the game is active, and the player is picked up by the Game.
      */
     private static boolean canPlayGame(Member member) {
         return (member.getRoles().contains(roleAdventurer) && gameStarted);
     }
 
-    /**Method: sendMessage
+    /**
+     * Sends a message to the meta gaming text channel.
+     *
      * @author Justin Sandman
      * Written : October 17, 2021
      *
-     * Sends a message to the testing channel.
      */
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
-        guild.getTextChannelById(899417703486455848L).sendMessage(msg).queue();
+        guild.getTextChannelById(900221982514245652L).sendMessage(msg).queue();
     }
 
     /**
-     * @author Harrison Brown
-     * @version 1.0
-     * @param enemies an array of enemies
-     * @return returns true if an enemy in the array is alive
+     * Runs at app start, will load any needed files.
+     *
+     * @author Justin Sandman
+     * Written : October 18, 2021
+     * @param guild The guild object of the Discord Server.
+     * @return Returns true if no errors are present.
+     *
      */
-    private static boolean enemiesLive (Enemy[] enemies)
-    {
-        int alive = enemies.length;
-        for (int i = 0; i < enemies.length; i++)
-        {
-            if (!enemies[i].getIsAlive())
-            {
-                alive -= 1;
+    public static boolean setUp(Guild guild) {
+
+        System.out.println("Starting Game Set Up...");
+
+        Game.guild = guild;
+
+        roleAdventurer      = Game.guild.getRoleById(899464047001468978L);
+
+        categoryAdventure   = Game.guild.getCategoryById(899663492175511612L);
+        categorySettlement  = Game.guild.getCategoryById(899464535180718090L);
+
+        //Load any saved files
+        //If save file is found, load all that and then set gameStarted true.
+        //If no save file is found, keep default and leave gameStarted false.
+
+        gameStarted = true;
+
+        //Read from Party File
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream("parties.dat"));
+            do {
+                parties.add((Party) ois.readObject());
+            } while (true);
+        } catch (EOFException e) {
+            System.out.println(parties);
+            try {
+                assert ois != null;
+                ois.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        }
-        if (alive == 0)
-        {
+        } catch (FileNotFoundException e) {
+            System.out.println("parties.dat not found...");
+            gameStarted = false;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
-        else
-        {
-            return true;
+        //CHECK IF THE PARTY CHANNEL STILL EXISTS, JUST IN CASE ITS OLD DATA
+
+        //TESTING BEGIN
+        //guild.removeRoleFromMember(guild.getMemberById(262982533157879810L),roleAdventurer).queue();
+        players.add(new Player(guild.getMemberById(262982533157879810L).getNickname()));
+        players.add(new Player(guild.getMemberById(286307112072511490L).getNickname()));
+        for (TextChannel channel : categoryAdventure.getTextChannels()) {
+            channel.delete().queue();
+        }
+        for (TextChannel channel : categorySettlement.getTextChannels()) {
+            for (PermissionOverride perm : channel.getMemberPermissionOverrides()) {
+                perm.delete().queue();
+            }
+        }
+        //TESTING END
+
+        //No errors occurred, game is set up properly.
+        return true;
+
+    }
+
+    /**
+     * Saves all the lists needed for the game to run properly.
+     *
+     * @author Justin Sandman
+     *
+     */
+    public static void save() {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("parties.dat"));
+            for (Party party : parties) {
+                oos.writeObject(party);
+            }
+            oos.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    /**Method: main
+    /**
+     * Temporary method, to test the game without connecting to Discord.
+     *
      * @author Harrison Brown
-     * @version 0.2
      * Written : October 17, 2021
      *
-     * Temporary method, to test the game without connecting to Discord.
      */
     public static void main(String[] args) {
-        /*
+
         Scanner scan = new Scanner(System.in);
 
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
-        Enemy[] enemies = new Enemy[2];
-        enemies[0] = new Goblin();
-        enemies[1] = new Goblin();
+        int playerNum;
+        int enemyNum;
 
-        do {
+        System.out.print("How many people are going to play? ");
+        playerNum = scan.nextInt();
+        scan.reset();
+        System.out.println();
 
-            for (Enemy x : enemies) {
-                System.out.print(x.getHealth() + " | ");
-                x.attack(harrison);
-            }
-            System.out.println();
-            System.out.println("Which Goblin do you want to attack? (0 or 1) ");
-            int choice = scan.nextInt();
-            scan.reset();
-            harrison.attack(enemies[choice]);
-            for (Enemy x : enemies) {
-                x.checkHealthStatus();
-            }
-            harrison.checkHealthStatus();
+        System.out.print("How many goblins do you want to fight? ");
+        enemyNum = scan.nextInt();
+        scan.reset();
+        System.out.println();
 
-        } while (enemiesLive(enemies) && harrison.getIsAlive());
-        if (harrison.getIsAlive()) {
-            System.out.println("You Win!");
-        } else {
-            System.out.println("Enemies Win!");
+        Player[] players = new Player[playerNum];
+        Enemy[] enemies = new Enemy[enemyNum];
+
+
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player("PLAYER" + i);
         }
-         */
 
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
-        System.out.print(harrison);
+        for (int i = 0; i < enemies.length; i++) {
+            enemies[i] = new Goblin("GOBLIN" + i);
+        }
+
+        System.out.println(BattleSystem.getTurnOrder(enemies, players));
+
+        //BattleSystem.activeCombat(players, enemies);
+
     }
 }
