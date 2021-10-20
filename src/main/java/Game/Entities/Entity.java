@@ -263,6 +263,10 @@ public abstract class Entity implements Comparable<Entity> {
         return wis;
     }
 
+    public int getStr() {
+        return str;
+    }
+
     /**
      * setter for entity's name
      * @author Harrison Brown
@@ -351,6 +355,10 @@ public abstract class Entity implements Comparable<Entity> {
      */
     public void setWis(int wis) {
         this.wis = wis;
+    }
+
+    public void setStr(int str) {
+        this.str = str;
     }
 
     /**
