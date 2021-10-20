@@ -25,17 +25,13 @@ public abstract class Entity implements Comparable<Entity> {
     /**
      * holds if the entity is blocking or not
      */
-    protected boolean block;
+    private boolean block;
 
     /**
      * if the entity is alive
      */
     protected boolean isAlive = true;
 
-    /**
-     * true if it is the entities turn
-     */
-    protected boolean myTurn = false;
     /**
      * amount of gold the entity has
      */
@@ -130,7 +126,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic attack for all entities to implement
      * @author Harrison Brown
      */
-    abstract public void attack(Entity entity);
+    abstract public String attack(Entity entity);
 
     /**
      * Generic move for all entities to implement
@@ -142,7 +138,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic block for all entities to implement
      * @author Harrison Brown
      */
-    abstract public void block();
+    abstract public String block();
 
     /**
      * Generic useItem for all entities to implement
@@ -367,6 +363,17 @@ public abstract class Entity implements Comparable<Entity> {
     public void switchBlock() {
         block = !block;
     }
+
+    /**
+     * checks if entity is blocking, swaps the bool, and returns a string
+     * @return string
+     */
+    public String ifBlock() {
+            System.out.println(this.getName() + " blocked!");
+            this.switchBlock();
+            return (this.getName() + " blocked!");
+        }
+
 
     /**
      * sorts based on speed, Arrays.sort(Entity[] array)
