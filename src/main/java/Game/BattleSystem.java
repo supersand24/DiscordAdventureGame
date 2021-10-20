@@ -16,6 +16,20 @@ public class BattleSystem {
     /**
      * returns an entity array sorted based on speed to be used as the turn order in battle
      */
+
+    public static String getTurnOrder(Entity[] arr1, Entity[] arr2) {
+        Entity[] order = makeTurnOrder(arr1, arr2);
+        int cnt = 1;
+        StringBuilder turns = new StringBuilder();
+        for (Entity e : order) {
+            turns.append(cnt).append(". ").append(e.getName()).append("\n");
+            cnt++;
+        }
+
+        return turns.toString();
+
+    }
+
     public static Entity[] makeTurnOrder(Entity[] arr1, Entity[] arr2) {
         Entity[] order = new Entity[arr1.length + arr2.length];
 
@@ -103,6 +117,7 @@ public class BattleSystem {
             System.out.println(e.getName());
         }
         System.out.println();
+
         int act;
 
         while (entitiesLive(enemies) && entitiesLive(players)) {
