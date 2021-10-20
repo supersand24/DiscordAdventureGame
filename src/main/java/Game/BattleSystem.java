@@ -95,7 +95,7 @@ public class BattleSystem {
     public static void activeCombat(Player[] players, Enemy[] enemies) {
         Scanner scan = new Scanner(System.in);
 
-        Entity[] order = BattleSystem.makeTurnOrder(players, enemies);
+        Entity[] order = makeTurnOrder(players, enemies);
 
         System.out.println();
         System.out.println("The turn order is:");
@@ -105,27 +105,31 @@ public class BattleSystem {
         System.out.println();
         int act;
 
-        while (BattleSystem.entitiesLive(enemies) && BattleSystem.entitiesLive(players)) {
+        while (entitiesLive(enemies) && entitiesLive(players)) {
             for (Entity e : order) {
+                if (!entitiesLive(enemies)) {
+                    break;
+                }
                 if (e.isBlocking()) {
                     System.out.println(e.getName() + " got tired from bracing for an attack that never came");
                     e.switchBlock();
                     System.out.println();
                 }
                 if (e instanceof Enemy && e.getIsAlive()) {
-                    act = BattleSystem.randomVal(0, 1);
+                    act = randomVal(0, 1);
+                    //act = 1;
                     if (act == 0) {
                         if (players.length == 1) {
-                            BattleSystem.makeChoice("attack", e, players[0]);
+                            makeChoice("attack", e, players[0]);
                             if (!players[0].getIsAlive()) {
                                 System.out.println(players[0].getName() + " You died");
-                                if (!BattleSystem.entitiesLive(players)) {
+                                if (!entitiesLive(players)) {
                                     break;
                                 }
                             }
                         } else {
-                            int p = BattleSystem.randomVal(0, players.length - 1);
-                            BattleSystem.makeChoice("attack", e, players[p]);
+                            int p = randomVal(0, players.length - 1);
+                            makeChoice("attack", e, players[p]);
                             if (!players[p].getIsAlive()) {
                                 System.out.println(players[p].getName() + "You died");
                             }
@@ -133,7 +137,7 @@ public class BattleSystem {
                         System.out.println();
 
                     } else {
-                        BattleSystem.makeChoice("block", e);
+                        makeChoice("block", e);
                         System.out.println();
                     }
                 } else if (e instanceof Player && e.getIsAlive()) {
@@ -151,13 +155,13 @@ public class BattleSystem {
                             System.out.println("Which do you want to attack? (0 - (enemy count-1)");
                             int choice = scan.nextInt();
                             scan.reset();
-                            BattleSystem.makeChoice("attack", e, enemies[choice]);
+                            makeChoice("attack", e, enemies[choice]);
                         } else if (act == 1) {
-                            BattleSystem.makeChoice("block", e);
+                            makeChoice("block", e);
                         } else if (act == 2) {
-                            BattleSystem.makeChoice("checkHealth", e);
+                            makeChoice("checkHealth", e);
                         } else if (act == 3) {
-                            BattleSystem.makeChoice("turnOrder", order);
+                            makeChoice("turnOrder", order);
                         }
                     } while (act > 1);
                     System.out.println();
@@ -166,7 +170,7 @@ public class BattleSystem {
             }
         }
 
-        if (!BattleSystem.entitiesLive(enemies)) {
+        if (!entitiesLive(enemies)) {
             System.out.println("Players win!!!");
         } else {
             System.out.println("Players lose!!!");
