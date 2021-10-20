@@ -26,9 +26,14 @@ public class Party implements Serializable {
     List<Enemy> enemies = new ArrayList<>();
     List<Item> loot = new ArrayList<>();
 
+    private Entity[] turnOrder = null;
+    private int turnIndex = 0;
+
     public Party(long id) {
         this.channelId = id;
     }
+
+    public Party() {}
 
     /**
      * Goes through the whole player list and finds a match, using member nickname.
@@ -92,4 +97,52 @@ public class Party implements Serializable {
         }
     }
 
+    /**
+     * returns the encounter turn order as a string
+     * @author Harrison Brown
+     * @return string of turn order
+     */
+    public String getTurnOrderAsString() {
+        if (turnOrder == null) {
+            return "There is no turn order";
+        } else {
+            int cnt = 1;
+            StringBuilder turns = new StringBuilder();
+            for (Entity e : turnOrder) {
+                if (e.getIsAlive()) {
+                    turns.append(cnt).append(". ").append(e.getName()).append("\n");
+                    cnt++;
+                }
+            }
+
+            return turns.toString();
+        }
+
+
+    }
+
+    /**
+     * @author Harrison Brown
+     * @return returns the turn order
+     */
+    public Entity[] getTurnOrder() {
+        return turnOrder;
+    }
+
+    /**
+     * sets the turn order
+     * @author Harrison Brown
+     * @param e the array to set the turn order
+     */
+    public void setTurnOrder(Entity[] e) {
+        turnOrder = e;
+    }
+
+    public int getTurnIndex() {
+        return turnIndex;
+    }
+
+    public void setTurnIndex(int turnIndex) {
+        this.turnIndex = turnIndex;
+    }
 }

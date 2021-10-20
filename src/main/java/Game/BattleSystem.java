@@ -3,6 +3,7 @@ package Game;
 import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.*;
 
@@ -13,66 +14,175 @@ import java.util.*;
  */
 public class BattleSystem {
 
+    public enum actions {
+        ATTACK,
+        BLOCK,
+        CHECK_HEALTH,
+        TURN_ORDER
+    }
+
     /**
-     * returns an entity array sorted based on speed to be used as the turn order in battle
+     * list of all parties engaged in battle
      */
-    public static Entity[] makeTurnOrder(Entity[] arr1, Entity[] arr2) {
-        Entity[] order = new Entity[arr1.length + arr2.length];
+    private static List<Party> activeBattles = new ArrayList<>();
+
+    /**
+     * starts battle
+     * @author Harriosn Brown
+     */
+    public static void startBattle(Party p) {
+        //adds the party to the list pof active battles
+        activeBattles.add(p);
+
+        //temp array of players
+        Player[] players = p.getPlayers(Game.guild).toArray(new Player[0]);
+
+        //sets the turn order in the party
+        makeTurnOrder(p);
+
+        //iterate through turn order if enemy do turn, if player set party.turn = first player in turn order list
+        processTurn(p,0);
+    }
+
+    /**
+     * handles the current set of turns
+     * @param p a party
+     * @param cnt the starting index in the turn order
+     */
+    public static void processTurn(Party p, int cnt) {
+        for (int i = cnt; i < p.getTurnOrder().length; i++) {
+            if (p.getTurnOrder()[i] instanceof Enemy && p.getTurnOrder()[i].getIsAlive()) {
+                enemyTurn(p, (Enemy)p.getTurnOrder()[i]);
+            }
+
+            if (p.getTurnOrder()[i] instanceof Player) {
+                p.setTurnIndex(i);
+                break;
+            }
+
+        }
+    }
+
+    /**
+     * computer takes turn
+     * @author Harrison Brown
+     */
+    private static void enemyTurn(Party party, Enemy e) {
+        Player[] players = party.getPlayers(Game.guild).toArray(new Player[0]);
+        int act;
+        act = randomVal(0, 1);
+        //act = 1;
+        if (act == 0) {
+            if (players.length == 1) {
+                makeChoice(actions.ATTACK, e, players[0]);
+                if (!players[0].getIsAlive()) {
+                    //System.out.println(players[0].getName() + " You died");
+                }
+            } else {
+                int p;
+                do {
+                    p = randomVal(0, players.length - 1);
+                } while(!players[p].getIsAlive());
+
+                makeChoice(actions.ATTACK, e, players[p]);
+                if (!players[p].getIsAlive()) {
+                    //System.out.println(players[p].getName() + "You died");
+                }
+            }
+            //System.out.println();
+
+        } else {
+            makeChoice(actions.BLOCK, e);
+            //System.out.println();
+        }
+    }
+
+    /**
+     * checks if the given member's turn is now
+     * @author Harrison Brown
+     * @param p the party the member is from
+     * @param m the member to know if its their turn
+     * @return boolean
+     */
+    public static boolean isTurn(Party p, Member m) {
+        if (p.getTurnOrder() != null) {
+            return p.getTurnOrder()[p.getTurnIndex()].equals(p.getPlayer(m));
+        }
+        return false;
+    }
+
+    /**
+     * sets the turnOrder array in the party class based on the speed of the entities in the encounter
+     * @author Harrison Brown
+     */
+    public static void makeTurnOrder(Party p, Entity... e) {
+        Entity[] arr1;
+        Entity[] arr2;
+        Entity[] order;
+
+        if (e != null) {
+            arr1 = p.getTurnOrder();
+            arr2 = e;
+        } else {
+            arr1 = p.getPlayers(Game.guild).toArray(new Entity[0]);
+            arr2 = p.enemies.toArray(new Entity[0]);
+        }
+
+        order = new Entity[arr1.length + arr2.length];
 
         int i = 0;
 
-        for (Entity e : arr1) {
-                order[i] = e;
+        for (Entity entity : arr1) {
+                order[i] = entity;
                 i++;
         }
 
-        for (Entity p : arr2) {
-            order[i] = p;
+        for (Entity entity : arr2) {
+            order[i] = entity;
             i++;
         }
 
         Arrays.sort(order);
+        p.setTurnOrder(order);
 
-        return order;
     }
+
 
     /**
      * sets the decisions for enemies and players
+     * @author Harrison Brown
      * @param choice a string representation of the choice the entity wants to make
      * @param e a nullable array of entities, the first one is the calling entity, the second should be a target if applicable to the action
      */
-    public static void makeChoice(String choice, Entity... e) {
+    public static void makeChoice(BattleSystem.actions choice, Entity... e) {
+        //e[0] is player
+        //e[1] is target
         switch (choice) {
-            case "attack" :
+            case ATTACK -> {
                 e[0].attack(e[1]);
                 e[1].checkHealth();
-                break;
-
-            case "block" :
-                e[0].block();
-                break;
-
-            case "checkHealth" :
-                System.out.println("Your health is " + e[0].getHealth() + "/" + e[0].getMaxHealth());
-                break;
-
-            case "turnOrder" :
+            }
+            case BLOCK -> e[0].block();
+            case CHECK_HEALTH -> System.out.println("Your health is " + e[0].getHealth() + "/" + e[0].getMaxHealth());
+            case TURN_ORDER -> {
                 System.out.println("The turn order is:");
                 for (Entity entity : e) {
                     if (entity.getIsAlive()) {
-                        System.out.println(entity.getName());
+                        //System.out.println(entity.getName());
                     }
                 }
-                System.out.println();
-                break;
+            }
+            //System.out.println();
         }
     }
 
+
+    /*
     /**
      * @author Harrison Brown
      * @param e an array of enemies
      * @return returns true if an entity in the array is alive
-     */
+
     public static boolean entitiesLive (Entity[] e) {
         int alive = e.length;
         for (int i = 0; i < e.length; i++) {
@@ -91,18 +201,9 @@ public class BattleSystem {
      * method to control the flow of combat
      * @param players array of players
      * @param enemies array of enemies
-     */
+
     public static void activeCombat(Player[] players, Enemy[] enemies) {
-        Scanner scan = new Scanner(System.in);
 
-        Entity[] order = makeTurnOrder(players, enemies);
-
-        System.out.println();
-        System.out.println("The turn order is:");
-        for (Entity e : order) {
-            System.out.println(e.getName());
-        }
-        System.out.println();
         int act;
 
         while (entitiesLive(enemies) && entitiesLive(players)) {
@@ -177,7 +278,7 @@ public class BattleSystem {
         }
     }
 
-
+*/
 
 
     /**

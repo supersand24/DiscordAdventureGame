@@ -421,7 +421,9 @@ public class Game {
             enemies[i] = new Goblin("GOBLIN" + i);
         }
 
-        BattleSystem.activeCombat(players, enemies);
+        System.out.println(BattleSystem.getTurnOrder(enemies, players));
+
+        //BattleSystem.activeCombat(players, enemies);
 
     }
 }
