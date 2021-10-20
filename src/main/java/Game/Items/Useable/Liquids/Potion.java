@@ -31,10 +31,15 @@ public class Potion extends Liquid {
         this.statToMod = statToMod;
     }
 
+    public Potion() {
+        super();
+        statToMod = raisedStat.HP;
+    }
+
     @Override
     public void use(Entity e) {
         switch (statToMod) {
-            case HP -> e.setHealth(e.getHealth()+1);
+            case HP -> e.setHealth(e.getHealth()+10);
             case MAXHP -> e.setMaxHealth(e.getMaxHealth()+1);
             case DEF -> e.setDef(e.getDef()+1);
             case STR -> e.setStr(e.getStr()+1);
