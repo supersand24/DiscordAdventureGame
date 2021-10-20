@@ -2,4 +2,4 @@
 *.token
 *.class
 target/classes/**
-javaDocs/**
+javaDoc/**
