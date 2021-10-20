@@ -28,7 +28,7 @@ public abstract class Enemy extends Entity {
         if (entity.isBlocking()) {
             this.setLastAction(entity.ifBlock());
         } else {
-            String msg = "Attacked " + entity.getName() + " for " + dmg + " damage!";
+            String msg = "Attacked " + entity.getName() + " for " + dmg + " damage";
             System.out.println(msg);
             entity.setHealth(entity.getHealth() - dmg);
             this.setLastAction(msg);
@@ -42,7 +42,7 @@ public abstract class Enemy extends Entity {
     @Override
     public void block() {
         this.switchBlock();
-        String msg = "braced for an attack!";
+        String msg = "braced for an attack";
         System.out.println(msg);
         this.setLastAction(msg);
     }

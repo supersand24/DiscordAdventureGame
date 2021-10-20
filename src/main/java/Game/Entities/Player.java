@@ -197,7 +197,7 @@ public class Player extends Entity {
         if (this.isBlocking()) {
             msg = "You already braced for an attack";
         } else {
-            msg = "braced for an attack!";
+            msg = "braced for an attack";
             this.switchBlock();
         }
         System.out.println(msg);
