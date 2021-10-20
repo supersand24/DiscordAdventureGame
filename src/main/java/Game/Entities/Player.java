@@ -46,6 +46,8 @@ public class Player extends Entity {
     public Player(String playerName) {
         super();
         this.name = playerName;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
         genStats();
         Sword s = new Sword();
         holding.add(s);
