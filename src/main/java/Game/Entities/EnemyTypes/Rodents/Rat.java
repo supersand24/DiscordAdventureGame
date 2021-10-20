@@ -1,17 +1,20 @@
-package Game.Entities.EnemyTypes;
+package Game.Entities.EnemyTypes.Rodents;
+
+import Game.Entities.EnemyTypes.Enemy;
 
 /**
- * enemy Skeleton General class
+ * enemy rat class
  * @author Harrison Brown
  * @version 0.1
  */
-public class SkeletonGeneral extends Enemy {
+public class Rat extends Rodent {
     /**
-     * constructor for Skeleton General
+     * constructor for rat
      * @author Harrison Brown
      */
-    public SkeletonGeneral() {
-        super("Skeleton General");
+    public Rat() {
+        super();
+        this.name = "Rat";
     }
 
     @Override

@@ -14,7 +14,7 @@ public abstract class Enemy extends Entity {
      * Constructor for enemy
      * @author Harrison Brown
      */
-    Enemy() {
+    public Enemy() {
         super();
     }
 
@@ -45,6 +45,16 @@ public abstract class Enemy extends Entity {
         String msg = name + "braced for an attack!";
         System.out.println(msg);
         this.setLastAction(msg);
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void useItem() {
+
     }
 
     /**
