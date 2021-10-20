@@ -4,6 +4,7 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.*;
@@ -35,7 +36,7 @@ public class BattleSystem {
      * @author Harriosn Brown
      */
     public static void startBattle(Party p) {
-        //adds the party to the list pof active battles
+        //adds the party to the list of active battles
         activeBattles.add(p);
 
         //temp array of players
@@ -46,6 +47,25 @@ public class BattleSystem {
 
         //iterate through turn order if enemy do turn, if player set party.turn = first player in turn order list
         processTurn(p,0);
+    }
+
+    private static void endBattle(Party p) {
+        //removes the party from the list of active battles
+        activeBattles.remove(p);
+        p.battleMessage = null;
+
+        TextChannel channel = Game.guild.getTextChannelById(p.channelId);
+        if (channel != null) {
+            channel.sendMessage("The battle is over, stop and heal up.").queue();
+        }
+
+        //Send Battle Log
+
+        //EXP Handling
+        for (Player player : p.getPlayers(Game.guild)) {
+            //add xp
+            //Check for levelups
+        }
     }
 
     /**
@@ -194,6 +214,10 @@ public class BattleSystem {
 
                 party.sendBattleMessage();
 
+                if ( !isOneEntityAlive(party.enemies.toArray(new Entity[0])) ) {
+                    endBattle(party);
+                }
+
             } else {
                 slashCommand
                         .getHook()
@@ -226,6 +250,15 @@ public class BattleSystem {
                 System.out.println(entity.getName());
             }
         }
+    }
+
+    public static boolean isOneEntityAlive(Entity[] entities) {
+        for (Entity entity : entities) {
+            if (entity.getHealth() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

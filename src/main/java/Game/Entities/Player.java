@@ -33,6 +33,8 @@ public class Player extends Entity {
         this.name = playerName;
         this.gender = gender;
         genStats();
+        Sword s = new Sword();
+        holding.add(s);
 
     }
 
