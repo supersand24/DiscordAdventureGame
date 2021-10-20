@@ -21,9 +21,7 @@ public class BattleSystem {
      */
     public enum actions {
         ATTACK,
-        BLOCK,
-        CHECK_HEALTH,
-        TURN_ORDER
+        BLOCK
     }
 
     /**
@@ -201,8 +199,6 @@ public class BattleSystem {
                                     (int) slashCommand.getOption("target").getAsLong() - 1
                             ));
                     case BLOCK -> block(player);
-                    case CHECK_HEALTH -> checkHealth(player);
-                    case TURN_ORDER -> turnOrder(party.getTurnOrder());
                 }
                 
                 slashCommand
@@ -234,22 +230,6 @@ public class BattleSystem {
 
     public static void block(Entity self) {
         self.block();
-    }
-
-    //PROB NOT NEEDED, SINCE HEALTH WILL BE ON SCREEN
-    //CAN BE REPLACED WITH JUST CHECK SELF COMMAND
-    //DOES NOT NEED TO BE A PART OF BATTLE SYSTEM
-    public static void checkHealth(Entity self) {
-        System.out.println("Your health is " + self.getHealth() + "/" + self.getMaxHealth());
-    }
-
-    public static void turnOrder(Entity[] entities) {
-        System.out.println("The turn order is:");
-        for (Entity entity : entities) {
-            if (entity.getIsAlive()) {
-                System.out.println(entity.getName());
-            }
-        }
     }
 
     public static boolean isOneEntityAlive(Entity[] entities) {
