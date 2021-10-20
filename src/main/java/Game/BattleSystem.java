@@ -4,6 +4,7 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.*;
 
@@ -54,6 +55,7 @@ public class BattleSystem {
      * @param cnt the starting index in the turn order
      */
     public static void processTurn(Party p, int cnt) {
+
         for (int i = cnt; i < p.getTurnOrder().length; i++) {
             if (p.getTurnOrder()[i] instanceof Enemy && p.getTurnOrder()[i].getIsAlive()) {
                 enemyTurn(p, (Enemy)p.getTurnOrder()[i]);
@@ -78,7 +80,7 @@ public class BattleSystem {
         //act = 1;
         if (act == 0) {
             if (players.length == 1) {
-                makeChoice(actions.ATTACK, e, players[0]);
+                attack(e, players[0]);
                 if (!players[0].getIsAlive()) {
                     //System.out.println(players[0].getName() + " You died");
                 }
@@ -88,7 +90,7 @@ public class BattleSystem {
                     p = randomVal(0, players.length - 1);
                 } while(!players[p].getIsAlive());
 
-                makeChoice(actions.ATTACK, e, players[p]);
+                attack(e, players[p]);
                 if (!players[p].getIsAlive()) {
                     //System.out.println(players[p].getName() + "You died");
                 }
@@ -96,7 +98,7 @@ public class BattleSystem {
             //System.out.println();
 
         } else {
-            makeChoice(actions.BLOCK, e);
+            block(e);
             //System.out.println();
         }
     }
@@ -119,18 +121,13 @@ public class BattleSystem {
      * sets the turnOrder array in the party class based on the speed of the entities in the encounter
      * @author Harrison Brown
      */
-    public static void makeTurnOrder(Party p, Entity... e) {
+    private static void makeTurnOrder(Party p) {
         Entity[] arr1;
         Entity[] arr2;
         Entity[] order;
 
-        if (e != null) {
-            arr1 = p.getTurnOrder();
-            arr2 = e;
-        } else {
-            arr1 = p.getPlayers(Game.guild).toArray(new Entity[0]);
-            arr2 = p.enemies.toArray(new Entity[0]);
-        }
+        arr1 = p.getPlayers(Game.guild).toArray(new Entity[0]);
+        arr2 = p.enemies.toArray(new Entity[0]);
 
         order = new Entity[arr1.length + arr2.length];
 
@@ -151,32 +148,81 @@ public class BattleSystem {
 
     }
 
-
     /**
-     * sets the decisions for enemies and players
-     * @author Harrison Brown
+     * Converts decision from discord to action.
+     *
+     * @author Justin Sandman
      * @param choice a string representation of the choice the entity wants to make
-     * @param e a nullable array of entities, the first one is the calling entity, the second should be a target if applicable to the action
+     * @param slashCommand the command info from discord, can get player, party, and member
      */
-    public static void makeChoice(BattleSystem.actions choice, Entity... e) {
-        //e[0] is player
-        //e[1] is target
-        switch (choice) {
-            case ATTACK -> {
-                e[0].attack(e[1]);
-                e[1].checkHealth();
+    public static void makeChoice(BattleSystem.actions choice, SlashCommandEvent slashCommand) {
+
+        Member member = slashCommand.getMember();
+
+        Party party = null;
+        for (Party p : activeBattles) {
+            if (p.getMembers(Game.guild).contains(member)) {
+                party = p;
             }
-            case BLOCK -> e[0].block();
-            case CHECK_HEALTH -> System.out.println("Your health is " + e[0].getHealth() + "/" + e[0].getMaxHealth());
-            case TURN_ORDER -> {
-                System.out.println("The turn order is:");
-                for (Entity entity : e) {
-                    if (entity.getIsAlive()) {
-                        System.out.println(entity.getName());
-                    }
+        }
+
+        if (party != null && member != null) {
+
+            if (isTurn(party, member)) {
+
+                slashCommand.deferReply(true).queue();
+
+                Player player = party.getPlayer(member);
+
+                switch (choice) {
+                    case ATTACK -> attack(
+                            player,
+                            party.enemies.get(
+                                    (int) slashCommand.getOption("target").getAsLong() - 1
+                            ));
+                    case BLOCK -> block(player);
+                    case CHECK_HEALTH -> checkHealth(player);
+                    case TURN_ORDER -> turnOrder(party.getTurnOrder());
                 }
+
+                slashCommand
+                        .getHook()
+                        .sendMessage("Testing!")
+                        .queue();
+
+                processTurn(party, party.getTurnIndex() + 1);
+
+            } else {
+                slashCommand
+                        .getHook()
+                        .sendMessage("It's not your turn.")
+                        .queue();
             }
-            //System.out.println();
+        }
+    }
+
+    public static void attack(Entity self, Entity target) {
+        self.attack(target);
+        target.checkHealth();
+    }
+
+    public static void block(Entity self) {
+        self.block();
+    }
+
+    //PROB NOT NEEDED, SINCE HEALTH WILL BE ON SCREEN
+    //CAN BE REPLACED WITH JUST CHECK SELF COMMAND
+    //DOES NOT NEED TO BE A PART OF BATTLE SYSTEM
+    public static void checkHealth(Entity self) {
+        System.out.println("Your health is " + self.getHealth() + "/" + self.getMaxHealth());
+    }
+
+    public static void turnOrder(Entity[] entities) {
+        System.out.println("The turn order is:");
+        for (Entity entity : entities) {
+            if (entity.getIsAlive()) {
+                System.out.println(entity.getName());
+            }
         }
     }
 

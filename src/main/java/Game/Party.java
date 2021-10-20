@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +34,9 @@ public class Party implements Serializable {
         this.channelId = id;
     }
 
+    /**
+     * Testing Purposes only.
+     */
     public Party() {}
 
     /**
@@ -55,7 +59,6 @@ public class Party implements Serializable {
     }
 
     /**
-     *
      * Makes a whole list of Players, that are in the party.
      * Works side by side with getPlayer method.
      *
@@ -80,7 +83,6 @@ public class Party implements Serializable {
     }
 
     /**
-     *
      * Obtains the member objects from everyone that can view the party channel.
      *
      * @author Justin Sandman
@@ -154,5 +156,16 @@ public class Party implements Serializable {
      */
     public void setTurnIndex(int turnIndex) {
         this.turnIndex = turnIndex;
+    }
+
+    @Override
+    public String toString() {
+        return "Party{" +
+                "channelId=" + channelId +
+                ", enemies=" + enemies +
+                ", loot=" + loot +
+                ", turnOrder=" + Arrays.toString(turnOrder) +
+                ", turnIndex=" + turnIndex +
+                '}';
     }
 }

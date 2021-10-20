@@ -1,6 +1,8 @@
 package Bot;
 
 import Game.Game;
+import Game.BattleSystem;
+import Game.Party;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -96,7 +98,8 @@ public class Listener extends ListenerAdapter {
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
         switch (slashCommand.getName()) {
             case "adventure"        -> Game.startAdventure(slashCommand);
-            case "taco"             -> System.out.println("Taco");
+            case "attack"           -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
+            case "block"            -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
         }
     }
 

@@ -217,6 +217,8 @@ public class Game {
         party.enemies.add(new Goblin("Goblin"));
         //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
         //PLACE BattleHandler here.
+        BattleSystem.startBattle(party);
+
         EmbedBuilder embed = new EmbedBuilder();
         embed.addField("Turn Order", party.getTurnOrderAsString(), false);
         embed.setTitle("BATTLE!");
@@ -244,9 +246,6 @@ public class Game {
             Collections.addAll(parties.get(0).loot, en.getInventory());
         }
         */
-
-        party.enemies.clear();
-        textChannel.sendMessage("Take time to heal up, when ready cast a group vote on what to do next.").queue();
     }
 
     /**
