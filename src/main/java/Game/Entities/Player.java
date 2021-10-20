@@ -165,13 +165,13 @@ public class Player extends Entity {
         if (entity.isBlocking()) {
             this.setLastAction(entity.ifBlock());
         } else {
-            System.out.println("You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + " damage!");
+            System.out.println();
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
             entity.checkHealth();
             if (!entity.getIsAlive()) {
                 holding.get(0).upKillCnt();
             }
-            this.setLastAction(entity.getName() + " for " + holding.get(0).getDmg() + " damage!");
+            this.setLastAction("Attacked " + entity.getName() + " for " + holding.get(0).getDmg() + " damage");
         }
     }
 
@@ -191,9 +191,9 @@ public class Player extends Entity {
     public void block() {
         String msg;
         if (this.isBlocking()) {
-            msg = "You are already braced for an attack";
+            msg = "You already braced for an attack";
         } else {
-            msg = name + " braced for an attack!";
+            msg = "braced for an attack!";
             this.switchBlock();
         }
         System.out.println(msg);
