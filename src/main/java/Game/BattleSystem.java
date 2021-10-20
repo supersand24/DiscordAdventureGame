@@ -14,9 +14,21 @@ import java.util.*;
 public class BattleSystem {
 
     /**
-     * returns an entity array sorted based on speed to be used as the turn order in battle
+     * converts a list of entities to an array of entities
+     * @param l the list to change
+     * @return the array
      */
+    private static Entity[] listToArray(List<Entity> l) {
+        Entity[] arr = l.toArray(new Entity[0]);
+        return arr;
+    }
 
+    /**
+     * returns a string of the turn order for 2 entity arrays
+     * @param arr1 an array of entity
+     * @param arr2 an array of entity
+     * @return the turn order as a string
+     */
     public static String getTurnOrder(Entity[] arr1, Entity[] arr2) {
         Entity[] order = makeTurnOrder(arr1, arr2);
         int cnt = 1;
@@ -30,6 +42,9 @@ public class BattleSystem {
 
     }
 
+    /**
+     * returns an entity array sorted based on speed to be used as the turn order in battle
+     */
     public static Entity[] makeTurnOrder(Entity[] arr1, Entity[] arr2) {
         Entity[] order = new Entity[arr1.length + arr2.length];
 
