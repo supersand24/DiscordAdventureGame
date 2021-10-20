@@ -40,8 +40,11 @@ public class Bottle extends Item {
 
     }
 
+    public Liquid getContents() {
+        return liquid;
+    }
 
-
-
-
+    public String getContentsType() {
+        return liquid.getClass().getSimpleName();
+    }
 }
