@@ -170,7 +170,7 @@ public class Party implements Serializable {
                     turns.append(" ").append(e.getName());
 
                     if (e.getLastAction() != null) {
-                        turns.append('[').append(e.getLastAction()).append(']');
+                        turns.append(" *").append(e.getLastAction()).append('*');
                     }
 
                     turns.append("\n");

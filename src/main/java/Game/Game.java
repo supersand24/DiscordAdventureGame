@@ -316,8 +316,8 @@ public class Game {
 
         //TESTING BEGIN
         //guild.removeRoleFromMember(guild.getMemberById(262982533157879810L),roleAdventurer).queue();
-        players.add(new Player(100,1000,guild.getMemberById(262982533157879810L).getNickname(),"male"));
-        players.add(new Player(guild.getMemberById(286307112072511490L).getNickname()));
+        players.add(new Player(20,20,guild.getMemberById(262982533157879810L).getNickname(),"male"));
+        players.add(new Player(20,20,guild.getMemberById(286307112072511490L).getNickname(),"male"));
         for (TextChannel channel : categoryAdventure.getTextChannels()) {
             channel.delete().queue();
         }
