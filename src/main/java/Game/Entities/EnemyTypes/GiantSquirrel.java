@@ -8,6 +8,7 @@ package Game.Entities.EnemyTypes;
 public class GiantSquirrel extends Enemy {
     /**
      * constructor for squirrel
+     * @author Harrison Brown
      */
     public GiantSquirrel() {
         super("Giant Squirrel");

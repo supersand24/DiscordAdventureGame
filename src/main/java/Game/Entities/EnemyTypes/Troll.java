@@ -8,6 +8,7 @@ package Game.Entities.EnemyTypes;
 public class Troll extends Enemy {
     /**
      * constructor for trolls
+     * @author Harrison Brown
      */
     public Troll() {
         super("Troll");

@@ -8,6 +8,7 @@ package Game.Entities.EnemyTypes;
 public class Rat extends Enemy {
     /**
      * constructor for rat
+     * @author Harrison Brown
      */
     public Rat() {
         super("Rat");

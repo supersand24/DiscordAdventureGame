@@ -24,6 +24,7 @@ public abstract class Item {
 
     /**
      * sets the name, cost, and weight of an item
+     * @author Harrison Brown
      * @param name item name
      * @param cost item cost
      * @param weight item weight

@@ -8,6 +8,7 @@ package Game.Entities.EnemyTypes;
 public class SkeletonGeneral extends Enemy {
     /**
      * constructor for Skeleton General
+     * @author Harrison Brown
      */
     public SkeletonGeneral() {
         super("Skeleton General");

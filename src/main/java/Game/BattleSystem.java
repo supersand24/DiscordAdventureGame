@@ -10,10 +10,13 @@ import java.util.*;
 /**
  * All Battle System methods for the game (includes some static utilities as well)
  * @author Harrison Brown
- * @version 0.2
+ * @version 0.6
  */
 public class BattleSystem {
 
+    /**
+     * enum for the actions that can be taken in a turn
+     */
     public enum actions {
         ATTACK,
         BLOCK,
@@ -46,6 +49,7 @@ public class BattleSystem {
 
     /**
      * handles the current set of turns
+     * @author Harrison Brown
      * @param p a party
      * @param cnt the starting index in the turn order
      */
@@ -101,7 +105,7 @@ public class BattleSystem {
      * checks if the given member's turn is now
      * @author Harrison Brown
      * @param p the party the member is from
-     * @param m the member to know if its their turn
+     * @param m the member to know if it's their turn
      * @return boolean
      */
     public static boolean isTurn(Party p, Member m) {
@@ -168,7 +172,7 @@ public class BattleSystem {
                 System.out.println("The turn order is:");
                 for (Entity entity : e) {
                     if (entity.getIsAlive()) {
-                        //System.out.println(entity.getName());
+                        System.out.println(entity.getName());
                     }
                 }
             }
@@ -283,6 +287,7 @@ public class BattleSystem {
 
     /**
      * utility to return a random value
+     * @author Harrison Brown
      * @param min minimum bound
      * @param max maximum bound
      * @return the generated random value

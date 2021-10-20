@@ -83,7 +83,7 @@ public class Game {
     }
 
     /**
-     * Opens an invite for other players to join an adventure.
+     * Opens an invitation for other players to join an adventure.
      * Is called by a Member in the server, only while in a settlement, and not in another party
      *
      * @author Justin Sandman
@@ -218,14 +218,7 @@ public class Game {
         //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
         //PLACE BattleHandler here.
         EmbedBuilder embed = new EmbedBuilder();
-        embed.addField(
-                "Turn Order",
-                party.getTurnOrder(
-                        party.getPlayers(guild).toArray(new Player[0]),
-                        party.enemies.toArray(new Enemy[0])
-                ),
-                false
-        );
+        embed.addField("Turn Order", party.getTurnOrderAsString(), false);
         embed.setTitle("BATTLE!");
         for (Player player : party.getPlayers(guild)) {
             embed.addField(
@@ -421,7 +414,7 @@ public class Game {
             enemies[i] = new Goblin("GOBLIN" + i);
         }
 
-        System.out.println(BattleSystem.getTurnOrder(enemies, players));
+        //System.out.println(BattleSystem.getTurnOrder(enemies, players));
 
         //BattleSystem.activeCombat(players, enemies);
 

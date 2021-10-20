@@ -8,6 +8,7 @@ package Game.Entities.EnemyTypes;
 public class Dragon extends Enemy {
     /**
      * sets gold and hp to 10
+     * @author Harrison Brown
      * @see Game.Entities.EnemyTypes.Enemy
      */
     public Dragon() {
