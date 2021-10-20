@@ -206,7 +206,7 @@ public class Game {
     private static void adventureEvent(TextChannel textChannel) {
         textChannel.sendMessage("Everyone walked down the long road.").queue();
         parties.get(0).enemies.add(new Dragon());
-        parties.get(0).enemies.add(new Goblin());
+        parties.get(0).enemies.add(new Goblin("Goblin"));
         parties.get(0).enemies.add(new Rat());
         textChannel.sendMessage("A battle occurs, the enemies died.").queue();
         //PLACE BattleHandler here.
