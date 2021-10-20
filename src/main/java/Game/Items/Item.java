@@ -8,10 +8,6 @@ package Game.Items;
 public abstract class Item {
 
     /**
-     * what the item is
-     */
-    protected String type;
-    /**
      * name of the item
      */
     protected String name;
@@ -41,9 +37,6 @@ public abstract class Item {
     //gets and sets
 
 
-    public String getType() {
-        return type;
-    }
 
     public String getName() {
         return name;

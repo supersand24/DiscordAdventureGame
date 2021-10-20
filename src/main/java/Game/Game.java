@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Entities.EnemyTypes.*;
+import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
 import net.dv8tion.jda.api.Permission;
@@ -335,31 +336,6 @@ public class Game {
     }
 
     /**
-     * @author Harrison Brown
-     * @param enemies an array of enemies
-     * @return returns true if an enemy in the array is alive
-     */
-    private static boolean enemiesLive (Enemy[] enemies)
-    {
-        int alive = enemies.length;
-        for (int i = 0; i < enemies.length; i++)
-        {
-            if (!enemies[i].getIsAlive())
-            {
-                alive -= 1;
-            }
-        }
-        if (alive == 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    /**
      * Temporary method, to test the game without connecting to Discord.
      *
      * @author Harrison Brown
@@ -367,39 +343,35 @@ public class Game {
      *
      */
     public static void main(String[] args) {
-        /*
+
         Scanner scan = new Scanner(System.in);
 
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
-        Enemy[] enemies = new Enemy[2];
-        enemies[0] = new Goblin();
-        enemies[1] = new Goblin();
+        int playerNum;
+        int enemyNum;
 
-        do {
+        System.out.print("How many people are going to play? ");
+        playerNum = scan.nextInt();
+        scan.reset();
+        System.out.println();
 
-            for (Enemy x : enemies) {
-                System.out.print(x.getHealth() + " | ");
-                x.attack(harrison);
-            }
-            System.out.println();
-            System.out.println("Which Goblin do you want to attack? (0 or 1) ");
-            int choice = scan.nextInt();
-            scan.reset();
-            harrison.attack(enemies[choice]);
-            for (Enemy x : enemies) {
-                x.checkHealthStatus();
-            }
-            harrison.checkHealthStatus();
+        System.out.print("How many goblins do you want to fight? ");
+        enemyNum = scan.nextInt();
+        scan.reset();
+        System.out.println();
 
-        } while (enemiesLive(enemies) && harrison.getIsAlive());
-        if (harrison.getIsAlive()) {
-            System.out.println("You Win!");
-        } else {
-            System.out.println("Enemies Win!");
+        Player[] players = new Player[playerNum];
+        Enemy[] enemies = new Enemy[enemyNum];
+
+
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player("PLAYER" + i);
         }
-         */
 
-        Player harrison = new Player(100, 50, "Slayer of Thots", "Harrison", "Harrison", "Male");
-        System.out.print(harrison);
+        for (int i = 0; i < enemies.length; i++) {
+            enemies[i] = new Goblin("GOBLIN" + i);
+        }
+
+        BattleSystem.activeCombat(players, enemies);
+
     }
 }

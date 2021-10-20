@@ -8,8 +8,8 @@ import Game.Entities.Entity;
  * @version 0.1
  */
 public abstract class Enemy extends Entity {
-    int dmg;
-    String type;
+    protected int dmg;
+
     /**
      * constructor for basic enemy
      * @param gold current gold amount
@@ -18,7 +18,6 @@ public abstract class Enemy extends Entity {
      */
     Enemy(int gold, int maxHealth, String type, int dmg) {
         super(gold, maxHealth);
-        this.type = type;
         this.dmg = dmg;
     }
 
@@ -29,7 +28,6 @@ public abstract class Enemy extends Entity {
      */
     Enemy(String type, int dmg) {
         super(10,10);
-        this.type = type;
         this.dmg = dmg;
     }
 
@@ -39,16 +37,30 @@ public abstract class Enemy extends Entity {
      */
     Enemy(String type) {
         super(10,10);
-        this.type = type;
         this.dmg = 5;
     }
 
     /**
      * attack method for enemy, takes in an entity
-     * @param p the entity to attack
+     * @param entity the entity to attack
      */
     @Override
-    public void attack(Entity p) {
-        p.setHealth(p.getHealth()-dmg);
+    public void attack(Entity entity) {
+        if (entity.isBlocking()) {
+            System.out.println(entity.getName() + " blocked!");
+            entity.switchBlock();
+        } else {
+            System.out.println(name + " attacked " + entity.getName() + " for " + dmg + " damage!");
+            entity.setHealth(entity.getHealth() - dmg);
+        }
+    }
+
+    @Override
+    public String toString() {
+        String msg = "";
+        msg += "TYPE: " + getClass().getSimpleName() + "\n";
+        msg += "CALLED: " + name + "\n";
+        msg += "SPEED: " + spd + "\n";
+        return msg;
     }
 }
