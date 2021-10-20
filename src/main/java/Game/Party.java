@@ -11,11 +11,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * An object that is stored in a list.  It keeps track of one Party.
- *
+/**Class: Party
  * @author Justin Sandman
  * @version 0.2
+ *
+ * An object that is stored in a list.  It keeps track of one Party.
  *
  */
 public class Party implements Serializable {
@@ -29,13 +29,12 @@ public class Party implements Serializable {
         this.channelId = id;
     }
 
-    /**
-     * Goes through the whole player list and finds a match, using member nickname.
-     *
+    /**Method: getPlayer
      * @author Justin Sandman
      * Written : October 19, 2021
      * @param member The member we need to compare with players.
      *
+     * Goes through the whole player list and finds a match, using member nickname.
      */
     public Player getPlayer(Member member) {
         if (member.getNickname() != null) {
@@ -48,14 +47,13 @@ public class Party implements Serializable {
         return null;
     }
 
-    /**
-     * Makes a whole list of Players, that are in the party.
-     * Works side by side with getPlayer method.
-     *
+    /**Method: getPlayers
      * @author Justin Sandman
      * Written : October 19, 2021
      * @param guild The guild of the Discord Server.
      *
+     * Makes a whole list of Players, that are in the party.
+     * Works side by side with getPlayer method.
      */
     public List<Player> getPlayers(Guild guild) {
         List<Player> playerList = new ArrayList<>();
@@ -65,13 +63,12 @@ public class Party implements Serializable {
         return playerList;
     }
 
-    /**
-     * Obtains the member objects from everyone that can view the party channel.
-     *
+    /**Method: getMembers
      * @author Justin Sandman
      * Written : October 19, 2021
      * @param guild The guild of the Discord Server.
      *
+     * Obtains the member objects from everyone that can view the party channel.
      */
     public List<Member> getMembers(Guild guild) {
         TextChannel channel = guild.getTextChannelById(channelId);
@@ -81,5 +78,11 @@ public class Party implements Serializable {
             return null;
         }
     }
-    
+
+    @Override
+    public String toString() {
+        return "Party{" +
+                "channelId=" + channelId +
+                '}';
+    }
 }

@@ -13,11 +13,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**
- * Everything we should need to have the bot up and running.
- *
+/**Class: Main
  * @author Justin Sandman
  * @version 1.2
+ *
+ * Everything we should need to have the bot up and running.
  *
  */
 public class Main {
@@ -25,12 +25,11 @@ public class Main {
     private static String token;
     public final static String COMMAND_SIGN = "!";
 
-    /**
-     * Grabs the token from the BOT.token file.
-     *
+    /**Method: setToken
      * @author Justin Sandman
      * Written : October 17, 2021
      *
+     * Grabs the token from the BOT.token file.
      */
     private static void setToken() {
 
@@ -44,13 +43,12 @@ public class Main {
 
     }
 
-    /**
-     * Sends all slash command information to Discord.
-     * Only want to do this once, per edit.
-     *
+    /**Method: addSlashCommands
      * @author Justin Sandman
      * Written : October 18, 2021
      *
+     * Sends all slash command information to Discord.
+     * Only want to do this once, per edit.
      */
     private static void addSlashCommands(JDA jda) {
         System.out.println("Running Slash Commands, be sure to disable this on next run.");
@@ -63,12 +61,11 @@ public class Main {
 
     }
 
-    /**
-     * Starts the bot and the game.
-     *
+    /**Method: main
      * @author Justin Sandman
      * Written : October 17, 2021
      *
+     * Starts the bot.
      */
     public static void main(String[] args) {
 

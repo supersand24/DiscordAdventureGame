@@ -203,5 +203,4 @@ public abstract class Entity {
         this.wis = wis;
     }
 
-    public abstract String getName();
 }
