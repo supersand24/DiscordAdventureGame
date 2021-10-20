@@ -4,12 +4,15 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,12 +31,24 @@ public class Party implements Serializable {
 
     private Entity[] turnOrder = null;
     private int turnIndex = 0;
+    public EmbedBuilder embed = null;
+    public Message battleMessage = null;
 
     public Party(long id) {
         this.channelId = id;
     }
 
+    /**
+     * Testing Purposes only.
+     */
     public Party() {}
+
+    public void updateBattle() {
+
+        embed.setAuthor(turnOrder[turnIndex].getName());
+
+        battleMessage.editMessageEmbeds(embed.build()).queue();
+    }
 
     /**
      * Goes through the whole player list and finds a match, using member nickname.
@@ -55,7 +70,6 @@ public class Party implements Serializable {
     }
 
     /**
-     *
      * Makes a whole list of Players, that are in the party.
      * Works side by side with getPlayer method.
      *
@@ -80,7 +94,6 @@ public class Party implements Serializable {
     }
 
     /**
-     *
      * Obtains the member objects from everyone that can view the party channel.
      *
      * @author Justin Sandman
@@ -154,5 +167,16 @@ public class Party implements Serializable {
      */
     public void setTurnIndex(int turnIndex) {
         this.turnIndex = turnIndex;
+    }
+
+    @Override
+    public String toString() {
+        return "Party{" +
+                "channelId=" + channelId +
+                ", enemies=" + enemies +
+                ", loot=" + loot +
+                ", turnOrder=" + Arrays.toString(turnOrder) +
+                ", turnIndex=" + turnIndex +
+                '}';
     }
 }
