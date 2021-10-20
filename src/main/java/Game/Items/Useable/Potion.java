@@ -24,7 +24,7 @@ public class Potion extends Useable {
     }
 
     @Override
-    void use(Entity e) {
+    public void use(Entity e) {
         switch (statToMod) {
             case HP -> e.setHealth(e.getHealth()+1);
             case MAXHP -> e.setMaxHealth(e.getMaxHealth()+1);

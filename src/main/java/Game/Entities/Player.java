@@ -1,6 +1,7 @@
 package Game.Entities;
 
 import Game.Items.Item;
+import Game.Items.Useable.Useable;
 import Game.Items.Weapons.Sword;
 import Game.Items.Weapons.Weapon;
 
@@ -205,7 +206,8 @@ public class Player extends Entity {
      * @author Harrison Brown
      */
     @Override
-    public void useItem() {
+    public void useItem(Useable item) {
+        item.use(this);
     }
 
     /**

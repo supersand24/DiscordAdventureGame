@@ -17,7 +17,7 @@ public abstract class Useable extends Item {
         super(name, cost, weight);
     }
 
-    abstract void use(Entity e);
+    public abstract void use(Entity e);
 
     abstract void use();
 }

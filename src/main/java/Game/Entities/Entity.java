@@ -2,6 +2,7 @@ package Game.Entities;
 
 import Game.Entities.EnemyTypes.Enemy;
 import Game.Items.Item;
+import Game.Items.Useable.Useable;
 import Game.Items.Weapons.Weapon;
 
 import java.util.ArrayList;
@@ -150,7 +151,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic useItem for all entities to implement
      * @author Harrison Brown
      */
-    abstract public void useItem();
+    abstract public void useItem(Useable item);
 
     /**
      * if the entities' health is 0 or less, isAlive is set to false

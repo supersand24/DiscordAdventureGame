@@ -1,7 +1,5 @@
 package Game.Entities.EnemyTypes.Rodents;
 
-import Game.Entities.EnemyTypes.Enemy;
-
 /**
  * enemy rat class
  * @author Harrison Brown
@@ -15,20 +13,5 @@ public class Rat extends Rodent {
     public Rat() {
         super();
         this.name = "Rat";
-    }
-
-    @Override
-    public void move() {
-
-    }
-
-    @Override
-    public void block() {
-
-    }
-
-    @Override
-    public void useItem() {
-
     }
 }

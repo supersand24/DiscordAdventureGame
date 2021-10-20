@@ -13,7 +13,7 @@ public class Food extends Useable {
     }
 
     @Override
-    void use(Entity e) {
+    public void use(Entity e) {
 
     }
 }
