@@ -214,29 +214,7 @@ public class Game {
         //PLACE BattleHandler here.
         BattleSystem.startBattle(party);
 
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.addField("Turn Order", party.getTurnOrderAsString(), false);
-        embed.setTitle("BATTLE!");
-        for (Player player : party.getPlayers(guild)) {
-            embed.addField(
-                    player.getName(),
-                    player.getHealth() + "/" + player.getMaxHealth() + " HP",
-                    true);
-        }
-
-        for (int i = 0; i < party.enemies.size(); i++) {
-            Enemy enemy = party.enemies.get(i);
-            embed.addField(
-                    "#" + (i + 1) + " " + enemy.getName(),
-                    enemy.getHealth() + "/" + enemy.getMaxHealth() + " HP",
-                    true
-            );
-        }
-
-        //Save embed for future edits.
-        party.embed = embed;
-        //Send message and save location.
-        textChannel.sendMessageEmbeds(embed.build()).queue(message -> party.battleMessage = message);
+        party.sendBattleMessage();
 
         //Potentially get a list of dead people from BattleHandler
         /*

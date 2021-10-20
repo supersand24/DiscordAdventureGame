@@ -192,7 +192,7 @@ public class BattleSystem {
 
                 processTurn(party, party.getTurnIndex() + 1);
 
-                party.updateBattle();
+                party.sendBattleMessage();
 
             } else {
                 slashCommand

@@ -31,7 +31,6 @@ public class Party implements Serializable {
 
     private Entity[] turnOrder = null;
     private int turnIndex = 0;
-    public EmbedBuilder embed = null;
     public Message battleMessage = null;
 
     public Party(long id) {
@@ -43,11 +42,45 @@ public class Party implements Serializable {
      */
     public Party() {}
 
-    public void updateBattle() {
+    public void sendBattleMessage() {
 
-        embed.setAuthor(turnOrder[turnIndex].getName());
+        TextChannel channel = Game.guild.getTextChannelById(channelId);
 
-        battleMessage.editMessageEmbeds(embed.build()).queue();
+        //If the party channel exists.
+        if (channel != null) {
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            //Title
+            embed.setTitle("BATTLE!");
+
+            //Fields
+            embed.addField("Turn Order", getTurnOrderAsString(), false);
+            //Get all player stats
+            for (Player player : getPlayers(Game.guild)) {
+                embed.addField(
+                        player.getName(),
+                        player.getHealth() + "/" + player.getMaxHealth() + " HP",
+                        true);
+            }
+
+            //Get all enemy stats
+            for (int i = 0; i < enemies.size(); i++) {
+                Enemy enemy = enemies.get(i);
+                embed.addField(
+                        "#" + (i + 1) + " " + enemy.getName(),
+                        enemy.getHealth() + "/" + enemy.getMaxHealth() + " HP",
+                        true
+                );
+            }
+
+            //If there is an existing message, edit, if not send a new one.
+            if (battleMessage == null) {
+                channel.sendMessageEmbeds(embed.build()).queue(this::setBattleMessage);
+            } else {
+                battleMessage.editMessageEmbeds(embed.build()).queue();
+            }
+        }
     }
 
     /**
@@ -167,6 +200,10 @@ public class Party implements Serializable {
      */
     public void setTurnIndex(int turnIndex) {
         this.turnIndex = turnIndex;
+    }
+
+    private void setBattleMessage(Message message) {
+        battleMessage = message;
     }
 
     @Override
