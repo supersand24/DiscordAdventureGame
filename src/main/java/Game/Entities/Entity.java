@@ -1,13 +1,10 @@
 package Game.Entities;
 
-import Game.Entities.EnemyTypes.Enemy;
 import Game.Items.Item;
-import Game.Items.Useable.Useable;
+import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Weapon;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 
 /***
  * parent class to all Entities
@@ -151,7 +148,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic useItem for all entities to implement
      * @author Harrison Brown
      */
-    abstract public void useItem(Useable item);
+    abstract public void useItem(Usable item);
 
     /**
      * if the entities' health is 0 or less, isAlive is set to false

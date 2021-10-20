@@ -7,6 +7,8 @@ package Game.Items;
  */
 public abstract class Item {
 
+    public int uses;
+
     /**
      * name of the item
      */
@@ -33,6 +35,12 @@ public abstract class Item {
         this.name = name;
         this.cost = cost;
         this.weight = weight;
+    }
+
+    protected Item() {
+        this.name = "generic item";
+        this.cost = 5;
+        this.weight = 10;
     }
 
     //gets and sets

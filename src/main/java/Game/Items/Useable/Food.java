@@ -2,13 +2,13 @@ package Game.Items.Useable;
 
 import Game.Entities.Entity;
 
-public class Food extends Useable {
+public class Food extends Usable {
     public Food() {
         super("Food", 1,1);
     }
 
     @Override
-    void use() {
+    public void use() {
 
     }
 

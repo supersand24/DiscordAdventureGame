@@ -1,8 +1,8 @@
-package Game.Items.Useable;
+package Game.Items.Useable.Liquids;
 
 import Game.Entities.Entity;
 
-public class Potion extends Useable {
+public class Potion extends Liquid {
 
     protected enum raisedStat {
         HP,
@@ -18,9 +18,17 @@ public class Potion extends Useable {
 
     protected raisedStat statToMod;
 
-    public Potion(String name, Potion.raisedStat stat) {
+    //protected int uses;
+
+
+    public Potion(String name, Potion.raisedStat statToMod) {
         super(name, 10, 1);
-        statToMod = stat;
+        this.statToMod = statToMod;
+    }
+
+    public Potion(Potion.raisedStat statToMod) {
+        super();
+        this.statToMod = statToMod;
     }
 
     @Override
@@ -35,9 +43,11 @@ public class Potion extends Useable {
             case WIS -> e.setWis(e.getWis()+1);
             case LVL -> e.setLevel(e.getLevel()+1);
         }
+        uses--;
     }
 
     @Override
-    void use() {
+    public void use() {
+        uses--;
     }
 }

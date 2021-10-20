@@ -1,14 +1,12 @@
 package Game.Entities;
 
 import Game.Items.Item;
-import Game.Items.Useable.Useable;
+import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Sword;
 import Game.Items.Weapons.Weapon;
 
-import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.ArrayList;
 
 /**
  * Player class
@@ -206,7 +204,7 @@ public class Player extends Entity {
      * @author Harrison Brown
      */
     @Override
-    public void useItem(Useable item) {
+    public void useItem(Usable item) {
         item.use(this);
     }
 
