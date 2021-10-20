@@ -150,7 +150,7 @@ public class Player extends Entity {
             System.out.println(entity.getName() + " blocked!");
             entity.switchBlock();
         } else {
-            System.out.println("You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + "!");
+            System.out.println("You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + " damage!");
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
             entity.checkHealth();
             if (!entity.getIsAlive()) {
