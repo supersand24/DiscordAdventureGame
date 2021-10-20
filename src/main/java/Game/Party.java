@@ -51,15 +51,15 @@ public class Party implements Serializable {
 
             EmbedBuilder embed = new EmbedBuilder();
 
-            //Title
-            embed.setTitle("BATTLE!");
+            //Turn
+            embed.setTitle(turnOrder[turnIndex].getName() + "'s Turn!");
 
             //Fields
             embed.addField("Turn Order", getTurnOrderAsString(), false);
             //Get all player stats
             for (Player player : getPlayers(Game.guild)) {
                 embed.addField(
-                        player.getName(),
+                        "PLAYER\n" + player.getName(),
                         player.getHealth() + "/" + player.getMaxHealth() + " HP",
                         true);
             }
@@ -68,7 +68,7 @@ public class Party implements Serializable {
             for (int i = 0; i < enemies.size(); i++) {
                 Enemy enemy = enemies.get(i);
                 embed.addField(
-                        "#" + (i + 1) + " " + enemy.getName(),
+                        "Target #" + (i + 1) + "\n" + enemy.getName(),
                         enemy.getHealth() + "/" + enemy.getMaxHealth() + " HP",
                         true
                 );
@@ -156,7 +156,24 @@ public class Party implements Serializable {
             StringBuilder turns = new StringBuilder();
             for (Entity e : turnOrder) {
                 if (e.getIsAlive()) {
-                    turns.append(cnt).append(". ").append(e.getName()).append("\n");
+
+                    if (turnOrder[turnIndex].equals(e))
+                        turns.append(" > ");
+
+                    switch (cnt) {
+                        case 1 -> turns.append("**1st**");
+                        case 2 -> turns.append("**2nd**");
+                        case 3 -> turns.append("**3rd**");
+                        default -> turns.append("**").append(cnt).append("th**");
+                    }
+
+                    turns.append(" ").append(e.getName());
+
+                    if (e.getLastAction() != null) {
+                        turns.append('[').append(e.getLastAction()).append(']');
+                    }
+
+                    turns.append("\n");
                     cnt++;
                 }
             }
