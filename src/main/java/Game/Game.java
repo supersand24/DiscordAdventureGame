@@ -1,9 +1,8 @@
 package Game;
 
 import Game.Entities.EnemyTypes.*;
-import Game.Entities.Entity;
+import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
-import Game.Items.Item;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -13,7 +12,6 @@ import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -209,9 +207,9 @@ public class Game {
 
         Party party = parties.get(0);
 
-        party.enemies.add(new Goblin("Goblin"));
-        party.enemies.add(new Goblin("Goblin"));
-        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin());
+        party.enemies.add(new Goblin());
+        party.enemies.add(new Goblin());
         //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
         //PLACE BattleHandler here.
         BattleSystem.startBattle(party);
@@ -410,7 +408,7 @@ public class Game {
         }
 
         for (int i = 0; i < enemies.length; i++) {
-            enemies[i] = new Goblin("GOBLIN" + i);
+            enemies[i] = new Goblin();
         }
 
         //System.out.println(BattleSystem.getTurnOrder(enemies, players));
