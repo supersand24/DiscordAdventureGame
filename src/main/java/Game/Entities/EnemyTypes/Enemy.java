@@ -76,10 +76,11 @@ public abstract class Enemy extends Entity {
      */
     @Override
     public String toString() {
-        String msg = "";
-        msg += "TYPE: " + getClass().getSimpleName() + "\n";
-        msg += "CALLED: " + name + "\n";
-        msg += "SPEED: " + spd + "\n";
-        return msg;
+        StringBuilder msg = new StringBuilder();
+        msg.append("TYPE: ").append(getClass().getSimpleName()).append("\n");
+        msg.append("CALLED: ").append(name).append("\n");
+        msg.append("SPEED: ").append(spd).append("\n");
+        return msg.toString();
+
     }
 }
