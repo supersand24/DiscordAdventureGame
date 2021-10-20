@@ -65,6 +65,7 @@ public class Listener extends ListenerAdapter {
                                 switch (command) {
                                     case "startgame" -> Game.startGame();
                                     case "save"      -> Game.save();
+                                    case "players"   -> System.out.println(Game.players.toString());
                                 }
                             }
                         } else {

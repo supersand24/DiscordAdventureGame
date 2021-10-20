@@ -3,7 +3,9 @@ package Bot;
 import Game.Game;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -59,6 +61,23 @@ public class Main {
         //Adventure Command
         commands.addCommands(
                 new CommandData("adventure","Gets ready to go on an adventure.")
+        ).queue();
+
+        //Attack Command
+        commands.addCommands(
+                new CommandData("attack","Attacks an enemy.").addOptions(
+                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                )
+        ).queue();
+
+        //Block Command
+        commands.addCommands(
+                new CommandData("block","Blocks next attack.")
+        ).queue();
+
+        //Use Item Command
+        commands.addCommands(
+                new CommandData("use_item","Uses an item from your inventory.")
         ).queue();
 
     }

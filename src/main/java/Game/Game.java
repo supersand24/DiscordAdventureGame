@@ -4,6 +4,7 @@ import Game.Entities.EnemyTypes.*;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -35,7 +36,7 @@ public class Game {
 
     static boolean gameStarted;
 
-    static List<Player> players = new ArrayList<>();
+    public static List<Player> players = new ArrayList<>();
     static List<Party> parties = new ArrayList<>();
 
     /**
@@ -205,16 +206,53 @@ public class Game {
      */
     private static void adventureEvent(TextChannel textChannel) {
         textChannel.sendMessage("Everyone walked down the long road.").queue();
-        parties.get(0).enemies.add(new Dragon());
-        parties.get(0).enemies.add(new Goblin("Goblin"));
-        parties.get(0).enemies.add(new Rat());
-        textChannel.sendMessage("A battle occurs, the enemies died.").queue();
+
+        Party party = parties.get(0);
+
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        party.enemies.add(new Goblin("Goblin"));
+        //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
         //PLACE BattleHandler here.
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.addField(
+                "Turn Order",
+                party.getTurnOrder(
+                        party.getPlayers(guild).toArray(new Player[0]),
+                        party.enemies.toArray(new Enemy[0])
+                ),
+                false
+        );
+        embed.setTitle("BATTLE!");
+        for (Player player : party.getPlayers(guild)) {
+            embed.addField(
+                    player.getName(),
+                    player.getHealth() + "/" + player.getMaxHealth() + " HP",
+                    true);
+        }
+
+        for (int i = 0; i < party.enemies.size(); i++) {
+            Enemy enemy = party.enemies.get(i);
+            embed.addField(
+                    "#" + (i + 1) + " " + enemy.getName(),
+                    enemy.getHealth() + "/" + enemy.getMaxHealth() + " HP",
+                    true
+            );
+        }
+
+        textChannel.sendMessageEmbeds(embed.build()).queue();
+
         //Potentially get a list of dead people from BattleHandler
+        /*
         for (Enemy en : parties.get(0).enemies) {
             Collections.addAll(parties.get(0).loot, en.getInventory());
         }
-        parties.get(0).enemies.clear();
+        */
+
+        party.enemies.clear();
         textChannel.sendMessage("Take time to heal up, when ready cast a group vote on what to do next.").queue();
     }
 
@@ -255,7 +293,7 @@ public class Game {
      */
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
-        guild.getTextChannelById(899417703486455848L).sendMessage(msg).queue();
+        guild.getTextChannelById(900221982514245652L).sendMessage(msg).queue();
     }
 
     /**
@@ -300,15 +338,27 @@ public class Game {
                 ex.printStackTrace();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("File not found...");
-            e.printStackTrace();
+            System.out.println("parties.dat not found...");
             gameStarted = false;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return false;
         }
         //CHECK IF THE PARTY CHANNEL STILL EXISTS, JUST IN CASE ITS OLD DATA
-        
+
+        //TESTING BEGIN
+        //guild.removeRoleFromMember(guild.getMemberById(262982533157879810L),roleAdventurer).queue();
+        players.add(new Player(guild.getMemberById(262982533157879810L).getNickname()));
+        players.add(new Player(guild.getMemberById(286307112072511490L).getNickname()));
+        for (TextChannel channel : categoryAdventure.getTextChannels()) {
+            channel.delete().queue();
+        }
+        for (TextChannel channel : categorySettlement.getTextChannels()) {
+            for (PermissionOverride perm : channel.getMemberPermissionOverrides()) {
+                perm.delete().queue();
+            }
+        }
+        //TESTING END
 
         //No errors occurred, game is set up properly.
         return true;

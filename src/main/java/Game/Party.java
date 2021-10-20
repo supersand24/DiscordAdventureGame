@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Entities.EnemyTypes.Enemy;
+import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
 import net.dv8tion.jda.api.entities.Guild;
@@ -61,7 +62,14 @@ public class Party implements Serializable {
     public List<Player> getPlayers(Guild guild) {
         List<Player> playerList = new ArrayList<>();
         for (Member member : getMembers(guild)) {
-            playerList.add( getPlayer(member) );
+            if (member.getNickname() != null && member.getRoles().contains(Game.roleAdventurer)) {
+                for (Player player : Game.players) {
+                    if (member.getNickname().equals(player.getName())) {
+                        playerList.add(player);
+                        break;
+                    }
+                }
+            }
         }
         return playerList;
     }
