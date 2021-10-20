@@ -49,13 +49,14 @@ public abstract class Enemy extends Entity {
      * @param entity the entity to attack
      */
     @Override
-    public void attack(Entity entity) {
+    public String attack(Entity entity) {
         if (entity.isBlocking()) {
-            System.out.println(entity.getName() + " blocked!");
-            entity.switchBlock();
+            return entity.ifBlock();
         } else {
-            System.out.println(name + " attacked " + entity.getName() + " for " + dmg + " damage!");
+            String msg = name + " attacked " + entity.getName() + " for " + dmg + " damage!";
+            System.out.println(msg);
             entity.setHealth(entity.getHealth() - dmg);
+            return msg;
         }
     }
 
@@ -64,9 +65,11 @@ public abstract class Enemy extends Entity {
      * @author Harrison Brown
      */
     @Override
-    public void block() {
-        block = true;
-        System.out.println(name + "braced for an attack!");
+    public String block() {
+        this.switchBlock();
+        String msg = name + "braced for an attack!";
+        System.out.println(msg);
+        return msg;
     }
 
     /**

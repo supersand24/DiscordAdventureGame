@@ -161,10 +161,9 @@ public class Player extends Entity {
      * @param entity the entity to target
      */
     @Override
-    public void attack(Entity entity) {
+    public String attack(Entity entity) {
         if (entity.isBlocking()) {
-            System.out.println(entity.getName() + " blocked!");
-            entity.switchBlock();
+            return entity.ifBlock();
         } else {
             System.out.println("You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + " damage!");
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
@@ -172,6 +171,7 @@ public class Player extends Entity {
             if (!entity.getIsAlive()) {
                 holding.get(0).upKillCnt();
             }
+            return "You attacked " + entity.getName() + " for " + holding.get(0).getDmg() + " damage!";
         }
     }
 
@@ -188,12 +188,16 @@ public class Player extends Entity {
      * @author Harrison Brown
      */
     @Override
-    public void block() {
-        if (block) {
-            System.out.println("You are already braced for an attack");
+    public String block() {
+        String msg;
+        if (this.isBlocking()) {
+            msg = "You are already braced for an attack";
+        } else {
+            msg = name + " braced for an attack!";
+            this.switchBlock();
         }
-        block = true;
-        System.out.println(name + " braced for an attack!");
+        System.out.println(msg);
+        return msg;
     }
 
     /**
