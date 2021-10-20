@@ -48,6 +48,7 @@ public class Potion extends Liquid {
 
     @Override
     public void use() {
+        System.out.println("used potion");
         uses--;
     }
 }
