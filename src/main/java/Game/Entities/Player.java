@@ -169,7 +169,7 @@ public class Player extends Entity {
         if (entity.isBlocking()) {
             this.setLastAction(entity.ifBlock());
         } else {
-            System.out.println();
+            System.out.println(this.getName() + " Attacked");
             entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
             entity.checkHealth();
             if (!entity.getIsAlive()) {
