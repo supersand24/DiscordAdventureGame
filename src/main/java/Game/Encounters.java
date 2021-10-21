@@ -99,6 +99,22 @@ public class Encounters {
     }
 
     /**
+     * method to generate the encounter from the currentEvent in the party
+     * @author Harrison Brown
+     */
+    public static void generateEncounter(Party party) {
+
+        switch (party.getCurrentEncounter()) {
+            case BATTLE -> battle(party);
+            case SETTLEMENT -> settlement(party);
+            case MERCHANT -> merchant(party);
+            case DUNGEON -> dungeon(party);
+            case BRANCH_PATH -> branchPath(party);
+            case NONE -> none(party);
+        }
+    }
+
+    /**
      * creates battle encounter
      * @author Harrison Brown
      */
