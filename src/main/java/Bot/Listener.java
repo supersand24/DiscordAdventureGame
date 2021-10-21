@@ -100,6 +100,7 @@ public class Listener extends ListenerAdapter {
             case "adventure"        -> Game.startAdventure(slashCommand);
             case "attack"           -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
             case "block"            -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
+            case "vote"             -> Game.castVote(slashCommand);
         }
     }
 
@@ -112,9 +113,13 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
-        switch (e.getButton().getId()) {
-            case "joinAdventure"    -> Game.joinAdventure(e);
-            case "leaveTown"        -> Game.leaveTown(e);
+        if (e.getButton().getId().startsWith("vote_")) {
+            Game.processVote(e);
+        } else {
+            switch (e.getButton().getId()) {
+                case "joinAdventure" -> Game.joinAdventure(e);
+                case "leaveTown" -> Game.leaveTown(e);
+            }
         }
     }
 }

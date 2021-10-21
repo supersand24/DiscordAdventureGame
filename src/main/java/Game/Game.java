@@ -11,9 +11,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Handles everything for the game.
@@ -35,7 +33,7 @@ public class Game {
     static boolean gameStarted;
 
     public static List<Player> players = new ArrayList<>();
-    static List<Party> parties = new ArrayList<>();
+    public static List<Party> parties = new ArrayList<>();
 
     /**
      * Tries to start the game, if one is not in progress.
@@ -224,6 +222,100 @@ public class Game {
         */
     }
 
+    enum Vote {
+        CONTINUE,
+        HEAD_BACK
+    }
+
+    /**
+     * Sends a message in chat with button to press, this is the voting window.
+     *
+     * @param slashCommand Where to send the message.
+     */
+    public static void castVote(SlashCommandEvent slashCommand) {
+        if (categoryAdventure.getMembers().contains(slashCommand.getMember())) {
+            if (parties.get(0).vote.size() == 0) {
+                slashCommand.reply("@everyone time to vote, what do you want to do?")
+                        .addActionRow(
+                                Button.primary("vote_continue", "Continue On"),
+                                Button.primary("vote_headBack", "Go home")
+                        ).queue(interactionHook -> interactionHook.retrieveOriginal().queue(message -> parties.get(0).voteMessage = message));
+                parties.get(0).vote.put(Vote.CONTINUE,0);
+                parties.get(0).vote.put(Vote.HEAD_BACK,0);
+                System.out.println(parties.get(0).vote);
+            } else {
+                slashCommand.reply("There is already an on going vote!").setEphemeral(true).queue();
+            }
+        } else {
+            slashCommand.reply("You are not on an adventure!").setEphemeral(true).queue();
+        }
+
+    }
+
+    /**
+     * This adds the vote to the party.
+     *
+     * @param event So we can get which vote was pressed.
+     */
+    public static void processVote(ButtonClickEvent event) {
+        event.deferReply(true).queue();
+        if (parties.get(0).vote.size() > 0) {
+            if (!parties.get(0).hasVoted.contains(event.getMember())) {
+                Vote vote = null;
+                switch (event.getButton().getId().split("_")[1]) {
+                    case "continue" -> vote = Vote.CONTINUE;
+                    case "headBack" -> vote = Vote.HEAD_BACK;
+                }
+
+                int count = parties.get(0).vote.getOrDefault(vote, 0);
+                parties.get(0).vote.put(vote, count + 1);
+
+                System.out.println(parties.get(0).vote);
+
+                parties.get(0).hasVoted.add(event.getMember());
+                event.getHook().sendMessage("Your vote was counted for.").queue();
+
+                if (parties.get(0).hasVoted.size() >= parties.get(0).getPlayers(Game.guild).size()) {
+                    endVote(parties.get(0));
+                }
+            } else {
+                event.getHook().sendMessage("You have already voted!").queue();
+            }
+        } else {
+            event.getHook().sendMessage("There isn't a vote active.").queue();
+        }
+    }
+
+    /**
+     * Runs after 100% of votes are tallied in.
+     *
+     * @param party The party to check votes.
+     */
+    private static void endVote(Party party) {
+
+        //Run the decision
+
+        Map.Entry<Vote,Integer> maxEntry = null;
+
+        for (Map.Entry<Vote,Integer> entry : party.vote.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+
+        System.out.println(maxEntry.getKey());
+
+        switch (maxEntry.getKey()) {
+            case CONTINUE -> party.voteMessage.editMessage("The party voted, to continue on!").queue();
+            case HEAD_BACK -> party.voteMessage.editMessage("The party voted, go back to town.").queue();
+        }
+
+        //Reset Vars for next vote.
+        party.vote.clear();
+        party.hasVoted.clear();
+        party.voteMessage = null;
+    }
+
     /**
      * Goes through all the channels under the adventure category,
      * and finds the one channel that the member is present in.
@@ -237,6 +329,14 @@ public class Game {
             if (channel.getMembers().contains(member)) {
                 return channel;
             }
+        }
+        return null;
+    }
+
+    private static Party findParty(TextChannel channel) {
+        for (Party party : parties) {
+            if (party.channelId == channel.getIdLong())
+                return party;
         }
         return null;
     }
