@@ -166,22 +166,6 @@ public class Game {
      * Written : October 18, 2021
      *
      */
-
-    /**
-     * temp method for finding a party
-     * @author Harrison Brown
-     * @param member member to get the party from
-     * @return the party
-     */
-    public static Party findParty(Member member) {
-        return new Party();
-    }
-
-    /**
-     * leave town event
-     * @author Justin Sandman
-     * @param e buttonClickEvent
-     */
     public static void leaveTown(ButtonClickEvent e) {
 
         Member partyLeader = e.getMessage().getMentionedMembers().get(0);
@@ -351,7 +335,8 @@ public class Game {
         return null;
     }
 
-    private static Party findParty(TextChannel channel) {
+    private static Party findParty(Member member) {
+        TextChannel channel = findPartyChannel(member);
         for (Party party : parties) {
             if (party.channelId == channel.getIdLong())
                 return party;
