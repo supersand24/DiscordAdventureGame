@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Entities.EnemyTypes.Enemy;
+import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
 
 import java.util.ArrayList;
@@ -90,16 +91,15 @@ public class Encounters {
      * @author Harrison Brown
      */
     public static void generateEnemies(Party party) {
-       int avgLvl = 0;
-       int sum = 0;
+       int avgLvl = averageLevel(party);
        int maxCnt = 25 - party.getPlayers(Game.guild).size();
-       for(Player player : party.getPlayers(Game.guild)) {
-           sum += player.getLevel();
+       int cnt = rand.nextInt(maxCnt);
+       ArrayList<Enemy> badguys = new ArrayList<>();
+       for (int i = 0; i <= cnt; i++) {
+           badguys.add(new Goblin());
        }
 
-       avgLvl = sum / party.getPlayers(Game.guild).size();
-
-
+       party.enemies.addAll(badguys);
     }
 
     /**
@@ -108,7 +108,7 @@ public class Encounters {
      * @param party a party
      * @return average level
      */
-    public static int avgLvl(Party party) {
+    public static int averageLevel(Party party) {
         int sum = 0;
         int avg;
 
