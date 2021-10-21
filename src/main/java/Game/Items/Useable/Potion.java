@@ -109,39 +109,62 @@ public class Potion extends Usable {
 
 
 
-    public Potion(String name, Potion.raisedStat statToMod) {
-        super(name, 10, 1);
-        this.statToMod = statToMod;
+    private final Liquid liquid;
+
+    public Potion(Potion.Liquid liquid) {
+        super (liquid.name, 2, 10);
+        this.liquid = liquid;
     }
 
-    public Potion(Potion.raisedStat statToMod) {
-        super();
-        this.statToMod = statToMod;
+    public Potion(Potion.Liquid liquid, String name, int heal, int raiseStat, int lvlUp, modifiedStats[] stats, Potion.Status status, Potion.Cleanliness howClean, int cost, int weight) {
+        super(name, cost, weight);
+        this.liquid = liquid;
+        liquid.setName(name);
+        liquid.setHeal(heal);
+        liquid.setRaiseStat(raiseStat);
+        liquid.setLvlUp(lvlUp);
+        liquid.setStats(stats);
+        liquid.setStatus(status);
+        liquid.setHowClean(howClean);
     }
 
     public Potion() {
-        super();
-        statToMod = raisedStat.HP;
+        super(Liquid.HP.getName(), 2, 10);
+        liquid = Liquid.HP;
+        liquid.setHeal(15);
     }
+
 
     @Override
     public void use(Entity e) {
-        switch (statToMod) {
-            case HP -> e.setHealth(e.getHealth()+10);
-            case MAXHP -> e.setMaxHealth(e.getMaxHealth()+1);
-            case DEF -> e.setDef(e.getDef()+1);
-            case STR -> e.setStr(e.getStr()+1);
-            case DEX -> e.setDex(e.getDex()+1);
-            case SPD -> e.setSpd(e.getSpd()+1);
-            case WIS -> e.setWis(e.getWis()+1);
-            case LVL -> e.setLevel(e.getLevel()+1);
+        e.setHealth(e.getHealth() + liquid.heal);
+        e.setLevel(e.getLevel() + liquid.lvlUp);
+        if (liquid.getStats().contains(modifiedStats.DEF)) {
+            e.setDef(e.getDef() + liquid.raiseStat);
+        }
+        if (liquid.getStats().contains(modifiedStats.WIS)) {
+            e.setDef(e.getDef() + liquid.raiseStat);
+        }
+        if (liquid.getStats().contains(modifiedStats.DEX)) {
+            e.setDef(e.getDef() + liquid.raiseStat);
+        }
+        if (liquid.getStats().contains(modifiedStats.SPD)) {
+            e.setDef(e.getDef() + liquid.raiseStat);
+        }
+        if (liquid.getStats().contains(modifiedStats.STR)) {
+            e.setDef(e.getDef() + liquid.raiseStat);
         }
         uses--;
     }
 
+
     @Override
     public void use() {
-        System.out.println("used potion");
+        System.out.println("used potion " + liquid.name);
         uses--;
+    }
+
+    public Liquid getLiquid() {
+        return liquid;
     }
 }
