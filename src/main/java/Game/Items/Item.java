@@ -7,8 +7,6 @@ package Game.Items;
  */
 public abstract class Item {
 
-    public int uses;
-
     /**
      * name of the item
      */
@@ -37,6 +35,10 @@ public abstract class Item {
         this.weight = weight;
     }
 
+    /**
+     * generic constructor for items
+     * @author Harrison Brown
+     */
     protected Item() {
         this.name = "generic item";
         this.cost = 5;
