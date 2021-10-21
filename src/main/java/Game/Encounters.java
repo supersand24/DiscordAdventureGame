@@ -45,6 +45,10 @@ public class Encounters {
         NONE
     }
 
+    public static void encounter(Party party) {
+        setEncounter(party);
+        generateEncounter(party);
+    }
     /**
      * static object of Random for use in the class
      */
