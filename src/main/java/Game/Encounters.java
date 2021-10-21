@@ -41,7 +41,8 @@ public class Encounters {
         BATTLE,
         LOOT,
         BRANCH,
-        DUMBNPC,
+        DUMB_NPC,
+        DEAD_ADVENTURER,
         NONE
     }
 
