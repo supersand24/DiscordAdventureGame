@@ -179,5 +179,14 @@ public class Encounters {
         }
     }
 
+    /**
+     * method for dealing with branching path event
+     * @author Harrison Brown
+     * @param party current party
+     */
+    private static void branchPath(Party party) {
+        Game.guild.getTextChannelById(party.channelId).sendMessage("Theres a branch in the path, do you go left or right?").queue();
+    }
+
 
 }
