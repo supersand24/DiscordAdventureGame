@@ -1,5 +1,8 @@
 package Game;
 
+import Game.Entities.EnemyTypes.Enemy;
+import Game.Entities.Player;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +49,9 @@ public class Encounters {
     public static void setEncounter(Party p) {
         EncounterType en = null;
         ArrayList<EncounterType> types = new ArrayList<>();
+
         if (p.getCurrentEncounter() == null || p.getCurrentEncounter().canRepeat) {
-            types.addAll(Arrays.asList(EncounterType.values()));
+            types.addAll(List.of(EncounterType.values()));
         } else {
             for (EncounterType type : EncounterType.values()) {
                 if (!type.equals(p.getCurrentEncounter())) {
@@ -56,8 +60,7 @@ public class Encounters {
             }
         }
 
-        //System.out.println(types);
-
+        System.out.println(types);
 
         int max = types.size();
         while (en == null) {
@@ -78,6 +81,7 @@ public class Encounters {
             }
         }
 
+        System.out.println(en);
         p.setCurrentEncounter(en);
     }
 
@@ -85,8 +89,35 @@ public class Encounters {
      * creates battle encounter
      * @author Harrison Brown
      */
-    public static void generateEnemies(Party p) {
+    public static void generateEnemies(Party party) {
+       int avgLvl = 0;
+       int sum = 0;
+       int maxCnt = 25 - party.getPlayers(Game.guild).size();
+       for(Player player : party.getPlayers(Game.guild)) {
+           sum += player.getLevel();
+       }
 
+       avgLvl = sum / party.getPlayers(Game.guild).size();
+
+
+    }
+
+    /**
+     * gets the average level of all players in a party
+     * @author Harrison Brown
+     * @param party a party
+     * @return average level
+     */
+    public static int avgLvl(Party party) {
+        int sum = 0;
+        int avg;
+
+        for (Player player : party.getPlayers(Game.guild)) {
+            sum += player.getLevel();
+        }
+        avg = sum / party.getPlayers(Game.guild).size();
+
+        return avg;
     }
 
 
