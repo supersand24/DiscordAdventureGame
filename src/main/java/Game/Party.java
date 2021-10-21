@@ -25,12 +25,29 @@ import java.util.List;
  */
 public class Party implements Serializable {
 
+    /**
+     * ID of the party's text channel
+     */
     long channelId;
 
+    /**
+     * list of enemies in the players encounter
+     */
     List<Enemy> enemies = new ArrayList<>();
+
+    /**
+     * list fo loop in the players encounter
+     */
     List<Item> loot = new ArrayList<>();
 
+    /**
+     * lists storing all entities in the encounter, sorted by their speed stats
+     */
     private Entity[] turnOrder = null;
+
+    /**
+     * index of the current entities turn
+     */
     private int turnIndex = 0;
     public Message battleMessage = null;
 
@@ -38,10 +55,18 @@ public class Party implements Serializable {
     public HashMap<Game.Vote, Integer> vote = new HashMap<>();
     public List<Member> hasVoted = new ArrayList<>();
 
+    /**
+     * constructor for a party
+     * @author Justin Sandman
+     * @param id id of the chat to set the party to
+     */
     public Party(long id) {
         this.channelId = id;
     }
 
+    /**
+     * the current encounter of the party
+     */
     private Encounters.EncounterType crntEvent = null;
 
     /**
@@ -49,6 +74,10 @@ public class Party implements Serializable {
      */
     public Party() {}
 
+    /**
+     * send the battle message to the party
+     * @author Justin Sandman
+     */
     public void sendBattleMessage() {
 
         TextChannel channel = Game.guild.getTextChannelById(channelId);
