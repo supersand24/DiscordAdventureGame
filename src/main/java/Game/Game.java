@@ -166,6 +166,22 @@ public class Game {
      * Written : October 18, 2021
      *
      */
+
+    /**
+     * temp method for finding a party
+     * @author Harrison Brown
+     * @param member member to get the party from
+     * @return the party
+     */
+    public static Party findParty(Member member) {
+        return new Party();
+    }
+
+    /**
+     * leave town event
+     * @author Justin Sandman
+     * @param e buttonClickEvent
+     */
     public static void leaveTown(ButtonClickEvent e) {
 
         Member partyLeader = e.getMessage().getMentionedMembers().get(0);
@@ -184,7 +200,9 @@ public class Game {
                                 .queue();
                     }
                 }
-                adventureEvent(findPartyChannel(partyLeader));
+                findPartyChannel(e.getMember()).sendMessage("Everyone starting walking down the long road.").queue();
+                Encounters.encounter(findParty(e.getMember()));
+                //adventureEvent(findPartyChannel(partyLeader));
             }
         } else {
             e.reply("You are not the party leader.").queue();
@@ -462,36 +480,11 @@ public class Game {
      */
     public static void main(String[] args) {
 
-        Scanner scan = new Scanner(System.in);
+        Party p1 = new Party();
+        //p1.setCurrentEncounter(Encounters.EncounterType.MERCHANT);
 
-        int playerNum;
-        int enemyNum;
+        Encounters.setEncounter(p1);
 
-        System.out.print("How many people are going to play? ");
-        playerNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        System.out.print("How many goblins do you want to fight? ");
-        enemyNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        Player[] players = new Player[playerNum];
-        Enemy[] enemies = new Enemy[enemyNum];
-
-
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player("PLAYER" + i);
-        }
-
-        for (int i = 0; i < enemies.length; i++) {
-            enemies[i] = new Goblin();
-        }
-
-        //System.out.println(BattleSystem.getTurnOrder(enemies, players));
-
-        //BattleSystem.activeCombat(players, enemies);
 
     }
 }
