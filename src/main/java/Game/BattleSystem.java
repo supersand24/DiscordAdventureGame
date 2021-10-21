@@ -275,6 +275,7 @@ public class BattleSystem {
      * @return the generated random value
      */
     public static int randomVal(int min, int max) {
+        max++;
         Random rand = new Random();
         return rand.nextInt(min, max);
     }
