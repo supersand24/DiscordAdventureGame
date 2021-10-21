@@ -202,42 +202,14 @@ public class Game {
                                 .queue();
                     }
                 }
-                adventureEvent(findPartyChannel(partyLeader));
+                findPartyChannel(e.getMember()).sendMessage("Everyone starting walking down the long road.").queue();
+                Encounters.generateEncounter(findParty(e.getMember()));
+                //adventureEvent(findPartyChannel(partyLeader));
             }
         } else {
             e.reply("You are not the party leader.").queue();
         }
 
-    }
-
-    /**
-     * Basic processing of an adventure event.
-     * This case is a battle.
-     *
-     * @author Justin Sandman
-     * Written : October 19, 2021
-     *
-     */
-    private static void adventureEvent(TextChannel textChannel) {
-        textChannel.sendMessage("Everyone walked down the long road.").queue();
-
-        Party party = parties.get(0);
-
-        party.enemies.add(new Goblin());
-        party.enemies.add(new Goblin());
-        party.enemies.add(new Goblin());
-        //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
-        //PLACE BattleHandler here.
-        BattleSystem.startBattle(party);
-
-        party.sendBattleMessage();
-
-        //Potentially get a list of dead people from BattleHandler
-        /*
-        for (Enemy en : parties.get(0).enemies) {
-            Collections.addAll(parties.get(0).loot, en.getInventory());
-        }
-        */
     }
 
     /**
