@@ -16,19 +16,4 @@ public class Rat extends Rodent {
         super();
         this.name = "Rat";
     }
-
-    @Override
-    public void move() {
-
-    }
-
-    @Override
-    public void block() {
-
-    }
-
-    @Override
-    public void useItem() {
-
-    }
 }

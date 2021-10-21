@@ -2,8 +2,15 @@ package Game.Entities.EnemyTypes.Bosses;
 
 import Game.Entities.EnemyTypes.Enemy;
 
+/**
+ * parent class for all boss type enemies
+ * @author Harrison Brown
+ */
 public abstract class Boss extends Enemy {
 
+    /**
+     * default constructor for bosses
+     */
     public Boss() {
         super();
         this.maxHealth = 300;

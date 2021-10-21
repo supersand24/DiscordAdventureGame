@@ -381,10 +381,20 @@ public abstract class Entity implements Comparable<Entity> {
             return (msg);
     }
 
+    /**
+     * gets the entities last action as a string
+     * @author Harrison Brown
+     * @return string
+     */
     public String getLastAction() {
         return lastAction;
     }
 
+    /**
+     * sets the entities last action as a string
+     * @author Harrison Brown
+     * @param lastAction string
+     */
     public void setLastAction(String lastAction) {
         this.lastAction = lastAction;
     }
