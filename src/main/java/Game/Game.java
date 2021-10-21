@@ -203,7 +203,7 @@ public class Game {
                     }
                 }
                 findPartyChannel(e.getMember()).sendMessage("Everyone starting walking down the long road.").queue();
-                Encounters.generateEncounter(findParty(e.getMember()));
+                Encounters.encounter(findParty(e.getMember()));
                 //adventureEvent(findPartyChannel(partyLeader));
             }
         } else {
