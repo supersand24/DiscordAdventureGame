@@ -1,26 +1,26 @@
 package Game.Items;
 
-import Game.Items.Useable.Liquids.Liquid;
+import Game.Items.Useable.Potion;
 
 public class Bottle extends Item {
 
     private boolean empty;
 
-    private Liquid liquid = null;
+    private Potion potion = null;
 
     public Bottle() {
         empty = true;
     }
 
-    public Bottle(Liquid liquid) {
+    public Bottle(Potion potion) {
         empty = false;
-        this.liquid = liquid;
+        this.potion = potion;
     }
 
     public void useBottle() {
-            liquid.use();
-            if (liquid.checkUses() == 0) {
-                liquid = null;
+            potion.use();
+            if (potion.checkUses() == 0) {
+                potion = null;
             }
     }
 
@@ -28,23 +28,23 @@ public class Bottle extends Item {
         return empty;
     }
 
-    public void fill(Liquid liquid) {
+    public void fill(Potion potion) {
         if (empty) {
-            this.liquid = liquid;
+            this.potion = potion;
         }
     }
 
     public void makeEmpty() {
-        liquid = null;
+        potion = null;
         empty = true;
 
     }
 
-    public Liquid getContents() {
-        return liquid;
+    public Potion getContents() {
+        return potion;
     }
 
     public String getContentsType() {
-        return liquid.getClass().getSimpleName();
+        return potion.getClass().getSimpleName();
     }
 }

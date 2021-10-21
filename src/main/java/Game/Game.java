@@ -3,6 +3,8 @@ package Game;
 import Game.Entities.EnemyTypes.*;
 import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
+import Game.Items.Bottle;
+import Game.Items.Useable.Potion;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -13,7 +15,6 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Handles everything for the game.
@@ -383,37 +384,9 @@ public class Game {
      *
      */
     public static void main(String[] args) {
-
-        Scanner scan = new Scanner(System.in);
-
-        int playerNum;
-        int enemyNum;
-
-        System.out.print("How many people are going to play? ");
-        playerNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        System.out.print("How many goblins do you want to fight? ");
-        enemyNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        Player[] players = new Player[playerNum];
-        Enemy[] enemies = new Enemy[enemyNum];
-
-
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player("PLAYER" + i);
-        }
-
-        for (int i = 0; i < enemies.length; i++) {
-            enemies[i] = new Goblin();
-        }
-
-        //System.out.println(BattleSystem.getTurnOrder(enemies, players));
-
-        //BattleSystem.activeCombat(players, enemies);
+        Bottle bottle = new Bottle();
+        bottle.fill(new Potion(Potion.Liquid.WATER));
+        bottle.getContents().getLiquid().setHowClean(Potion.Cleanliness.KRISP);
 
     }
 }
