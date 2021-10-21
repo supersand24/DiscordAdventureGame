@@ -120,5 +120,34 @@ public class Encounters {
         return avg;
     }
 
+    /**
+     * method for dealing with battle event
+     * @author Harrison Brown
+     * @param party current party
+     */
+    private static void battle(Party party) {
+        generateEnemies(party);
+        BattleSystem.startBattle(party);
+        party.sendBattleMessage();
+    }
+
+    /**
+     * method for dealing with settlement event
+     * @author Harrison Brown
+     * @param party current party
+     */
+    private static void settlement(Party party) {
+        Game.guild.getTextChannelById(party.channelId).sendMessage("You found a settlement").queue();
+    }
+
+    /**
+     * method for dealing with merchant event
+     * @author Harrison Brown
+     * @param party current party
+     */
+    private static void merchant(Party party) {
+        Game.guild.getTextChannelById(party.channelId).sendMessage("You found a merchant").queue();
+    }
+
 
 }
