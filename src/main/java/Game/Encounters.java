@@ -37,6 +37,14 @@ public class Encounters {
 
     }
 
+    public enum dungeonEncounters {
+        BATTLE,
+        LOOT,
+        BRANCH,
+        DUMBNPC,
+        NONE
+    }
+
     /**
      * static object of Random for use in the class
      */
@@ -147,6 +155,15 @@ public class Encounters {
      */
     private static void merchant(Party party) {
         Game.guild.getTextChannelById(party.channelId).sendMessage("You found a merchant").queue();
+    }
+
+    /**
+     * method for dealing with dungeon event
+     * @author Harrison Brown
+     * @param party current party
+     */
+    private static void dungeon(Party party) {
+        Game.guild.getTextChannelById(party.channelId).sendMessage("There would be a notice about the dungeon and some desicion structure here").queue();
     }
 
 
