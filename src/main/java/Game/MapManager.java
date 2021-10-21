@@ -24,8 +24,7 @@ public class MapManager {
         SOUTH_WEST,
         WEST
     }
-
-
+    
     /**
      * Creates a grid.
      */
@@ -41,6 +40,16 @@ public class MapManager {
 
         printMap();
 
+    }
+
+    /**
+     * Gets nearby area.
+     * @param area X&Y coordinates.
+     * @param dir The cardinal direction to search in.
+     * @return The area next to area.
+     */
+    public static Area getAdjacentArea(Area area, Direction dir) {
+        return getAdjacentArea(area.getXCoord(),area.getYCoord(),dir);
     }
 
     /**
@@ -90,6 +99,7 @@ public class MapManager {
     public static void setArea(int x, int y, Area area) {
         if ( (x > 0 || y > 0) && (x < MAP_SIZE || y < MAP_SIZE) && area != null) {
             map[x - 1][y - 1] = area;
+            area.setCoords(x,y);
         }
     }
 
