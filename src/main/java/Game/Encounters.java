@@ -30,6 +30,12 @@ public class Encounters {
         int weight;
         boolean canRepeat;
 
+        /**
+         * constructor for EncounterType states
+         * @author Harrison Brown
+         * @param weight the likelihood the encounter type will happen
+         * @param canRepeat if the EncounterType can be successively called
+         */
         EncounterType(int weight, boolean canRepeat) {
             this.weight = weight;
             this.canRepeat = canRepeat;
@@ -37,6 +43,9 @@ public class Encounters {
 
     }
 
+    /**
+     * enum for possible encounters in a dungeon
+     */
     public enum dungeonEncounters {
         BATTLE,
         LOOT,
@@ -46,6 +55,11 @@ public class Encounters {
         NONE
     }
 
+    /**
+     * single method call to set the encounter type for the party and handle it
+     * @author Harrison Brown
+     * @param party party to put in encounters
+     */
     public static void encounter(Party party) {
         setEncounter(party);
         generateEncounter(party);
