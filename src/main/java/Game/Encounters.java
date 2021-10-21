@@ -93,7 +93,7 @@ public class Encounters {
     public static void generateEnemies(Party party) {
        int avgLvl = averageLevel(party);
        int maxCnt = 25 - party.getPlayers(Game.guild).size();
-       int cnt = rand.nextInt(maxCnt);
+       int cnt = rand.nextInt(1, maxCnt);
        ArrayList<Enemy> badguys = new ArrayList<>();
        for (int i = 0; i <= cnt; i++) {
            badguys.add(new Goblin());

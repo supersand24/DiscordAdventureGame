@@ -168,6 +168,22 @@ public class Game {
      * Written : October 18, 2021
      *
      */
+
+    /**
+     * temp method for finding a party
+     * @author Harrison Brown
+     * @param member member to get the party from
+     * @return the party
+     */
+    public static Party findParty(Member member) {
+        return new Party();
+    }
+
+    /**
+     * leave town event
+     * @author Justin Sandman
+     * @param e buttonClickEvent
+     */
     public static void leaveTown(ButtonClickEvent e) {
 
         Member partyLeader = e.getMessage().getMentionedMembers().get(0);
