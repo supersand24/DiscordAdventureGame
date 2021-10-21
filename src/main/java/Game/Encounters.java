@@ -24,7 +24,7 @@ public class Encounters {
         SETTLEMENT(2, false),
         MERCHANT(1, false),
         DUNGEON(1, false),
-        BRANCHPATH(3, true),
+        BRANCH_PATH(3, true),
         NONE(4, true);
 
         int weight;
@@ -118,7 +118,7 @@ public class Encounters {
      * creates battle encounter
      * @author Harrison Brown
      */
-    public static void generateEnemies(Party party) {
+    private static void generateEnemies(Party party) {
        int avgLvl = averageLevel(party);
        int maxCnt = 25 - party.getPlayers(Game.guild).size();
        int cnt = rand.nextInt(1, maxCnt);
@@ -186,6 +186,11 @@ public class Encounters {
         Game.guild.getTextChannelById(party.channelId).sendMessage("There would be a notice about the dungeon and some desicion structure here").queue();
     }
 
+    /**
+     * method for dealing with none event
+     * @author Harrison Brown
+     * @param party current party
+     */
     private static void none(Party party) {
         int r = rand.nextInt(1);
         if (r == 0) {
