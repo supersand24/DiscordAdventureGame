@@ -362,36 +362,11 @@ public class Game {
      */
     public static void main(String[] args) {
 
-        Scanner scan = new Scanner(System.in);
+        Party p1 = new Party();
+        //p1.setCurrentEncounter(Encounters.EncounterType.MERCHANT);
 
-        int playerNum;
-        int enemyNum;
+        Encounters.setEncounter(p1);
 
-        System.out.print("How many people are going to play? ");
-        playerNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        System.out.print("How many goblins do you want to fight? ");
-        enemyNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        Player[] players = new Player[playerNum];
-        Enemy[] enemies = new Enemy[enemyNum];
-
-
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player("PLAYER" + i);
-        }
-
-        for (int i = 0; i < enemies.length; i++) {
-            enemies[i] = new Goblin();
-        }
-
-        //System.out.println(BattleSystem.getTurnOrder(enemies, players));
-
-        //BattleSystem.activeCombat(players, enemies);
 
     }
 }

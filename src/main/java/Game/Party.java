@@ -37,6 +37,8 @@ public class Party implements Serializable {
         this.channelId = id;
     }
 
+    private Encounters.EncounterType crntEvent = null;
+
     /**
      * Testing Purposes only.
      */
@@ -221,6 +223,24 @@ public class Party implements Serializable {
 
     private void setBattleMessage(Message message) {
         battleMessage = message;
+    }
+
+    /**
+     * setter for nextEncounter
+     * @author Harrison Brown
+     * @param currentEvent the next encounter for the party
+     */
+    public void setCurrentEncounter(Encounters.EncounterType currentEvent) {
+        this.crntEvent = currentEvent;
+    }
+
+    /**
+     * getter for the party's next encounter
+     * @author Harrison Brown
+     * @return returns the nextEncounter
+     */
+    public Encounters.EncounterType getCurrentEncounter() {
+        return crntEvent;
     }
 
     @Override
