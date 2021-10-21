@@ -3,6 +3,8 @@ package Bot;
 import Game.Game;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -54,9 +56,9 @@ public class Main {
      * Written : October 18, 2021
      *
      */
-    private static void addSlashCommands(JDA jda) {
+    private static void addSlashCommands(Guild guild) {
         System.out.println("Running Slash Commands, be sure to disable this on next run.");
-        CommandListUpdateAction commands = jda.updateCommands();
+        CommandListUpdateAction commands = guild.updateCommands();
 
         //Adventure Command
         commands.addCommands(
@@ -75,9 +77,9 @@ public class Main {
                 new CommandData("block","Blocks next attack.")
         ).queue();
 
-        //Use Item Command
+        //Vote Command
         commands.addCommands(
-                new CommandData("use_item","Uses an item from your inventory.")
+                new CommandData("vote","Starts a vote.")
         ).queue();
 
     }
@@ -108,12 +110,19 @@ public class Main {
                 JDA jda = jdaBuilder.build();
                 jda.awaitReady();
 
-                //addSlashCommands(jda);
+                Guild guild = jda.getGuildById(899410801906044991L);
 
-                //Sets up the Game, if there is an error, app will exit.
-                if ( !Game.setUp(jda.getGuildById(899410801906044991L)) ) {
-                    System.out.println("An error occurred, app will stop running.");
-                    System.exit(404);
+                if (guild != null) {
+                    //addSlashCommands(guild);
+
+                    //Sets up the Game, if there is an error, app will exit.
+                    if (!Game.setUp(guild)) {
+                        System.out.println("An error occurred, app will stop running.");
+                        System.exit(404);
+                    }
+                } else {
+                    System.out.println("Guild was null, app will stop running.");
+                    System.out.println(420);
                 }
 
             } catch (LoginException | InterruptedException e) {

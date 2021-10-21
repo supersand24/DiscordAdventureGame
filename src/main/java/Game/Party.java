@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,6 +33,10 @@ public class Party implements Serializable {
     private Entity[] turnOrder = null;
     private int turnIndex = 0;
     public Message battleMessage = null;
+
+    public Message voteMessage = null;
+    public HashMap<Game.Vote, Integer> vote = new HashMap<>();
+    public List<Member> hasVoted = new ArrayList<>();
 
     public Party(long id) {
         this.channelId = id;
@@ -172,7 +177,7 @@ public class Party implements Serializable {
                     turns.append(" ").append(e.getName());
 
                     if (e.getLastAction() != null) {
-                        turns.append('[').append(e.getLastAction()).append(']');
+                        turns.append(" *").append(e.getLastAction()).append('*');
                     }
 
                     turns.append("\n");
