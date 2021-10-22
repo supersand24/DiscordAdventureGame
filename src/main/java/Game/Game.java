@@ -27,6 +27,7 @@ public class Game {
     public static Guild guild;
 
     public static Role roleAdventurer;
+    public static Role roleDeveloper;
 
     public static Category categoryAdventure;
     public static Category categorySettlement;
@@ -103,13 +104,21 @@ public class Game {
                                     .setAllow(Permission.VIEW_CHANNEL)
                                     .queue();
                             textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                            slashCommand.getHook().sendMessage("You created a new party.").queue();
                             parties.add(new Party(textChannel.getIdLong(), member, MapManager.getArea(slashCommand.getChannel().getIdLong())));
                             System.out.println(parties.get(0).toString());
                         });
+                    } else {
+                        slashCommand.reply("You are currently on an adventure, go back to town to start a new party.").setEphemeral(true).queue();
                     }
+                } else {
+                    slashCommand.reply("You need to be in a Settlement to create a party.").setEphemeral(true).queue();
                 }
+            } else {
+                slashCommand.reply("The game is not started! Ask a " + roleDeveloper.getAsMention() + " to start it.").setEphemeral(true).queue();
             }
         } else {
+            slashCommand.reply("ERROR : Member not found!").setEphemeral(true).queue();
             System.out.println("Member could not be found.");
         }
     }
@@ -188,13 +197,15 @@ public class Game {
 
                         //REMOVES ALL PARTY MEMBERS FROM SLASH COMMAND CHANNEL
                         //NEEDS TO BE PARTY LOCATION CHANNEL
-                        for (Member m : slashCommand.getTextChannel().getMembers()) {
+                        for (Member m : partyChannel.getMembers()) {
                             if (m.getRoles().contains(roleAdventurer)) {
                                 slashCommand.getTextChannel().createPermissionOverride(m)
                                         .setDeny(Permission.VIEW_CHANNEL)
                                         .queue();
                             }
                         }
+
+                        slashCommand.getHook().sendMessage("Your party left on an adventure. " + partyChannel.getAsMention()).queue();
 
                         party.setGoingTo(dir);
                         party.setComingFrom(dir.getOpposite());
@@ -416,6 +427,7 @@ public class Game {
         Game.guild = guild;
 
         roleAdventurer      = Game.guild.getRoleById(899464047001468978L);
+        roleDeveloper       = Game.guild.getRoleById(899416257537908777L);
 
         categoryAdventure   = Game.guild.getCategoryById(899663492175511612L);
         categorySettlement  = Game.guild.getCategoryById(899464535180718090L);
