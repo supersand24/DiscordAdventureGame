@@ -22,9 +22,32 @@ public class MapManager {
         SOUTH_EAST,
         SOUTH,
         SOUTH_WEST,
-        WEST
+        WEST;
+
+        public int getIndex() {
+            for (int i = 0; i < Direction.values().length; i++) {
+                if (Direction.values()[i].equals(this)) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        Direction getOpposite() {
+            Direction dir = EAST;
+            switch (this) {
+                case NORTH_WEST -> dir = SOUTH_EAST;
+                case NORTH -> dir = SOUTH;
+                case NORTH_EAST -> dir = SOUTH_WEST;
+                case EAST -> dir = WEST;
+                case SOUTH_EAST -> dir = NORTH_WEST;
+                case SOUTH -> dir = NORTH;
+                case SOUTH_WEST -> dir = NORTH_EAST;
+            }
+            return dir;
+        }
     }
-    
+
     /**
      * Creates a grid.
      */
@@ -35,11 +58,40 @@ public class MapManager {
      */
     public static void main(String[] args) {
 
-        setArea(3,3,new Area("Noctori"));
-        setArea(2,3,new Area("Route"));
+        //Game Starts
+        Area a = new Area("Noctori");
+        addArea(MAP_SIZE/2+1,MAP_SIZE/2+1,a);
+
+        Area b = new Area("Route");
+        addAdjacentArea(a,Direction.WEST,b);
 
         printMap();
 
+    }
+
+    public static void linkAreas(Area from, Direction dir, Area to) {
+        from.setConnection(to,dir);
+        to.setConnection(from,dir.getOpposite());
+    }
+
+    public static void addAdjacentArea(Area oldArea, Direction dir, Area newArea) {
+        int x = oldArea.getXCoord();
+        int y = oldArea.getYCoord();
+        if (getAdjacentArea(x,y,dir) == null) {
+            linkAreas(oldArea,dir,newArea);
+            switch (dir) {
+                case NORTH_WEST -> addArea(x -1 , y - 1,newArea);
+                case NORTH -> addArea(x , y - 1,newArea);
+                case NORTH_EAST -> addArea(x +1 , y - 1,newArea);
+                case EAST -> addArea(x +1 , y ,newArea);
+                case SOUTH_EAST -> addArea(x +1 , y + 1,newArea);
+                case SOUTH -> addArea(x , y + 1,newArea);
+                case SOUTH_WEST -> addArea(x -1 , y + 1,newArea);
+                case WEST -> addArea(x -1 , y ,newArea);
+            }
+        } else {
+            System.out.println("There is already an existing area there.");
+        }
     }
 
     /**
@@ -96,7 +148,7 @@ public class MapManager {
      * @param y Y coordinate.
      * @param area The new area that needs to be registered.
      */
-    public static void setArea(int x, int y, Area area) {
+    public static void addArea(int x, int y, Area area) {
         if ( (x > 0 || y > 0) && (x < MAP_SIZE || y < MAP_SIZE) && area != null) {
             map[x - 1][y - 1] = area;
             area.setCoords(x,y);
@@ -111,9 +163,12 @@ public class MapManager {
         for (int i = 0; i < map.length; i++) {
             StringBuilder stringBuilder = new StringBuilder();
             for (int j = 0; j < map.length; j++) {
-
                 if (map[j][i] != null) {
-                    stringBuilder.append("[X]");
+                    switch (map[j][i].getName()) {
+                        case "Route" -> stringBuilder.append("[R]");
+                        case "Noctori" -> stringBuilder.append("[N]");
+                        default -> stringBuilder.append("[ ]");
+                    }
                 } else {
                     stringBuilder.append("[ ]");
                 }
