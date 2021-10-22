@@ -82,84 +82,45 @@ public class Game {
 
     }
 
-    /**
-     * Opens an invitation for other players to join an adventure.
-     * Is called by a Member in the server, only while in a settlement, and not in another party
-     *
-     * @author Justin Sandman
-     * Written : October 18, 2021
-     *
-     */
-    public static void startAdventure(SlashCommandEvent slashCommand) {
+    public static void startParty(SlashCommandEvent slashCommand) {
 
         //Get user Member
         Member member = slashCommand.getMember();
 
-        if (canPlayGame(member)) {
-            //If member is in a settlement, and not on an adventure.
-            if (categorySettlement.getMembers().contains(member)) {
-                if (!categoryAdventure.getMembers().contains(member)) {
-                    slashCommand.reply(member.getAsMention() + " is going on an adventure.")
-                            .addActionRow(
-                                    Button.primary("joinAdventure", "Join Adventure Party"),
-                                    Button.danger("leaveTown", "Leave Town")
-                            ).queue();
-                    guild.createTextChannel("party", categoryAdventure).queue(textChannel -> {
-                        textChannel.createPermissionOverride(member)
-                                .setAllow(Permission.VIEW_CHANNEL)
-                                .queue();
-                        textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                        MapManager.Direction dir = MapManager.Direction.NORTH;
-                        if (slashCommand.getOption("direction") != null) {
-                            switch (slashCommand.getOption("direction").getAsString().toLowerCase()) {
-                                case "northwest" -> dir = MapManager.Direction.NORTH_WEST;
-                                case "north" -> dir = MapManager.Direction.NORTH;
-                                case "northeast" -> dir = MapManager.Direction.NORTH_EAST;
-                                case "east" -> dir = MapManager.Direction.EAST;
-                                case "southeast" -> dir = MapManager.Direction.SOUTH_EAST;
-                                case "south" -> dir = MapManager.Direction.SOUTH;
-                                case "southwest" -> dir = MapManager.Direction.SOUTH_WEST;
-                                case "west" -> dir = MapManager.Direction.WEST;
-                            }
-                        }
-
-                        Party party = new Party(textChannel.getIdLong());
-                        party.location = new Area("Route");
-                        party.comingFrom = dir.getOpposite();
-                        MapManager.addAdjacentArea(mainHub, dir, party.location);
-
-                        parties.add(party);
-                    });
-                } else {
-                    slashCommand.reply("You are already in a Party!").queue();
+        if (member != null) {
+            if (canPlayGame(member)) {
+                //If member is in a settlement, and not on an adventure.
+                if (categorySettlement.getMembers().contains(member)) {
+                    if (!categoryAdventure.getMembers().contains(member)) {
+                        slashCommand.reply(member.getAsMention() + " started a party!")
+                                .addActionRow(
+                                        Button.primary("joinParty", "Join Party")
+                                ).queue();
+                        guild.createTextChannel("party", categoryAdventure).queue(textChannel -> {
+                            textChannel.createPermissionOverride(member)
+                                    .setAllow(Permission.VIEW_CHANNEL)
+                                    .queue();
+                            textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                            parties.add(new Party(textChannel.getIdLong(), member));
+                        });
+                    }
                 }
-            } else {
-                slashCommand.reply("You are not in a Settlement.").queue();
             }
         } else {
-            slashCommand.reply("You are unable to use this command!").queue();
+            System.out.println("Member could not be found.");
         }
     }
 
-    /**
-     * Joins an existing party, if they have not left yet.
-     * Is called by a Member that presses a button.
-     *
-     * @author Justin Sandman
-     * Written : October 18, 2021
-     *
-     */
-    public static void joinAdventure(ButtonClickEvent e) {
+    public static void joinParty(ButtonClickEvent buttonClick) {
+        Member partyLeader = buttonClick.getMessage().getMentionedMembers().get(0);
+        Member member = buttonClick.getMember();
 
-        Member partyLeader = e.getMessage().getMentionedMembers().get(0);
-        Member member = e.getMember();
+        buttonClick.deferReply(true).queue();
 
-        if (canPlayGame(member)) {
-            //If you are not already in a party.
-            if (!categoryAdventure.getMembers().contains(member)) {
-                //If the party hasn't already left yet.
-                if (categorySettlement.getMembers().contains(partyLeader)) {
-
+        if (member != null && partyLeader != null) {
+            if (canPlayGame(member)) {
+                //If you are not already in a party.
+                if (!categoryAdventure.getMembers().contains(member)) {
                     //Find the Party Channel, and add the member to it, and notify the party.
                     TextChannel channel = findPartyChannel(partyLeader);
                     if (channel != null) {
@@ -167,15 +128,18 @@ public class Game {
                         channel.createPermissionOverride(member)
                                 .setAllow(Permission.VIEW_CHANNEL)
                                 .queue();
+                        buttonClick.getHook().sendMessage("You joined the " + channel.getAsMention() + ".").queue();
                     } else {
+                        buttonClick.getHook().sendMessage("ERROR : Party not found!").queue();
                         System.out.println("Could not find party channel.");
                     }
                 } else {
-                    e.reply("The party has already left!").queue();
+                    buttonClick.getHook().sendMessage("You are already in a party.").queue();
                 }
-            } else {
-                e.reply("You are already in a Party!").queue();
             }
+        } else {
+            buttonClick.getHook().sendMessage("ERROR : Member not found!").queue();
+            System.out.println("A member could not be found.");
         }
     }
 
@@ -187,32 +151,44 @@ public class Game {
      * Written : October 18, 2021
      *
      */
-    public static void leaveTown(ButtonClickEvent e) {
+    public static void leaveTown(SlashCommandEvent slashCommand) {
 
-        Member partyLeader = e.getMessage().getMentionedMembers().get(0);
-        Member buttonClickingMember = e.getMember();
+        slashCommand.deferReply(true).queue();
 
-        //If the party leader clicks the leaveTown button.
-        if (buttonClickingMember.getIdLong() == partyLeader.getIdLong()) {
-            e.getMessage().editMessage(partyLeader.getAsMention() + " has left on an adventure.").queue();
-            TextChannel channel = findPartyChannel(partyLeader);
-            if (channel != null) {
-                channel.sendMessage("@everyone your party has left the town!").queue();
-                for (Member member : channel.getMembers()) {
-                    if (member.getRoles().contains(roleAdventurer)) {
-                        e.getTextChannel().createPermissionOverride(member)
-                                .setDeny(Permission.VIEW_CHANNEL)
-                                .queue();
+        Member member = slashCommand.getMember();
+
+        if (member != null) {
+            Party party = findParty(member);
+            if (party != null) {
+                if (member.equals(party.getLeader())) {
+                    TextChannel partyChannel = Game.guild.getTextChannelById(party.getChannelId());
+                    if (partyChannel != null) {
+                        partyChannel.sendMessage("@everyone the party has left town!").queue();
+                        //REMOVES ALL PARTY MEMBERS FROM SLASH COMMAND CHANNEL
+                        //NEEDS TO BE PARTY LOCATION CHANNEL
+                        for (Member m : slashCommand.getTextChannel().getMembers()) {
+                            if (m.getRoles().contains(roleAdventurer)) {
+                                slashCommand.getTextChannel().createPermissionOverride(m)
+                                        .setDeny(Permission.VIEW_CHANNEL)
+                                        .queue();
+                            }
+                        }
+                    } else {
+                        slashCommand.getHook().sendMessage("ERROR : Could not find party channel.").queue();
+                        System.out.println("Could not find party text channel.");
                     }
+                } else {
+                    slashCommand.getHook().sendMessage("You are not the party leader.").queue();
                 }
-                findPartyChannel(e.getMember()).sendMessage("Everyone starting walking down the long road.").queue();
-                Encounters.encounter(findParty(e.getMember()));
-                //adventureEvent(findPartyChannel(partyLeader));
+            } else {
+                //Party not found
+                slashCommand.getHook().sendMessage("ERROR : Could not find party.").queue();
+                System.out.println("Could not find party.");
             }
         } else {
-            e.reply("You are not the party leader.").queue();
+            slashCommand.getHook().sendMessage("ERROR : Could not find member.").queue();
+            System.out.println("Could not find member.");
         }
-
     }
 
     /**
@@ -485,12 +461,8 @@ public class Game {
      *
      */
     public static void main(String[] args) {
-
-        Party p1 = new Party();
+        //Party p1 = new Party();
         //p1.setCurrentEncounter(Encounters.EncounterType.MERCHANT);
-
-        Encounters.setEncounter(p1);
-
-
+        //Encounters.setEncounter(p1);
     }
 }

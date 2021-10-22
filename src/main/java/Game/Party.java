@@ -28,6 +28,8 @@ public class Party implements Serializable {
 
     long channelId;
 
+    private final Member leader;
+
     List<Enemy> enemies = new ArrayList<>();
     List<Item> loot = new ArrayList<>();
 
@@ -43,16 +45,12 @@ public class Party implements Serializable {
     public HashMap<Game.Vote, Integer> vote = new HashMap<>();
     public List<Member> hasVoted = new ArrayList<>();
 
-    public Party(long id) {
+    public Party(long id, Member member) {
         this.channelId = id;
+        this.leader = member;
     }
 
     private Encounters.EncounterType crntEvent = null;
-
-    /**
-     * Testing Purposes only.
-     */
-    public Party() {}
 
     public void sendBattleMessage() {
 
@@ -93,6 +91,14 @@ public class Party implements Serializable {
                 battleMessage.editMessageEmbeds(embed.build()).queue();
             }
         }
+    }
+
+    public long getChannelId() {
+        return channelId;
+    }
+
+    public Member getLeader() {
+        return leader;
     }
 
     /**

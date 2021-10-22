@@ -64,6 +64,20 @@ public class Main {
         System.out.println("Running Slash Commands, be sure to disable this on next run.");
         CommandListUpdateAction commands = guild.updateCommands();
 
+        commands.addCommands(
+                //Create Party
+                new CommandData("create","Creates a party."),
+                //Attack
+                new CommandData("attack","Attacks an enemy.").addOptions(
+                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                ),
+                //Block
+                new CommandData("block","Blocks next attack."),
+                //Vote
+                new CommandData("vote","Starts a vote.")
+
+        ).queue();
+
         //Adventure Command
         List<Command.Choice> data = new ArrayList<>();
         for (MapManager.Direction dir : MapManager.Direction.values()) {
@@ -74,23 +88,6 @@ public class Main {
                         new OptionData(OptionType.STRING,"direction","Which direction you would like to go.")
                                 .addChoices(data)
                 )
-        ).queue();
-
-        //Attack Command
-        commands.addCommands(
-                new CommandData("attack","Attacks an enemy.").addOptions(
-                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
-                )
-        ).queue();
-
-        //Block Command
-        commands.addCommands(
-                new CommandData("block","Blocks next attack.")
-        ).queue();
-
-        //Vote Command
-        commands.addCommands(
-                new CommandData("vote","Starts a vote.")
         ).queue();
 
     }
@@ -124,7 +121,7 @@ public class Main {
                 Guild guild = jda.getGuildById(899410801906044991L);
 
                 if (guild != null) {
-                    //addSlashCommands(guild);
+                    addSlashCommands(guild);
 
                     //Sets up the Game, if there is an error, app will exit.
                     if (!Game.setUp(guild)) {

@@ -98,8 +98,10 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
+        System.out.println(slashCommand.getName());
         switch (slashCommand.getName()) {
-            case "adventure"        -> Game.startAdventure(slashCommand);
+            case "create"           -> Game.startParty(slashCommand);
+            case "adventure"        -> Game.leaveTown(slashCommand);
             case "attack"           -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
             case "block"            -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
             case "vote"             -> Game.castVote(slashCommand);
@@ -119,8 +121,7 @@ public class Listener extends ListenerAdapter {
             Game.processVote(e);
         } else {
             switch (e.getButton().getId()) {
-                case "joinAdventure" -> Game.joinAdventure(e);
-                case "leaveTown" -> Game.leaveTown(e);
+                case "joinParty" -> Game.joinParty(e);
             }
         }
     }
