@@ -1,5 +1,8 @@
 package Game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class will do everything we need for the map.
  * @author Justin Sandman
@@ -56,6 +59,21 @@ public class MapManager {
             }
             return dir;
         }
+
+        List<Direction> getNearbys() {
+            List<Direction> directions = null;
+            switch (this) {
+                case NORTH_WEST -> directions = List.of(new Direction[]{WEST, NORTH});
+                case NORTH -> directions = List.of(new Direction[]{NORTH_WEST, NORTH_EAST});
+                case NORTH_EAST -> directions = List.of(new Direction[]{NORTH, EAST});
+                case EAST -> directions = List.of(new Direction[]{NORTH_EAST, SOUTH_EAST});
+                case SOUTH_EAST -> directions = List.of(new Direction[]{EAST, SOUTH});
+                case SOUTH -> directions = List.of(new Direction[]{SOUTH_EAST, SOUTH_WEST});
+                case SOUTH_WEST -> directions = List.of(new Direction[]{SOUTH, WEST});
+                case WEST -> directions = List.of(new Direction[]{NORTH_WEST, SOUTH_WEST});
+            }
+            return directions;
+        }
     }
 
     /**
@@ -102,6 +120,16 @@ public class MapManager {
         } else {
             System.out.println("There is already an existing area there.");
         }
+    }
+
+    public static List<Direction> getEmptySpaces(Area area) {
+        List<Direction> directionList = new ArrayList<>(Direction.values().length);
+        for (Direction dir : Direction.values()) {
+            if (getAdjacentArea(area, dir) == null) {
+                directionList.add(dir);
+            }
+        }
+        return directionList;
     }
 
     /**

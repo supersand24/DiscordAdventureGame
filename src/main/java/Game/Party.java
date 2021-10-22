@@ -12,10 +12,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * An object that is stored in a list.  It keeps track of one Party.
@@ -52,6 +49,18 @@ public class Party implements Serializable {
     }
 
     private Encounters.EncounterType crntEvent = null;
+
+    public void continueOn() {
+        voteMessage.editMessage("The party voted, to continue on!").queue();
+        List<MapManager.Direction> possibleDirections = MapManager.getEmptySpaces(location);
+        possibleDirections.add(goingTo);
+        possibleDirections.add(goingTo);
+        possibleDirections.add(goingTo);
+        possibleDirections.addAll(goingTo.getNearbys());
+        possibleDirections.addAll(goingTo.getNearbys());
+        int pickedPath = new Random().nextInt(possibleDirections.size());
+        Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(pickedPath).getName() + ".").queue();
+    }
 
     public void sendBattleMessage() {
 

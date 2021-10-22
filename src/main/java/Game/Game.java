@@ -335,7 +335,7 @@ public class Game {
         System.out.println(maxEntry.getKey());
 
         switch (maxEntry.getKey()) {
-            case CONTINUE -> party.voteMessage.editMessage("The party voted, to continue on!").queue();
+            case CONTINUE -> party.continueOn();
             case HEAD_BACK -> party.voteMessage.editMessage("The party voted, go back to town.").queue();
         }
 
