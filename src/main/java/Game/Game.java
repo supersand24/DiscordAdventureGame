@@ -109,11 +109,24 @@ public class Game {
                                 .setAllow(Permission.VIEW_CHANNEL)
                                 .queue();
                         textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                        MapManager.Direction dir = MapManager.Direction.NORTH;
+                        if (slashCommand.getOption("direction") != null) {
+                            switch (slashCommand.getOption("direction").getAsString().toLowerCase()) {
+                                case "northwest" -> dir = MapManager.Direction.NORTH_WEST;
+                                case "north" -> dir = MapManager.Direction.NORTH;
+                                case "northeast" -> dir = MapManager.Direction.NORTH_EAST;
+                                case "east" -> dir = MapManager.Direction.EAST;
+                                case "southeast" -> dir = MapManager.Direction.SOUTH_EAST;
+                                case "south" -> dir = MapManager.Direction.SOUTH;
+                                case "southwest" -> dir = MapManager.Direction.SOUTH_WEST;
+                                case "west" -> dir = MapManager.Direction.WEST;
+                            }
+                        }
 
                         Party party = new Party(textChannel.getIdLong());
                         party.location = new Area("Route");
-                        party.comingFrom = MapManager.Direction.SOUTH.getOpposite();
-                        MapManager.addAdjacentArea(mainHub, MapManager.Direction.SOUTH, party.location);
+                        party.comingFrom = dir.getOpposite();
+                        MapManager.addAdjacentArea(mainHub, dir, party.location);
 
                         parties.add(party);
                     });
