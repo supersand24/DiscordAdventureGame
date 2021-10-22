@@ -9,7 +9,7 @@ public class MapManager {
     /**
      * The map size.
      */
-    private static final int MAP_SIZE = 25;
+    public static final int MAP_SIZE = 7;
 
     /**
      * Simple cardinal directions.
@@ -159,7 +159,7 @@ public class MapManager {
      * Testing method, prints to the console.
      * May use for drawing maps for players.
      */
-    private static void printMap() {
+    public static void printMap() {
         for (int i = 0; i < map.length; i++) {
             StringBuilder stringBuilder = new StringBuilder();
             for (int j = 0; j < map.length; j++) {

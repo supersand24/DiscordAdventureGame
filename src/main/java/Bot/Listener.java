@@ -2,7 +2,7 @@ package Bot;
 
 import Game.Game;
 import Game.BattleSystem;
-import Game.Party;
+import Game.MapManager;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -68,6 +68,8 @@ public class Listener extends ListenerAdapter {
                                     case "startgame" -> Game.startGame();
                                     case "save"      -> Game.save();
                                     case "players"   -> System.out.println(Game.players.toString());
+                                    case "map"   -> MapManager.printMap();
+                                    case "nuke"   -> BattleSystem.endBattle(Game.parties.get(0));
                                 }
                             }
                         } else {

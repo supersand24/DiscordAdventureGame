@@ -35,6 +35,8 @@ public class Game {
     public static List<Player> players = new ArrayList<>();
     public static List<Party> parties = new ArrayList<>();
 
+    private static Area mainHub = new Area("Noctori");
+
     /**
      * Tries to start the game, if one is not in progress.
      * Is called by a Developer in the server.
@@ -49,6 +51,8 @@ public class Game {
             gameStarted = true;
             System.out.println("Starting Game");
             sendMessage("Game Starting!  To join, reply to this message your characters name.");
+            MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,mainHub);
+            MapManager.printMap();
         } else {
             System.out.println("Game Already Started");
         }
@@ -105,9 +109,13 @@ public class Game {
                                 .setAllow(Permission.VIEW_CHANNEL)
                                 .queue();
                         textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                        parties.add(new Party(textChannel.getIdLong()));
 
-                        System.out.println(parties);
+                        Party party = new Party(textChannel.getIdLong());
+                        party.location = new Area("Route");
+                        party.from = MapManager.Direction.SOUTH.getOpposite();
+                        MapManager.addAdjacentArea(mainHub, MapManager.Direction.SOUTH, party.location);
+
+                        parties.add(party);
                     });
                 } else {
                     slashCommand.reply("You are already in a Party!").queue();

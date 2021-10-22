@@ -4,6 +4,7 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
+import Game.MapManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -29,6 +30,10 @@ public class Party implements Serializable {
 
     List<Enemy> enemies = new ArrayList<>();
     List<Item> loot = new ArrayList<>();
+
+    Area location = null;
+    MapManager.Direction comingFrom = null;
+    MapManager.Direction goingTo = null;
 
     private Entity[] turnOrder = null;
     private int turnIndex = 0;
