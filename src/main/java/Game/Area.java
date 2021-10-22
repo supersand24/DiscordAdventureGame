@@ -21,6 +21,8 @@ public class Area implements Serializable {
     public Area(String name, int allowedConnections) {
         this.name = name;
         this.connectionAmount = allowedConnections;
+        possibleEncounters.add(Encounters.EncounterType.NONE);
+        possibleEncounters.add(Encounters.EncounterType.BATTLE);
     }
 
     public String getName() {

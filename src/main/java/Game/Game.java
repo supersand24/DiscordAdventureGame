@@ -104,7 +104,6 @@ public class Game {
                                     .setAllow(Permission.VIEW_CHANNEL)
                                     .queue();
                             textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                            slashCommand.getHook().sendMessage("You created a new party.").queue();
                             parties.add(new Party(textChannel.getIdLong(), member, MapManager.getArea(slashCommand.getChannel().getIdLong())));
                             System.out.println(parties.get(0).toString());
                         });

@@ -104,7 +104,6 @@ public class Encounters {
      * @author Harrison Brown
      */
     public static void generateEncounter(Party party) {
-
         switch (party.getCurrentEncounter()) {
             case BATTLE -> battle(party);
             case SETTLEMENT -> settlement(party);

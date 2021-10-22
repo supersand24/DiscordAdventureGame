@@ -86,7 +86,7 @@ public class Party implements Serializable {
             //have a vote in here, if multiple paths
         }
         System.out.println(possibleDirections);
-        location = MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection));
+        setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
         goingTo = possibleDirections.get(headingDirection);
         comingFrom = possibleDirections.get(headingDirection).getOpposite();
         Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
@@ -313,6 +313,9 @@ public class Party implements Serializable {
 
     public void setLocation(Area location) {
         this.location = location;
+        int random = new Random().nextInt(location.getPossibleEncounters().size());
+        setCurrentEncounter(location.getPossibleEncounters().get(random));
+        Encounters.generateEncounter(this);
     }
 
     public void setComingFrom(MapManager.Direction comingFrom) {
@@ -328,7 +331,7 @@ public class Party implements Serializable {
         return "Party{" +
                 ", leader=" + leader.getEffectiveName() +
                 ", enemies=" + enemies +
-                ", location=" + location.getName() +
+                ", location=" + location +
                 ", comingFrom=" + comingFrom +
                 ", goingTo=" + goingTo +
                 ", crntEvent=" + crntEvent +
