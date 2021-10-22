@@ -1,6 +1,7 @@
 package Bot;
 
 import Game.Game;
+import Game.MapManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -15,6 +16,9 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -61,8 +65,15 @@ public class Main {
         CommandListUpdateAction commands = guild.updateCommands();
 
         //Adventure Command
+        List<Command.Choice> data = new ArrayList<>();
+        for (MapManager.Direction dir : MapManager.Direction.values()) {
+            data.add(new Command.Choice(dir.getName(),dir.getName()));
+        }
         commands.addCommands(
-                new CommandData("adventure","Gets ready to go on an adventure.")
+                new CommandData("adventure","Gets ready to go on an adventure.").addOptions(
+                        new OptionData(OptionType.STRING,"direction","Which direction you would like to go.")
+                                .addChoices(data)
+                )
         ).queue();
 
         //Attack Command

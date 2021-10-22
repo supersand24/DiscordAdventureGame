@@ -14,15 +14,25 @@ public class MapManager {
     /**
      * Simple cardinal directions.
      */
-    enum Direction {
-        NORTH_WEST,
-        NORTH,
-        NORTH_EAST,
-        EAST,
-        SOUTH_EAST,
-        SOUTH,
-        SOUTH_WEST,
-        WEST;
+    public enum Direction {
+        NORTH_WEST("Northwest"),
+        NORTH("North"),
+        NORTH_EAST("Northeast"),
+        EAST("East"),
+        SOUTH_EAST("Southeast"),
+        SOUTH("South"),
+        SOUTH_WEST("Southwest"),
+        WEST("West");
+
+        String name;
+
+        Direction(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
 
         public int getIndex() {
             for (int i = 0; i < Direction.values().length; i++) {
