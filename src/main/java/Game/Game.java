@@ -112,7 +112,7 @@ public class Game {
 
                         Party party = new Party(textChannel.getIdLong());
                         party.location = new Area("Route");
-                        party.from = MapManager.Direction.SOUTH.getOpposite();
+                        party.comingFrom = MapManager.Direction.SOUTH.getOpposite();
                         MapManager.addAdjacentArea(mainHub, MapManager.Direction.SOUTH, party.location);
 
                         parties.add(party);
