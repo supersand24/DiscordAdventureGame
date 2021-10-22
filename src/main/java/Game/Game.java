@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.io.*;
@@ -52,6 +53,7 @@ public class Game {
             System.out.println("Starting Game");
             sendMessage("Game Starting!  To join, reply to this message your characters name.");
             MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,mainHub);
+            mainHub.setChannelId(categorySettlement.getTextChannels().get(0).getIdLong());
             MapManager.printMap();
         } else {
             System.out.println("Game Already Started");
@@ -101,7 +103,8 @@ public class Game {
                                     .setAllow(Permission.VIEW_CHANNEL)
                                     .queue();
                             textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                            parties.add(new Party(textChannel.getIdLong(), member));
+                            parties.add(new Party(textChannel.getIdLong(), member, MapManager.getArea(slashCommand.getChannel().getIdLong())));
+                            System.out.println(parties.get(0).toString());
                         });
                     }
                 }
@@ -164,6 +167,25 @@ public class Game {
                     TextChannel partyChannel = Game.guild.getTextChannelById(party.getChannelId());
                     if (partyChannel != null) {
                         partyChannel.sendMessage("@everyone the party has left town!").queue();
+
+                        //Get direction from command
+                        MapManager.Direction dir = null;
+                        OptionMapping optionMapping = slashCommand.getOption("direction");
+                        if (optionMapping != null) {
+                            switch (optionMapping.getAsString().toLowerCase()) {
+                                case "northwest" -> dir = MapManager.Direction.NORTH_WEST;
+                                case "north" -> dir = MapManager.Direction.NORTH;
+                                case "northeast" -> dir = MapManager.Direction.NORTH_EAST;
+                                case "east" -> dir = MapManager.Direction.EAST;
+                                case "southeast" -> dir = MapManager.Direction.SOUTH_EAST;
+                                case "south" -> dir = MapManager.Direction.SOUTH;
+                                case "southwest" -> dir = MapManager.Direction.SOUTH_WEST;
+                                case "west" -> dir = MapManager.Direction.WEST;
+                            }
+                        } else {
+                            dir = MapManager.Direction.NORTH;
+                        }
+
                         //REMOVES ALL PARTY MEMBERS FROM SLASH COMMAND CHANNEL
                         //NEEDS TO BE PARTY LOCATION CHANNEL
                         for (Member m : slashCommand.getTextChannel().getMembers()) {
@@ -173,6 +195,14 @@ public class Game {
                                         .queue();
                             }
                         }
+
+                        MapManager.addAdjacentArea(party.getLocation(),dir,new Area("Route"));
+                        party.setGoingTo(dir);
+                        party.setComingFrom(dir.getOpposite());
+                        party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
+                        partyChannel.sendMessage("```" + MapManager.printMap() + "```").queue();
+                        System.out.println(party);
+
                     } else {
                         slashCommand.getHook().sendMessage("ERROR : Could not find party channel.").queue();
                         System.out.println("Could not find party text channel.");

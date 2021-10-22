@@ -98,7 +98,6 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
-        System.out.println(slashCommand.getName());
         switch (slashCommand.getName()) {
             case "create"           -> Game.startParty(slashCommand);
             case "adventure"        -> Game.leaveTown(slashCommand);

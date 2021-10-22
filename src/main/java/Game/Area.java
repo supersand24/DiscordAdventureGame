@@ -8,6 +8,8 @@ public class Area implements Serializable {
 
     private String name;
 
+    private long channelId;
+
     private int[] coords;
 
     private List<Encounters.EncounterType> possibleEncounters = new ArrayList<>();
@@ -19,6 +21,10 @@ public class Area implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public long getChannelId() {
+        return channelId;
     }
 
     public int[] getCoords() {
@@ -43,6 +49,10 @@ public class Area implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setChannelId(long channelId) {
+        this.channelId = channelId;
     }
 
     public void setCoords(int[] coords) {

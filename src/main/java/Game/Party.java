@@ -45,9 +45,10 @@ public class Party implements Serializable {
     public HashMap<Game.Vote, Integer> vote = new HashMap<>();
     public List<Member> hasVoted = new ArrayList<>();
 
-    public Party(long id, Member member) {
+    public Party(long id, Member member, Area location) {
         this.channelId = id;
         this.leader = member;
+        this.location = location;
     }
 
     private Encounters.EncounterType crntEvent = null;
@@ -99,6 +100,18 @@ public class Party implements Serializable {
 
     public Member getLeader() {
         return leader;
+    }
+
+    public Area getLocation() {
+        return location;
+    }
+
+    public MapManager.Direction getComingFrom() {
+        return comingFrom;
+    }
+
+    public MapManager.Direction getGoingTo() {
+        return goingTo;
     }
 
     /**
@@ -259,14 +272,27 @@ public class Party implements Serializable {
         return crntEvent;
     }
 
+    public void setLocation(Area location) {
+        this.location = location;
+    }
+
+    public void setComingFrom(MapManager.Direction comingFrom) {
+        this.comingFrom = comingFrom;
+    }
+
+    public void setGoingTo(MapManager.Direction goingTo) {
+        this.goingTo = goingTo;
+    }
+
     @Override
     public String toString() {
         return "Party{" +
-                "channelId=" + channelId +
+                ", leader=" + leader.getEffectiveName() +
                 ", enemies=" + enemies +
-                ", loot=" + loot +
-                ", turnOrder=" + Arrays.toString(turnOrder) +
-                ", turnIndex=" + turnIndex +
+                ", location=" + location.getName() +
+                ", comingFrom=" + comingFrom +
+                ", goingTo=" + goingTo +
+                ", crntEvent=" + crntEvent +
                 '}';
     }
 }

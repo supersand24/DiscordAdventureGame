@@ -138,6 +138,20 @@ public class MapManager {
         return null;
     }
 
+    public static Area getArea(long channelid) {
+
+        for (Area[] inner : map) {
+            for (Area area : inner) {
+                if (area != null) {
+                    if (area.getChannelId() == channelid)
+                        return area;
+                }
+            }
+        }
+        return null;
+
+    }
+
     /**
      * Gets area at coordinates, if there is one.
      * @param x X coordinate.
@@ -169,9 +183,9 @@ public class MapManager {
      * Testing method, prints to the console.
      * May use for drawing maps for players.
      */
-    public static void printMap() {
+    public static String printMap() {
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < map.length; i++) {
-            StringBuilder stringBuilder = new StringBuilder();
             for (int j = 0; j < map.length; j++) {
                 if (map[j][i] != null) {
                     switch (map[j][i].getName()) {
@@ -184,7 +198,10 @@ public class MapManager {
                 }
 
             }
-            System.out.println(stringBuilder);
+            stringBuilder.append("\n");
+
         }
+        System.out.println(stringBuilder);
+        return stringBuilder.toString();
     }
 }
