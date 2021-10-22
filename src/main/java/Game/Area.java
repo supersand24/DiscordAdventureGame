@@ -57,7 +57,7 @@ public class Area implements Serializable {
         this.possibleEncounters = possibleEncounters;
     }
 
-    public void setConnection(Area area, Game.MapManager.Direction dir) {
+    public void setConnection(Area area, MapManager.Direction dir) {
         this.connections[dir.getIndex()] = area;
     }
 }
