@@ -81,22 +81,6 @@ public class MapManager {
      */
     private static Area[][] map = new Area[MAP_SIZE][MAP_SIZE];
 
-    /**
-     * Temporary method testing method.
-     */
-    public static void main(String[] args) {
-
-        //Game Starts
-        Area a = new Area("Noctori");
-        addArea(MAP_SIZE/2+1,MAP_SIZE/2+1,a);
-
-        Area b = new Area("Route");
-        addAdjacentArea(a,Direction.WEST,b);
-
-        printMap();
-
-    }
-
     public static void linkAreas(Area from, Direction dir, Area to) {
         from.setConnection(to,dir);
         to.setConnection(from,dir.getOpposite());
@@ -126,6 +110,16 @@ public class MapManager {
         List<Direction> directionList = new ArrayList<>(Direction.values().length);
         for (Direction dir : Direction.values()) {
             if (getAdjacentArea(area, dir) == null) {
+                directionList.add(dir);
+            }
+        }
+        return directionList;
+    }
+
+    public static List<Direction> getOccupiedSpaces(Area area) {
+        List<Direction> directionList = new ArrayList<>(Direction.values().length);
+        for (Direction dir : Direction.values()) {
+            if (getAdjacentArea(area, dir) != null) {
                 directionList.add(dir);
             }
         }

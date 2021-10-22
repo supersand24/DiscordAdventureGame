@@ -36,7 +36,7 @@ public class Game {
     public static List<Player> players = new ArrayList<>();
     public static List<Party> parties = new ArrayList<>();
 
-    private static Area mainHub = new Area("Noctori");
+    private static Area mainHub = new Area("Noctori",8);
 
     /**
      * Tries to start the game, if one is not in progress.
@@ -196,10 +196,16 @@ public class Game {
                             }
                         }
 
-                        MapManager.addAdjacentArea(party.getLocation(),dir,new Area("Route"));
                         party.setGoingTo(dir);
                         party.setComingFrom(dir.getOpposite());
+
+                        //Generate new area, if it doesn't exist.
+                        //ADD SOMEWHERE IN HERE TO CHECK IF SETTLEMENT CAN GENERATE NEW PATHS
+                        if (MapManager.getAdjacentArea(party.location,dir) == null) {
+                            MapManager.addAdjacentArea(party.getLocation(),dir,new Area("Route",2));
+                        }
                         party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
+
                         partyChannel.sendMessage("```" + MapManager.printMap() + "```").queue();
                         System.out.println(party);
 

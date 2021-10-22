@@ -2,6 +2,7 @@ package Game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Area implements Serializable {
@@ -13,10 +14,13 @@ public class Area implements Serializable {
     private int[] coords;
 
     private List<Encounters.EncounterType> possibleEncounters = new ArrayList<>();
+
+    private final int connectionAmount;
     private Area[] connections = new Area[MapManager.Direction.values().length];
 
-    public Area(String name) {
+    public Area(String name, int allowedConnections) {
         this.name = name;
+        this.connectionAmount = allowedConnections;
     }
 
     public String getName() {
@@ -43,8 +47,33 @@ public class Area implements Serializable {
         return possibleEncounters;
     }
 
+    public int getConnectionAmount() {
+        return connectionAmount;
+    }
+
     public Area[] getConnections() {
         return connections;
+    }
+
+    public List<MapManager.Direction> getOtherConnections(MapManager.Direction dir) {
+        List<MapManager.Direction> connections = new ArrayList<>(MapManager.Direction.values().length -1);
+        for (MapManager.Direction direction : MapManager.Direction.values()) {
+            if (!direction.equals(dir)) {
+                if (getConnections()[direction.getIndex()] != null)
+                    connections.add(direction);
+            }
+        }
+        System.out.println(connections);
+        return connections;
+    }
+
+    public boolean canGenerateAdjacentPaths() {
+        int count = 0;
+        for (Area area : connections) {
+            if (area != null)
+                count++;
+        }
+        return count < getConnectionAmount();
     }
 
     public void setName(String name) {
@@ -69,5 +98,14 @@ public class Area implements Serializable {
 
     public void setConnection(Area area, MapManager.Direction dir) {
         this.connections[dir.getIndex()] = area;
+    }
+
+    @Override
+    public String toString() {
+        return "Area{" +
+                "name='" + name + '\'' +
+                ", coords=" + Arrays.toString(coords) +
+                ", connectionAmount=" + connectionAmount +
+                '}';
     }
 }

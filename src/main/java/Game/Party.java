@@ -52,14 +52,44 @@ public class Party implements Serializable {
 
     public void continueOn() {
         voteMessage.editMessage("The party voted, to continue on!").queue();
-        List<MapManager.Direction> possibleDirections = MapManager.getEmptySpaces(location);
-        possibleDirections.add(goingTo);
-        possibleDirections.add(goingTo);
-        possibleDirections.add(goingTo);
-        possibleDirections.addAll(goingTo.getNearbys());
-        possibleDirections.addAll(goingTo.getNearbys());
-        int pickedPath = new Random().nextInt(possibleDirections.size());
-        Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(pickedPath).getName() + ".").queue();
+        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
+
+        List<MapManager.Direction> possibleDirections;
+        int headingDirection = 0;
+        if (location.canGenerateAdjacentPaths()) {
+            System.out.println("Generating new path.");
+            possibleDirections = MapManager.getEmptySpaces(location);
+
+            //If the direction the party is heading, is empty increase its chances.
+            if (possibleDirections.contains(goingTo)) {
+                possibleDirections.add(goingTo);
+                possibleDirections.add(goingTo);
+                possibleDirections.add(goingTo);
+            }
+            for (MapManager.Direction dir : goingTo.getNearbys()) {
+                if (possibleDirections.contains(dir)) {
+                    possibleDirections.add(dir);
+                    possibleDirections.add(dir);
+                }
+            }
+
+
+
+            //List<MapManager.Direction> impossibleDirections = MapManager.getOccupiedSpaces(location);
+            headingDirection = new Random().nextInt(possibleDirections.size());
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area("Route",2));
+
+        } else {
+            System.out.println("Continuing on path.");
+            possibleDirections = location.getOtherConnections(comingFrom);
+            headingDirection = 0;
+            //have a vote in here, if multiple paths
+        }
+        System.out.println(possibleDirections);
+        location = MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection));
+        goingTo = possibleDirections.get(headingDirection);
+        comingFrom = possibleDirections.get(headingDirection).getOpposite();
+        Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
     }
 
     public void sendBattleMessage() {
