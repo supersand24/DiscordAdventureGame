@@ -37,7 +37,7 @@ public class Game {
     public static List<Player> players = new ArrayList<>();
     public static List<Party> parties = new ArrayList<>();
 
-    private static Area mainHub = new Area("Noctori",8);
+    private static Area mainHub = new Area(MapManager.AreaType.SETTLEMENT);
 
     /**
      * Tries to start the game, if one is not in progress.
@@ -53,9 +53,11 @@ public class Game {
             gameStarted = true;
             System.out.println("Starting Game");
             sendMessage("Game Starting!  To join, reply to this message your characters name.");
-            MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,mainHub);
-            mainHub.setChannelId(categorySettlement.getTextChannels().get(0).getIdLong());
-            MapManager.printMap();
+            guild.createTextChannel(mainHub.getName(),categorySettlement).queue(channel -> {
+                MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,mainHub);
+                mainHub.setChannelId(channel.getIdLong());
+                MapManager.printMap();
+            });
         } else {
             System.out.println("Game Already Started");
         }
@@ -73,9 +75,15 @@ public class Game {
     public static void joinGame(Member member, Message msg) {
         if (!member.getRoles().contains(roleAdventurer)) {
             if (gameStarted) {
-                System.out.println(member.getEffectiveName() + " has joined the Game.");
                 guild.addRoleToMember(member, roleAdventurer).queue();
-                guild.modifyNickname(member,msg.getContentRaw().trim()).queue();
+                String playerName = msg.getContentRaw().trim();
+                guild.modifyNickname(member,playerName).queue();
+                players.add(new Player(playerName));
+                guild.getTextChannelById(mainHub.getChannelId())
+                        .createPermissionOverride(member).setAllow(
+                                Permission.VIEW_CHANNEL
+                        ).queue();
+                System.out.println(playerName + "(" + member.getUser().getName() + ") has joined the Game.");
             } else {
                 msg.reply("Game isn't active.").queue();
             }
@@ -198,9 +206,7 @@ public class Game {
                         //NEEDS TO BE PARTY LOCATION CHANNEL
                         for (Member m : partyChannel.getMembers()) {
                             if (m.getRoles().contains(roleAdventurer)) {
-                                slashCommand.getTextChannel().createPermissionOverride(m)
-                                        .setDeny(Permission.VIEW_CHANNEL)
-                                        .queue();
+                                slashCommand.getTextChannel().getPermissionOverride(m).delete().queue();
                             }
                         }
 
@@ -212,7 +218,7 @@ public class Game {
                         //Generate new area, if it doesn't exist.
                         //ADD SOMEWHERE IN HERE TO CHECK IF SETTLEMENT CAN GENERATE NEW PATHS
                         if (MapManager.getAdjacentArea(party.location,dir) == null) {
-                            MapManager.addAdjacentArea(party.getLocation(),dir,new Area("Route",2));
+                            MapManager.addAdjacentArea(party.getLocation(),dir,new Area(MapManager.AreaType.PATH));
                         }
                         party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
 
@@ -352,7 +358,7 @@ public class Game {
 
         switch (maxEntry.getKey()) {
             case CONTINUE -> party.continueOn();
-            case HEAD_BACK -> party.voteMessage.editMessage("The party voted, go back to town.").queue();
+            case HEAD_BACK -> party.headBack();
         }
 
         //Reset Vars for next vote.
@@ -407,7 +413,7 @@ public class Game {
      */
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
-        guild.getTextChannelById(900221982514245652L).sendMessage(msg).queue();
+        guild.getTextChannelById(900221965359517759L).sendMessage(msg).queue();
     }
 
     /**
@@ -463,15 +469,16 @@ public class Game {
 
         //TESTING BEGIN
         //guild.removeRoleFromMember(guild.getMemberById(262982533157879810L),roleAdventurer).queue();
-        players.add(new Player(20,20,guild.getMemberById(262982533157879810L).getNickname(),"male"));
-        players.add(new Player(20,20,guild.getMemberById(286307112072511490L).getNickname(),"male"));
+        for (Member member : guild.getMembers()) {
+            if (member.getRoles().contains(roleAdventurer)) {
+                guild.removeRoleFromMember(member,roleAdventurer).queue();
+            }
+        }
         for (TextChannel channel : categoryAdventure.getTextChannels()) {
             channel.delete().queue();
         }
         for (TextChannel channel : categorySettlement.getTextChannels()) {
-            for (PermissionOverride perm : channel.getMemberPermissionOverrides()) {
-                perm.delete().queue();
-            }
+            channel.delete().queue();
         }
         //TESTING END
 

@@ -3,6 +3,10 @@ package Game;
 import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +29,8 @@ public class Encounters {
         MERCHANT(1, false),
         DUNGEON(1, false),
         BRANCH_PATH(3, true),
-        NONE(4, true);
+        NONE(4, true),
+        RETURN_TO_SETTLEMENT(10,false);
 
         int weight;
         boolean canRepeat;
@@ -111,6 +116,7 @@ public class Encounters {
             case DUNGEON -> dungeon(party);
             case BRANCH_PATH -> branchPath(party);
             case NONE -> none(party);
+            case RETURN_TO_SETTLEMENT -> returnToSettlement(party);
         }
     }
 
@@ -197,6 +203,24 @@ public class Encounters {
             Game.guild.getTextChannelById(party.channelId).sendMessage("Your party has been walking a while, do you want to rest?").queue();
         } else {
             encounter(party);
+        }
+    }
+
+    private static void returnToSettlement(Party party) {
+        TextChannel settlementChannel = Game.guild.getTextChannelById(party.getLocation().getChannelId());
+        if (settlementChannel != null) {
+            for (Member member : party.getMembers(Game.guild)) {
+                for (PermissionOverride perm : settlementChannel.getMemberPermissionOverrides()) {
+                    perm.delete().queue();
+                }
+                settlementChannel.createPermissionOverride(member).setAllow(
+                        Permission.VIEW_CHANNEL
+                ).queue();
+            }
+            TextChannel partyChannel = Game.guild.getTextChannelById(party.getChannelId());
+            if (partyChannel != null) {
+                partyChannel.sendMessage("You returned back to " + party.location.getName() + ".").queue();
+            }
         }
     }
 

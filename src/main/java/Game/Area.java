@@ -15,14 +15,23 @@ public class Area implements Serializable {
 
     private List<Encounters.EncounterType> possibleEncounters = new ArrayList<>();
 
-    private final int connectionAmount;
+    private int connectionAmount;
     private Area[] connections = new Area[MapManager.Direction.values().length];
 
-    public Area(String name, int allowedConnections) {
-        this.name = name;
-        this.connectionAmount = allowedConnections;
-        possibleEncounters.add(Encounters.EncounterType.NONE);
-        possibleEncounters.add(Encounters.EncounterType.BATTLE);
+    public Area(MapManager.AreaType areaType) {
+        switch (areaType) {
+            case SETTLEMENT -> {
+                this.name = "Noctori";
+                this.connectionAmount = 6;
+                possibleEncounters.add(Encounters.EncounterType.RETURN_TO_SETTLEMENT);
+            }
+            case PATH -> {
+                this.name = "Route";
+                this.connectionAmount = 2;
+                possibleEncounters.add(Encounters.EncounterType.NONE);
+                possibleEncounters.add(Encounters.EncounterType.BATTLE);
+            }
+        }
     }
 
     public String getName() {

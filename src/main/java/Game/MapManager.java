@@ -76,6 +76,11 @@ public class MapManager {
         }
     }
 
+    public enum AreaType {
+        SETTLEMENT,
+        PATH
+    }
+
     /**
      * Creates a grid.
      */
@@ -110,16 +115,6 @@ public class MapManager {
         List<Direction> directionList = new ArrayList<>(Direction.values().length);
         for (Direction dir : Direction.values()) {
             if (getAdjacentArea(area, dir) == null) {
-                directionList.add(dir);
-            }
-        }
-        return directionList;
-    }
-
-    public static List<Direction> getOccupiedSpaces(Area area) {
-        List<Direction> directionList = new ArrayList<>(Direction.values().length);
-        for (Direction dir : Direction.values()) {
-            if (getAdjacentArea(area, dir) != null) {
                 directionList.add(dir);
             }
         }

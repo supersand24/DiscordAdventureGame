@@ -73,11 +73,8 @@ public class Party implements Serializable {
                 }
             }
 
-
-
-            //List<MapManager.Direction> impossibleDirections = MapManager.getOccupiedSpaces(location);
             headingDirection = new Random().nextInt(possibleDirections.size());
-            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area("Route",2));
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.AreaType.PATH));
 
         } else {
             System.out.println("Continuing on path.");
@@ -90,6 +87,13 @@ public class Party implements Serializable {
         goingTo = possibleDirections.get(headingDirection);
         comingFrom = possibleDirections.get(headingDirection).getOpposite();
         Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
+    }
+
+    public void headBack() {
+        voteMessage.editMessage("The party voted, to go back.").queue();
+        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
+        setLocation(location.getConnections()[comingFrom.getIndex()]);
+        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
     }
 
     public void sendBattleMessage() {
