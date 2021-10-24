@@ -2,6 +2,7 @@ package Game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * This class will do everything we need for the map.
@@ -77,8 +78,57 @@ public class MapManager {
     }
 
     public enum AreaType {
-        SETTLEMENT,
-        PATH
+        SETTLEMENT(0),
+        PATH(10);
+
+        int weight;
+
+        AreaType(int weight) {
+            this.weight = weight;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
+
+    }
+
+    public static AreaType setAreaType(Party party) {
+        if (party.getTilesMovedWithNoSpecialEvent() >= 5) {
+            for (AreaType type : AreaType.values()) {
+                if (!type.equals(AreaType.SETTLEMENT)) {
+                    type.weight = 0;
+                }
+            }
+        } else if (party.getTilesMovedWithNoSpecialEvent() > 3) {
+            AreaType.SETTLEMENT.weight = (party.getTilesMovedWithNoSpecialEvent() - 3) * 2;
+        }
+
+        Random rand = new Random();
+        AreaType typeToReturn = null;
+        int max = AreaType.values().length;
+        while (typeToReturn == null) {
+            int sum = 0;
+            for (int i = 0; i < max; i++) {
+                sum += AreaType.values()[i].weight;
+            }
+
+            int x = rand.nextInt(sum);
+            if (x > (sum - (AreaType.values()[(max - 1)].weight))) {
+                typeToReturn = AreaType.values()[(max - 1)];
+            } else {
+                if ((max-1) == 0) {
+                    max = AreaType.values().length;
+                } else {
+                    max--;
+                }
+            }
+        }
+        return typeToReturn;
     }
 
     /**

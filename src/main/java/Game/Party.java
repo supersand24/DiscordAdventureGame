@@ -27,6 +27,8 @@ public class Party implements Serializable {
 
     private final Member leader;
 
+    private int tilesMovedWithNoSpecialEvent = 0;
+
     List<Enemy> enemies = new ArrayList<>();
     List<Item> loot = new ArrayList<>();
 
@@ -76,7 +78,13 @@ public class Party implements Serializable {
 
             headingDirection = new Random().nextInt(possibleDirections.size());
             //THIS IS WHERE SETTLEMENTS AND DUNGEONS ARE GENERATED.
-            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.AreaType.PATH));
+
+            //use previousAreas.size number indicates how far party is on path
+            //gets larger they've been on path, use to force settlement odds
+
+            //random pick area type to use
+
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.setAreaType(this)));
 
         } else {
             System.out.println("Continuing on path.");
@@ -335,6 +343,14 @@ public class Party implements Serializable {
 
     public void setGoingTo(MapManager.Direction goingTo) {
         this.goingTo = goingTo;
+    }
+
+    public void setTilesMovedWithNoSpecialEvent(int tilesMovedWithNoSpecialEvent) {
+        this.tilesMovedWithNoSpecialEvent = tilesMovedWithNoSpecialEvent;
+    }
+
+    public int getTilesMovedWithNoSpecialEvent() {
+        return tilesMovedWithNoSpecialEvent;
     }
 
     @Override
