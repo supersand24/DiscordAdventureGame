@@ -381,9 +381,10 @@ public abstract class Entity implements Comparable<Entity> {
      * @return string
      */
     public String ifBlock() {
-            System.out.println(this.getName() + " blocked!");
+        String msg = "Attacked " + this.getName() + ", it was blocked";
+            System.out.println(msg);
             this.switchBlock();
-            return (this.getName() + " blocked!");
+            return (msg);
     }
 
     public String getLastAction() {
