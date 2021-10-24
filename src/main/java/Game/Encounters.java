@@ -212,7 +212,7 @@ public class Encounters {
      * @param party current party
      */
     private static void none(Party party) {
-        int r = rand.nextInt(1);
+        int r = rand.nextInt(2);
         if (r == 0) {
             Game.guild.getTextChannelById(party.channelId).sendMessage("Your party has been walking a while, do you want to rest?").queue();
         } else {
