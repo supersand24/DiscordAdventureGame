@@ -1,6 +1,7 @@
 package Game.Entities.EnemyTypes;
 
 import Game.Entities.Entity;
+import Game.Items.Useable.Usable;
 
 /**
  * Parent class for all enemies
@@ -53,7 +54,7 @@ public abstract class Enemy extends Entity {
     }
 
     @Override
-    public void useItem() {
+    public void useItem(Usable item) {
 
     }
 

@@ -3,6 +3,8 @@ package Game;
 import Game.Entities.EnemyTypes.*;
 import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
+import Game.Items.Bottle;
+import Game.Items.Useable.Potion;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -486,6 +488,9 @@ public class Game {
      *
      */
     public static void main(String[] args) {
+        Bottle bottle = new Bottle();
+        bottle.fill(new Potion(Potion.Liquid.WATER));
+        bottle.getContents().getLiquid().setHowClean(Potion.Cleanliness.KRISP);
         //Party p1 = new Party();
         //p1.setCurrentEncounter(Encounters.EncounterType.MERCHANT);
         //Encounters.setEncounter(p1);

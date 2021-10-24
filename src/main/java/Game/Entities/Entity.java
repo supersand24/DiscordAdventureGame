@@ -1,12 +1,10 @@
 package Game.Entities;
 
-import Game.Entities.EnemyTypes.Enemy;
 import Game.Items.Item;
+import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Weapon;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 
 /***
  * parent class to all Entities
@@ -60,7 +58,7 @@ public abstract class Entity implements Comparable<Entity> {
     /**
      * current inventory of the entity
      */
-    protected Item[] Inventory;
+    protected ArrayList<Item> Inventory = new ArrayList<>();
 
     /**
      * arraylist of all the weapons the player is currently holding
@@ -150,7 +148,7 @@ public abstract class Entity implements Comparable<Entity> {
      * Generic useItem for all entities to implement
      * @author Harrison Brown
      */
-    abstract public void useItem();
+    abstract public void useItem(Usable item);
 
     /**
      * if the entities' health is 0 or less, isAlive is set to false
@@ -223,7 +221,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @author Harrison Brown
      * @return Item[]
      */
-    public Item[] getInventory() {
+    public ArrayList<Item> getInventory() {
         return Inventory;
     }
 
@@ -261,6 +259,10 @@ public abstract class Entity implements Comparable<Entity> {
      */
     public int getWis() {
         return wis;
+    }
+
+    public int getStr() {
+        return str;
     }
 
     /**
@@ -313,7 +315,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @author Harrison Brown
      * @param inventory array to replace current inventory
      */
-    public void setInventory(Item[] inventory) {
+    public void setInventory(ArrayList<Item> inventory) {
         Inventory = inventory;
     }
 
@@ -353,6 +355,10 @@ public abstract class Entity implements Comparable<Entity> {
         this.wis = wis;
     }
 
+    public void setStr(int str) {
+        this.str = str;
+    }
+
     /**
      * checks the current state of blocking
      * @author Harrison Brown
@@ -388,6 +394,11 @@ public abstract class Entity implements Comparable<Entity> {
     public void setLastAction(String lastAction) {
         this.lastAction = lastAction;
     }
+
+    public void addToInventory(Item item) {
+        Inventory.add(item);
+    }
+
 
     /**
      * sorts based on speed, Arrays.sort(Entity[] array)

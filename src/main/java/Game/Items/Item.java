@@ -35,6 +35,16 @@ public abstract class Item {
         this.weight = weight;
     }
 
+    /**
+     * generic constructor for items
+     * @author Harrison Brown
+     */
+    protected Item() {
+        this.name = "generic item";
+        this.cost = 5;
+        this.weight = 10;
+    }
+
     //gets and sets
 
 
