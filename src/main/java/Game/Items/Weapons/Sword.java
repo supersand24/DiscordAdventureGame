@@ -10,13 +10,22 @@ import Game.Entities.Entity;
 public class Sword extends Weapon {
     /**
      * constructor to create a sword with the given name
+     * @author Harrison Brown
      * @param name The name of the Sword
      */
     public Sword(String name, String owner) {
         super(name,20, 15, 10, owner);
-        this.type = "Sword";
     }
 
+    /**
+     * default constructor for sword
+     * @author Harrison Brown
+     */
+    public Sword() {
+        super("temp", 20, 15, 10);
+    }
+
+    //any special methods for sword go here
     /*
     public void attack(Entity e) {
         e.setHealth(e.getHealth()-dmg);

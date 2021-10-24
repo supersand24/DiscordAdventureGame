@@ -1,6 +1,8 @@
 package Bot;
 
 import Game.Game;
+import Game.BattleSystem;
+import Game.MapManager;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -65,6 +67,12 @@ public class Listener extends ListenerAdapter {
                                 switch (command) {
                                     case "startgame" -> Game.startGame();
                                     case "save"      -> Game.save();
+                                    case "players"   -> System.out.println(Game.players.toString());
+                                    case "map"   -> {
+                                        MapManager.printMap();
+                                        System.out.println(Game.parties.get(0));
+                                    }
+                                    case "nuke"   -> BattleSystem.endBattle(Game.parties.get(0));
                                 }
                             }
                         } else {
@@ -94,8 +102,11 @@ public class Listener extends ListenerAdapter {
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
         switch (slashCommand.getName()) {
-            case "adventure"        -> Game.startAdventure(slashCommand);
-            case "taco"             -> System.out.println("Taco");
+            case "create"           -> Game.startParty(slashCommand);
+            case "adventure"        -> Game.leaveTown(slashCommand);
+            case "attack"           -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
+            case "block"            -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
+            case "vote"             -> Game.castVote(slashCommand);
         }
     }
 
@@ -108,9 +119,12 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
-        switch (e.getButton().getId()) {
-            case "joinAdventure"    -> Game.joinAdventure(e);
-            case "leaveTown"        -> Game.leaveTown(e);
+        if (e.getButton().getId().startsWith("vote_")) {
+            Game.processVote(e);
+        } else {
+            switch (e.getButton().getId()) {
+                case "joinParty" -> Game.joinParty(e);
+            }
         }
     }
 }

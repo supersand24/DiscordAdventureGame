@@ -8,10 +8,6 @@ package Game.Items;
 public abstract class Item {
 
     /**
-     * what the item is
-     */
-    protected String type;
-    /**
      * name of the item
      */
     protected String name;
@@ -28,6 +24,7 @@ public abstract class Item {
 
     /**
      * sets the name, cost, and weight of an item
+     * @author Harrison Brown
      * @param name item name
      * @param cost item cost
      * @param weight item weight
@@ -38,12 +35,19 @@ public abstract class Item {
         this.weight = weight;
     }
 
+    /**
+     * generic constructor for items
+     * @author Harrison Brown
+     */
+    protected Item() {
+        this.name = "generic item";
+        this.cost = 5;
+        this.weight = 10;
+    }
+
     //gets and sets
 
 
-    public String getType() {
-        return type;
-    }
 
     public String getName() {
         return name;

@@ -1,6 +1,7 @@
 package Game.Entities.EnemyTypes;
 
 import Game.Entities.Entity;
+import Game.Items.Useable.Usable;
 
 /**
  * Parent class for all enemies
@@ -8,47 +9,67 @@ import Game.Entities.Entity;
  * @version 0.1
  */
 public abstract class Enemy extends Entity {
-    int dmg;
-    String type;
-    /**
-     * constructor for basic enemy
-     * @param gold current gold amount
-     * @param maxHealth enemy maxHealth
-     * @see Game.Entities.Entity
-     */
-    Enemy(int gold, int maxHealth, String type, int dmg) {
-        super(gold, maxHealth);
-        this.type = type;
-        this.dmg = dmg;
-    }
-
-    /**
-     * constructor for enemy
-     * @param type the enemy type
-     * @param dmg the damage of the enemy
-     */
-    Enemy(String type, int dmg) {
-        super(10,10);
-        this.type = type;
-        this.dmg = dmg;
-    }
+    protected int dmg;
 
     /**
      * Constructor for enemy
-     * @param type the string of the type of enemy
+     * @author Harrison Brown
      */
-    Enemy(String type) {
-        super(10,10);
-        this.type = type;
-        this.dmg = 5;
+    public Enemy() {
+        super();
     }
 
     /**
      * attack method for enemy, takes in an entity
-     * @param p the entity to attack
+     * @author Harrison Brown
+     * @param entity the entity to attack
      */
     @Override
-    public void attack(Entity p) {
-        p.setHealth(p.getHealth()-dmg);
+    public void attack(Entity entity) {
+        if (entity.isBlocking()) {
+            this.setLastAction(entity.ifBlock());
+        } else {
+            String msg = "Attacked " + entity.getName() + " for " + dmg + " damage";
+            System.out.println(msg);
+            entity.setHealth(entity.getHealth() - dmg);
+            this.setLastAction(msg);
+        }
+    }
+
+    /**
+     * block method for enemy
+     * @author Harrison Brown
+     */
+    @Override
+    public void block() {
+        this.switchBlock();
+        String msg = "braced for an attack";
+        System.out.println(msg);
+        this.setLastAction(msg);
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void useItem(Usable item) {
+
+    }
+
+    /**
+     * toString for Enemy
+     * @author Harrison Brown
+     * @return string
+     */
+    @Override
+    public String toString() {
+        StringBuilder msg = new StringBuilder();
+        msg.append("TYPE: ").append(getClass().getSimpleName()).append("\n");
+        msg.append("CALLED: ").append(name).append("\n");
+        msg.append("SPEED: ").append(spd).append("\n");
+        return msg.toString();
+
     }
 }

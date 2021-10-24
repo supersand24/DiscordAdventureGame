@@ -1,9 +1,14 @@
 package Bot;
 
 import Game.Game;
+import Game.MapManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -11,6 +16,9 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -52,13 +60,34 @@ public class Main {
      * Written : October 18, 2021
      *
      */
-    private static void addSlashCommands(JDA jda) {
+    private static void addSlashCommands(Guild guild) {
         System.out.println("Running Slash Commands, be sure to disable this on next run.");
-        CommandListUpdateAction commands = jda.updateCommands();
+        CommandListUpdateAction commands = guild.updateCommands();
+
+        commands.addCommands(
+                //Create Party
+                new CommandData("create","Creates a party."),
+                //Attack
+                new CommandData("attack","Attacks an enemy.").addOptions(
+                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                ),
+                //Block
+                new CommandData("block","Blocks next attack."),
+                //Vote
+                new CommandData("vote","Starts a vote.")
+
+        ).queue();
 
         //Adventure Command
+        List<Command.Choice> data = new ArrayList<>();
+        for (MapManager.Direction dir : MapManager.Direction.values()) {
+            data.add(new Command.Choice(dir.getName(),dir.getName()));
+        }
         commands.addCommands(
-                new CommandData("adventure","Gets ready to go on an adventure.")
+                new CommandData("adventure","Gets ready to go on an adventure.").addOptions(
+                        new OptionData(OptionType.STRING,"direction","Which direction you would like to go.")
+                                .addChoices(data)
+                )
         ).queue();
 
     }
@@ -89,12 +118,19 @@ public class Main {
                 JDA jda = jdaBuilder.build();
                 jda.awaitReady();
 
-                //addSlashCommands(jda);
+                Guild guild = jda.getGuildById(899410801906044991L);
 
-                //Sets up the Game, if there is an error, app will exit.
-                if ( !Game.setUp(jda.getGuildById(899410801906044991L)) ) {
-                    System.out.println("An error occurred, app will stop running.");
-                    System.exit(404);
+                if (guild != null) {
+                    addSlashCommands(guild);
+
+                    //Sets up the Game, if there is an error, app will exit.
+                    if (!Game.setUp(guild)) {
+                        System.out.println("An error occurred, app will stop running.");
+                        System.exit(404);
+                    }
+                } else {
+                    System.out.println("Guild was null, app will stop running.");
+                    System.out.println(420);
                 }
 
             } catch (LoginException | InterruptedException e) {

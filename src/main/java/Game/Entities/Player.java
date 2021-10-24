@@ -1,47 +1,61 @@
 package Game.Entities;
 
 import Game.Items.Item;
+import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Sword;
+import Game.Items.Weapons.Weapon;
 
-import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Player class
  * @author Harrison Brown
- * @version 0.2
+ * @version 0.3
  */
 public class Player extends Entity {
-    /**
-     * The name of the character
-     */
-    protected final String name;
 
     /**
      * Gender of the character
      */
-
-    protected String gender;
+    protected String gender = "male";
 
     /**
      * player constructor
+     * @author Harrison Brown
      * @param gold initial gold
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
      */
-    public Player(int gold, int maxHealth, String weaponName, String weaponOwner, String playerName, String gender) {
+    public Player(int gold, int maxHealth, String playerName, String gender) {
         super(gold, maxHealth);
-        holding[0] = new Sword(weaponName, weaponOwner);
         this.name = playerName;
         this.gender = gender;
         genStats();
+        Sword s = new Sword();
+        holding.add(s);
 
     }
 
     /**
+     * a default constructor for quickly creating a default character
+     * @author Harrison Brown
+     * @param playerName the name of the player
+     */
+    public Player(String playerName) {
+        super();
+        this.name = playerName;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
+        genStats();
+        Sword s = new Sword();
+        holding.add(s);
+        System.out.println("New player created\n" + this);
+    }
+
+    /**
      * sets the stats of the player
-     * @version 0.4
+     * @author Harrison Brown
      */
     private void genStats() {
         Random rand = new Random();
@@ -61,11 +75,7 @@ public class Player extends Entity {
                 if (pool < 0) {
                     break;
                 }
-                /*
-                if (pool <= 3) {
-                    min = 0;
-                }
-                */
+
                 if (stats[i] >= 15) {
                     i++;
                     continue;
@@ -96,8 +106,8 @@ public class Player extends Entity {
 
     /**
      * a method for a Fisher-Yates shuffle
+     * @author Harrison Brown
      * @param ar the array to shuffle
-     * @version 1.0
      */
     private void shuffleArray(int[] ar)
     {
@@ -115,8 +125,8 @@ public class Player extends Entity {
 
     /***
      * if the value of the sats is greater than 15, sets then to 15
+     * @author Harrison Brown
      * @param ar the array of stats to check
-     * @version 1.0
      */
     private void checkMax(int[] ar) {
         for (int i = 0; i < ar.length; i++) {
@@ -126,25 +136,86 @@ public class Player extends Entity {
         }
     }
 
-    @Override
-    public void attack(Entity entity) {
-        entity.setHealth(entity.getHealth()-holding[0].getDmg());
+    /**
+     * a method to add a weapon to the players equips
+     * @author Harrison Brown
+     * @param weapon the weapon to add
+     */
+    public void addWeapon(Weapon weapon) {
+        holding.add(weapon);
     }
 
+    /**
+     * a method to switch the active weapon the secondary one
+     * @author Harrison Brown
+     */
+    public void switchActiveWeapon() {
+        Weapon temp = holding.get(0);
+        holding.remove(0);
+        holding.add(temp);
+    }
+
+    /**
+     * override for attack method
+     * @author Harrison Brown
+     * <p>
+     *     checks if the target is blocking and acts accordingly
+     *     if the target dies the equipped weapons kill count is incremented
+     * </p>
+     * @param entity the entity to target
+     */
+    @Override
+    public void attack(Entity entity) {
+        if (entity.isBlocking()) {
+            this.setLastAction(entity.ifBlock());
+        } else {
+            System.out.println(this.getName() + " Attacked");
+            entity.setHealth(entity.getHealth() - holding.get(0).getDmg());
+            entity.checkHealth();
+            if (!entity.getIsAlive()) {
+                holding.get(0).upKillCnt();
+            }
+            this.setLastAction("Attacked " + entity.getName() + " for " + holding.get(0).getDmg() + " damage");
+        }
+    }
+
+    /**
+     * override for the move method
+     * @author Harrison Brown
+     */
     @Override
     public void move() {
     }
 
+    /**
+     * override for the block method
+     * @author Harrison Brown
+     */
     @Override
     public void block() {
+        String msg;
+        if (this.isBlocking()) {
+            msg = "You already braced for an attack";
+        } else {
+            msg = "braced for an attack";
+            this.switchBlock();
+        }
+        System.out.println(msg);
+        this.setLastAction(msg);
     }
 
+    /**
+     * override for the useItem method
+     * @author Harrison Brown
+     */
     @Override
-    public void useItem() {
+    public void useItem(Usable item) {
+        item.use(this);
     }
 
     /**
      * toString for player
+     * @author Harrison Brown
      * <p>
      *    gives a string that is a vertical representation of all player attributes
      * </p>
@@ -152,23 +223,22 @@ public class Player extends Entity {
      */
     @Override
     public String toString() {
-        String out = "";
-        out += "Character: " + name + "\n";
-        out += "Gender: " + gender + "\n";
-        out += "Level: " + level + "\n";
-        out += "Health: " + health + " Max Health: " + maxHealth + "\n";
-        out += "Gold: " + gold + "\n";
-        for (Item x : holding) {
-            if (x != null) {
-                out += x.getType().toUpperCase() + ": " + x.getName() + "\n";
-            }
-        }
-        out += "Def: " + def +"\n";
-        out += "Spd: " + spd +"\n";
-        out += "Dex: " + dex +"\n";
-        out += "Wis: " + wis +"\n";
-        out += "Str: " + str +"\n";
+        StringBuilder out = new StringBuilder();
+        out.append("Character: ");
+        out.append(name);
+        out.append("\n");
+        out.append("Gender: ");
+        out.append(gender);
+        out.append("\n");
+        out.append("Level: ").append(level).append("\n");
+        out.append("Health: ").append(health).append(" Max Health: ").append(maxHealth).append("\n");
+        out.append("Gold: ").append(gold).append("\n");
 
-        return out;
+        for (Item x : holding) {
+            out.append(x.getClass().getSimpleName()).append(": ").append(x.getName()).append("\n");
+        }
+        out.append("Def: ").append(def).append("\n").append("Spd: ").append(spd).append("\n").append("Dex: ").append(dex).append("\n").append("Wis: ").append(wis).append("\n").append("Str: ").append(str).append("\n");
+
+        return out.toString();
     }
 }
