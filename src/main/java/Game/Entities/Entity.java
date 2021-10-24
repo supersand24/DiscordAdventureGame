@@ -58,7 +58,7 @@ public abstract class Entity implements Comparable<Entity> {
     /**
      * current inventory of the entity
      */
-    protected Item[] Inventory;
+    protected ArrayList<Item> Inventory = new ArrayList<>();
 
     /**
      * arraylist of all the weapons the player is currently holding
@@ -221,7 +221,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @author Harrison Brown
      * @return Item[]
      */
-    public Item[] getInventory() {
+    public ArrayList<Item> getInventory() {
         return Inventory;
     }
 
@@ -315,7 +315,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @author Harrison Brown
      * @param inventory array to replace current inventory
      */
-    public void setInventory(Item[] inventory) {
+    public void setInventory(ArrayList<Item> inventory) {
         Inventory = inventory;
     }
 
@@ -393,6 +393,11 @@ public abstract class Entity implements Comparable<Entity> {
     public void setLastAction(String lastAction) {
         this.lastAction = lastAction;
     }
+
+    public void addToInventory(Item item) {
+        Inventory.add(item);
+    }
+
 
     /**
      * sorts based on speed, Arrays.sort(Entity[] array)
