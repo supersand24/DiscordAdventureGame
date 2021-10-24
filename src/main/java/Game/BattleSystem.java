@@ -52,7 +52,7 @@ public class BattleSystem {
      * ends battle
      * @author Justin Sandman
      */
-    private static void endBattle(Party p) {
+    public static void endBattle(Party p) {
         //removes the party from the list of active battles
         activeBattles.remove(p);
         p.battleMessage = null;
@@ -275,6 +275,7 @@ public class BattleSystem {
      * @return the generated random value
      */
     public static int randomVal(int min, int max) {
+        max++;
         Random rand = new Random();
         return rand.nextInt(min, max);
     }
