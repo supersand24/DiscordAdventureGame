@@ -68,7 +68,10 @@ public class Listener extends ListenerAdapter {
                                     case "startgame" -> Game.startGame();
                                     case "save"      -> Game.save();
                                     case "players"   -> System.out.println(Game.players.toString());
-                                    case "map"   -> MapManager.printMap();
+                                    case "map"   -> {
+                                        MapManager.printMap();
+                                        System.out.println(Game.parties.get(0));
+                                    }
                                     case "nuke"   -> BattleSystem.endBattle(Game.parties.get(0));
                                 }
                             }

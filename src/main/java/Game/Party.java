@@ -32,6 +32,7 @@ public class Party implements Serializable {
 
     Area location = null;
     MapManager.Direction comingFrom = null;
+    List<Area> previousAreas = new ArrayList<Area>();
     MapManager.Direction goingTo = null;
 
     private Entity[] turnOrder = null;
@@ -74,6 +75,7 @@ public class Party implements Serializable {
             }
 
             headingDirection = new Random().nextInt(possibleDirections.size());
+            //THIS IS WHERE SETTLEMENTS AND DUNGEONS ARE GENERATED.
             MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.AreaType.PATH));
 
         } else {
@@ -82,17 +84,22 @@ public class Party implements Serializable {
             headingDirection = 0;
             //have a vote in here, if multiple paths
         }
-        System.out.println(possibleDirections);
+        //System.out.println(possibleDirections);
+        previousAreas.add(getLocation());
         setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
         goingTo = possibleDirections.get(headingDirection);
-        comingFrom = possibleDirections.get(headingDirection).getOpposite();
+        //CHECK FOR MULTIPLE PATHS!!!
+        comingFrom = location.getOtherConnections(goingTo).get(0);
+        System.out.println(location.getOtherConnections(goingTo));
+        //setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
         Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
     }
 
     public void headBack() {
         voteMessage.editMessage("The party voted, to go back.").queue();
-        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
-        setLocation(location.getConnections()[comingFrom.getIndex()]);
+        //setLocation(location.getConnections()[comingFrom.getIndex()]);
+        setLocation(previousAreas.get(previousAreas.size()-1));
+        previousAreas.remove(getLocation());
         System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
     }
 
@@ -333,12 +340,12 @@ public class Party implements Serializable {
     @Override
     public String toString() {
         return "Party{" +
-                ", leader=" + leader.getEffectiveName() +
-                ", enemies=" + enemies +
+                "leader=" + leader.getEffectiveName() +
                 ", location=" + location +
                 ", comingFrom=" + comingFrom +
                 ", goingTo=" + goingTo +
                 ", crntEvent=" + crntEvent +
+                ", previousAreas=" + previousAreas +
                 '}';
     }
 }

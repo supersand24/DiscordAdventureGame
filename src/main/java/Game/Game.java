@@ -83,7 +83,7 @@ public class Game {
                         .createPermissionOverride(member).setAllow(
                                 Permission.VIEW_CHANNEL
                         ).queue();
-                System.out.println(playerName + "(" + member.getUser().getName() + ") has joined the Game.");
+                System.out.println(member.getUser().getName()  + " has joined the Game.");
             } else {
                 msg.reply("Game isn't active.").queue();
             }
@@ -220,6 +220,7 @@ public class Game {
                         if (MapManager.getAdjacentArea(party.location,dir) == null) {
                             MapManager.addAdjacentArea(party.getLocation(),dir,new Area(MapManager.AreaType.PATH));
                         }
+                        party.previousAreas.add(party.getLocation());
                         party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
 
                         partyChannel.sendMessage("```" + MapManager.printMap() + "```").queue();
@@ -241,36 +242,6 @@ public class Game {
             slashCommand.getHook().sendMessage("ERROR : Could not find member.").queue();
             System.out.println("Could not find member.");
         }
-    }
-
-    /**
-     * Basic processing of an adventure event.
-     * This case is a battle.
-     *
-     * @author Justin Sandman
-     * Written : October 19, 2021
-     *
-     */
-    private static void adventureEvent(TextChannel textChannel) {
-        textChannel.sendMessage("Everyone walked down the long road.").queue();
-
-        Party party = parties.get(0);
-
-        party.enemies.add(new Goblin());
-        party.enemies.add(new Goblin());
-        party.enemies.add(new Goblin());
-        //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
-        //PLACE BattleHandler here.
-        BattleSystem.startBattle(party);
-
-        party.sendBattleMessage();
-
-        //Potentially get a list of dead people from BattleHandler
-        /*
-        for (Enemy en : parties.get(0).enemies) {
-            Collections.addAll(parties.get(0).loot, en.getInventory());
-        }
-        */
     }
 
     enum Vote {
@@ -413,7 +384,7 @@ public class Game {
      */
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
-        guild.getTextChannelById(900221965359517759L).sendMessage(msg).queue();
+        guild.getTextChannelById(901660400649658448L).sendMessage(msg).queue();
     }
 
     /**
