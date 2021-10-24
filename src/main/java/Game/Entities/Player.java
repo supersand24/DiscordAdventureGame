@@ -51,6 +51,7 @@ public class Player extends Entity {
         genStats();
         Sword s = new Sword();
         holding.add(s);
+        System.out.println("New player created\n" + this);
     }
 
     /**

@@ -4,6 +4,7 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import Game.Items.Item;
+import Game.MapManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,10 +12,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * An object that is stored in a list.  It keeps track of one Party.
@@ -27,8 +25,15 @@ public class Party implements Serializable {
 
     long channelId;
 
+    private final Member leader;
+
     List<Enemy> enemies = new ArrayList<>();
     List<Item> loot = new ArrayList<>();
+
+    Area location = null;
+    MapManager.Direction comingFrom = null;
+    List<Area> previousAreas = new ArrayList<Area>();
+    MapManager.Direction goingTo = null;
 
     private Entity[] turnOrder = null;
     private int turnIndex = 0;
@@ -38,16 +43,65 @@ public class Party implements Serializable {
     public HashMap<Game.Vote, Integer> vote = new HashMap<>();
     public List<Member> hasVoted = new ArrayList<>();
 
-    public Party(long id) {
+    public Party(long id, Member member, Area location) {
         this.channelId = id;
+        this.leader = member;
+        this.location = location;
     }
 
     private Encounters.EncounterType crntEvent = null;
 
-    /**
-     * Testing Purposes only.
-     */
-    public Party() {}
+    public void continueOn() {
+        voteMessage.editMessage("The party voted, to continue on!").queue();
+        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
+
+        List<MapManager.Direction> possibleDirections;
+        int headingDirection = 0;
+        if (location.canGenerateAdjacentPaths()) {
+            System.out.println("Generating new path.");
+            possibleDirections = MapManager.getEmptySpaces(location);
+
+            //If the direction the party is heading, is empty increase its chances.
+            if (possibleDirections.contains(goingTo)) {
+                possibleDirections.add(goingTo);
+                possibleDirections.add(goingTo);
+                possibleDirections.add(goingTo);
+            }
+            for (MapManager.Direction dir : goingTo.getNearbys()) {
+                if (possibleDirections.contains(dir)) {
+                    possibleDirections.add(dir);
+                    possibleDirections.add(dir);
+                }
+            }
+
+            headingDirection = new Random().nextInt(possibleDirections.size());
+            //THIS IS WHERE SETTLEMENTS AND DUNGEONS ARE GENERATED.
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.AreaType.PATH));
+
+        } else {
+            System.out.println("Continuing on path.");
+            possibleDirections = location.getOtherConnections(comingFrom);
+            headingDirection = 0;
+            //have a vote in here, if multiple paths
+        }
+        //System.out.println(possibleDirections);
+        previousAreas.add(getLocation());
+        setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
+        goingTo = possibleDirections.get(headingDirection);
+        //CHECK FOR MULTIPLE PATHS!!!
+        comingFrom = location.getOtherConnections(goingTo).get(0);
+        System.out.println(location.getOtherConnections(goingTo));
+        //setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
+        Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
+    }
+
+    public void headBack() {
+        voteMessage.editMessage("The party voted, to go back.").queue();
+        //setLocation(location.getConnections()[comingFrom.getIndex()]);
+        setLocation(previousAreas.get(previousAreas.size()-1));
+        previousAreas.remove(getLocation());
+        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
+    }
 
     public void sendBattleMessage() {
 
@@ -88,6 +142,26 @@ public class Party implements Serializable {
                 battleMessage.editMessageEmbeds(embed.build()).queue();
             }
         }
+    }
+
+    public long getChannelId() {
+        return channelId;
+    }
+
+    public Member getLeader() {
+        return leader;
+    }
+
+    public Area getLocation() {
+        return location;
+    }
+
+    public MapManager.Direction getComingFrom() {
+        return comingFrom;
+    }
+
+    public MapManager.Direction getGoingTo() {
+        return goingTo;
     }
 
     /**
@@ -248,14 +322,30 @@ public class Party implements Serializable {
         return crntEvent;
     }
 
+    public void setLocation(Area location) {
+        this.location = location;
+        int random = new Random().nextInt(location.getPossibleEncounters().size());
+        setCurrentEncounter(location.getPossibleEncounters().get(random));
+        Encounters.generateEncounter(this);
+    }
+
+    public void setComingFrom(MapManager.Direction comingFrom) {
+        this.comingFrom = comingFrom;
+    }
+
+    public void setGoingTo(MapManager.Direction goingTo) {
+        this.goingTo = goingTo;
+    }
+
     @Override
     public String toString() {
         return "Party{" +
-                "channelId=" + channelId +
-                ", enemies=" + enemies +
-                ", loot=" + loot +
-                ", turnOrder=" + Arrays.toString(turnOrder) +
-                ", turnIndex=" + turnIndex +
+                "leader=" + leader.getEffectiveName() +
+                ", location=" + location +
+                ", comingFrom=" + comingFrom +
+                ", goingTo=" + goingTo +
+                ", crntEvent=" + crntEvent +
+                ", previousAreas=" + previousAreas +
                 '}';
     }
 }

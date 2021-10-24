@@ -1,6 +1,7 @@
 package Bot;
 
 import Game.Game;
+import Game.MapManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -15,6 +16,9 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -60,26 +64,30 @@ public class Main {
         System.out.println("Running Slash Commands, be sure to disable this on next run.");
         CommandListUpdateAction commands = guild.updateCommands();
 
-        //Adventure Command
         commands.addCommands(
-                new CommandData("adventure","Gets ready to go on an adventure.")
-        ).queue();
-
-        //Attack Command
-        commands.addCommands(
+                //Create Party
+                new CommandData("create","Creates a party."),
+                //Attack
                 new CommandData("attack","Attacks an enemy.").addOptions(
                         new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
-                )
-        ).queue();
-
-        //Block Command
-        commands.addCommands(
-                new CommandData("block","Blocks next attack.")
-        ).queue();
-
-        //Vote Command
-        commands.addCommands(
+                ),
+                //Block
+                new CommandData("block","Blocks next attack."),
+                //Vote
                 new CommandData("vote","Starts a vote.")
+
+        ).queue();
+
+        //Adventure Command
+        List<Command.Choice> data = new ArrayList<>();
+        for (MapManager.Direction dir : MapManager.Direction.values()) {
+            data.add(new Command.Choice(dir.getName(),dir.getName()));
+        }
+        commands.addCommands(
+                new CommandData("adventure","Gets ready to go on an adventure.").addOptions(
+                        new OptionData(OptionType.STRING,"direction","Which direction you would like to go.")
+                                .addChoices(data)
+                )
         ).queue();
 
     }
@@ -113,7 +121,7 @@ public class Main {
                 Guild guild = jda.getGuildById(899410801906044991L);
 
                 if (guild != null) {
-                    //addSlashCommands(guild);
+                    addSlashCommands(guild);
 
                     //Sets up the Game, if there is an error, app will exit.
                     if (!Game.setUp(guild)) {
