@@ -14,12 +14,15 @@ public class Area implements Serializable {
 
     private int[] coords;
 
+    private MapManager.AreaType areaType;
+
     private List<Encounters.EncounterType> possibleEncounters = new ArrayList<>();
 
     private int connectionAmount;
     private Area[] connections = new Area[MapManager.Direction.values().length];
 
     public Area(MapManager.AreaType areaType) {
+        this.areaType = areaType;
         switch (areaType) {
             case SETTLEMENT -> {
                 this.name = setSettlementName();
@@ -136,6 +139,10 @@ public class Area implements Serializable {
     private String setSettlementType() {
         Random rand = new Random();
         return settlementType[rand.nextInt(settlementType.length)];
+    }
+
+    public MapManager.AreaType getAreaType() {
+        return areaType;
     }
 
     private static String[] possibleNames = {

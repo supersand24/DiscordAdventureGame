@@ -13,7 +13,7 @@ public class MapManager {
     /**
      * The map size.
      */
-    public static final int MAP_SIZE = 7;
+    public static final int MAP_SIZE = 15;
 
     /**
      * Simple cardinal directions.
@@ -98,14 +98,15 @@ public class MapManager {
     }
 
     public static AreaType setAreaType(Party party) {
-        if (party.getTilesMovedWithNoSpecialEvent() >= 5) {
+        //need to swap from previousAreas.size() to party.getTilesMovedWithNoSpecialEvent()
+        if (party.previousAreas.size() >= 5) {
             for (AreaType type : AreaType.values()) {
                 if (!type.equals(AreaType.SETTLEMENT)) {
                     type.weight = 0;
                 }
             }
-        } else if (party.getTilesMovedWithNoSpecialEvent() > 3) {
-            AreaType.SETTLEMENT.weight = (party.getTilesMovedWithNoSpecialEvent() - 3) * 2;
+        } else if (party.previousAreas.size() > 3) {
+            AreaType.SETTLEMENT.weight = (party.previousAreas.size() - 3) * 2;
         }
 
         Random rand = new Random();
@@ -255,9 +256,9 @@ public class MapManager {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map.length; j++) {
                 if (map[j][i] != null) {
-                    switch (map[j][i].getName()) {
-                        case "Route" -> stringBuilder.append("[R]");
-                        case "Noctori" -> stringBuilder.append("[N]");
+                    switch (map[j][i].getAreaType()) {
+                        case PATH -> stringBuilder.append("[R]");
+                        case SETTLEMENT -> stringBuilder.append("[").append(map[j][i].getName().charAt(0)).append("]");
                         default -> stringBuilder.append("[ ]");
                     }
                 } else {
