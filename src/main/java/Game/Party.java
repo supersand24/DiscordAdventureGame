@@ -33,6 +33,7 @@ public class Party implements Serializable {
     List<Item> loot = new ArrayList<>();
 
     Area location = null;
+    @Deprecated
     MapManager.Direction comingFrom = null;
     List<Area> previousAreas = new ArrayList<Area>();
     MapManager.Direction goingTo = null;
