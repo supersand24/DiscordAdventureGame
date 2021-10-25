@@ -39,7 +39,7 @@ public class BattleSystem {
         activeBattles.add(p);
 
         //temp array of players
-        Player[] players = p.getPlayers(Game.guild).toArray(new Player[0]);
+        Player[] players = p.getPlayers().toArray(new Player[0]);
 
         //sets the turn order in the party
         makeTurnOrder(p);
@@ -55,9 +55,9 @@ public class BattleSystem {
     public static void endBattle(Party p) {
         //removes the party from the list of active battles
         activeBattles.remove(p);
-        p.battleMessage = null;
+        p.setBattleMessage(null);
 
-        TextChannel channel = Game.guild.getTextChannelById(p.channelId);
+        TextChannel channel = Game.guild.getTextChannelById(p.getChannelId());
         if (channel != null) {
             channel.sendMessage("The battle is over, stop and heal up.").queue();
         }
@@ -65,7 +65,7 @@ public class BattleSystem {
         //Send Battle Log
 
         //EXP Handling
-        for (Player player : p.getPlayers(Game.guild)) {
+        for (Player player : p.getPlayers()) {
             //add xp
             //Check for levelups
         }
@@ -97,7 +97,7 @@ public class BattleSystem {
      * @author Harrison Brown
      */
     private static void enemyTurn(Party party, Enemy e) {
-        Player[] players = party.getPlayers(Game.guild).toArray(new Player[0]);
+        Player[] players = party.getPlayers().toArray(new Player[0]);
         int act;
         act = randomVal(0, 1);
         //act = 1;
@@ -149,7 +149,7 @@ public class BattleSystem {
         Entity[] arr2;
         Entity[] order;
 
-        arr1 = p.getPlayers(Game.guild).toArray(new Entity[0]);
+        arr1 = p.getPlayers().toArray(new Entity[0]);
         arr2 = p.enemies.toArray(new Entity[0]);
 
         order = new Entity[arr1.length + arr2.length];
@@ -184,7 +184,7 @@ public class BattleSystem {
 
         Party party = null;
         for (Party p : activeBattles) {
-            if (p.getMembers(Game.guild).contains(member)) {
+            if (p.getMembers().contains(member)) {
                 party = p;
             }
         }

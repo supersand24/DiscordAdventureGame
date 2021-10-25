@@ -83,11 +83,11 @@ public class Encounters {
         EncounterType en = null;
         ArrayList<EncounterType> types = new ArrayList<>();
 
-        if (p.getCurrentEncounter() == null || p.getCurrentEncounter().canRepeat) {
+        if (p.getCurrentEvent() == null || p.getCurrentEvent().canRepeat) {
             types.addAll(List.of(EncounterType.values()));
         } else {
             for (EncounterType type : EncounterType.values()) {
-                if (!type.equals(p.getCurrentEncounter())) {
+                if (!type.equals(p.getCurrentEvent())) {
                     types.add(type);
                 }
             }
@@ -115,7 +115,7 @@ public class Encounters {
         }
 
         System.out.println(en);
-        p.setCurrentEncounter(en);
+        p.setCurrentEvent(en);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Encounters {
      * @author Harrison Brown
      */
     public static void generateEncounter(Party party) {
-        switch (party.getCurrentEncounter()) {
+        switch (party.getCurrentEvent()) {
             case BATTLE -> battle(party);
             case SETTLEMENT -> settlement(party);
             case MERCHANT -> merchant(party);
@@ -140,7 +140,7 @@ public class Encounters {
      */
     private static void generateEnemies(Party party) {
        int avgLvl = averageLevel(party);
-       int maxCnt = 24 - party.getPlayers(Game.guild).size();
+       int maxCnt = 24 - party.getPlayers().size();
        int cnt = rand.nextInt(1, 4);
        ArrayList<Enemy> badguys = new ArrayList<>();
        for (int i = 0; i <= cnt; i++) {
@@ -160,10 +160,10 @@ public class Encounters {
         int sum = 0;
         int avg;
 
-        for (Player player : party.getPlayers(Game.guild)) {
+        for (Player player : party.getPlayers()) {
             sum += player.getLevel();
         }
-        avg = sum / party.getPlayers(Game.guild).size();
+        avg = sum / party.getPlayers().size();
 
         return avg;
     }
@@ -185,7 +185,7 @@ public class Encounters {
      * @param party current party
      */
     private static void settlement(Party party) {
-        Game.guild.getTextChannelById(party.channelId).sendMessage("You found a settlement").queue();
+        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("You found a settlement").queue();
     }
 
     /**
@@ -194,7 +194,7 @@ public class Encounters {
      * @param party current party
      */
     private static void merchant(Party party) {
-        Game.guild.getTextChannelById(party.channelId).sendMessage("You found a merchant").queue();
+        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("You found a merchant").queue();
     }
 
     /**
@@ -203,7 +203,7 @@ public class Encounters {
      * @param party current party
      */
     private static void dungeon(Party party) {
-        Game.guild.getTextChannelById(party.channelId).sendMessage("There would be a notice about the dungeon and some desicion structure here").queue();
+        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("There would be a notice about the dungeon and some desicion structure here").queue();
     }
 
     /**
@@ -214,7 +214,7 @@ public class Encounters {
     private static void none(Party party) {
         int r = rand.nextInt(2);
         if (r == 0) {
-            Game.guild.getTextChannelById(party.channelId).sendMessage("Your party has been walking a while, do you want to rest?").queue();
+            Game.guild.getTextChannelById(party.getChannelId()).sendMessage("Your party has been walking a while, do you want to rest?").queue();
         } else {
             encounter(party);
         }
@@ -223,7 +223,7 @@ public class Encounters {
     private static void returnToSettlement(Party party) {
         TextChannel settlementChannel = Game.guild.getTextChannelById(party.getLocation().getChannelId());
         if (settlementChannel != null) {
-            for (Member member : party.getMembers(Game.guild)) {
+            for (Member member : party.getMembers()) {
                 for (PermissionOverride perm : settlementChannel.getMemberPermissionOverrides()) {
                     perm.delete().queue();
                 }
@@ -233,7 +233,7 @@ public class Encounters {
             }
             TextChannel partyChannel = Game.guild.getTextChannelById(party.getChannelId());
             if (partyChannel != null) {
-                partyChannel.sendMessage("You returned back to " + party.location.getName() + ".").queue();
+                partyChannel.sendMessage("You returned back to " + party.getLocation().getName() + ".").queue();
             }
         }
     }
@@ -244,7 +244,7 @@ public class Encounters {
      * @param party current party
      */
     private static void branchPath(Party party) {
-        Game.guild.getTextChannelById(party.channelId).sendMessage("Theres a branch in the path, do you go left or right?").queue();
+        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("Theres a branch in the path, do you go left or right?").queue();
     }
 
 

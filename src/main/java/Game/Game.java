@@ -219,7 +219,7 @@ public class Game {
 
                         //Generate new area, if it doesn't exist.
                         //ADD SOMEWHERE IN HERE TO CHECK IF SETTLEMENT CAN GENERATE NEW PATHS
-                        if (MapManager.getAdjacentArea(party.location,dir) == null) {
+                        if (MapManager.getAdjacentArea(party.getLocation(),dir) == null) {
                             MapManager.addAdjacentArea(party.getLocation(),dir,new Area(MapManager.AreaType.PATH));
                         }
                         party.previousAreas.add(party.getLocation());
@@ -263,7 +263,7 @@ public class Game {
                         .addActionRow(
                                 Button.primary("vote_continue", "Continue On"),
                                 Button.primary("vote_headBack", "Go home")
-                        ).queue(interactionHook -> interactionHook.retrieveOriginal().queue(message -> parties.get(0).voteMessage = message));
+                        ).queue(interactionHook -> interactionHook.retrieveOriginal().queue(message -> parties.get(0).setVoteMessage(message);));
                 parties.get(0).vote.put(Vote.CONTINUE,0);
                 parties.get(0).vote.put(Vote.HEAD_BACK,0);
                 System.out.println(parties.get(0).vote);
@@ -299,7 +299,7 @@ public class Game {
                 parties.get(0).hasVoted.add(event.getMember());
                 event.getHook().sendMessage("Your vote was counted for.").queue();
 
-                if (parties.get(0).hasVoted.size() >= parties.get(0).getPlayers(Game.guild).size()) {
+                if (parties.get(0).hasVoted.size() >= parties.get(0).getPlayers().size()) {
                     endVote(parties.get(0));
                 }
             } else {
@@ -337,7 +337,7 @@ public class Game {
         //Reset Vars for next vote.
         party.vote.clear();
         party.hasVoted.clear();
-        party.voteMessage = null;
+        party.setVoteMessage(null);
     }
 
     /**
@@ -360,7 +360,7 @@ public class Game {
     private static Party findParty(Member member) {
         TextChannel channel = findPartyChannel(member);
         for (Party party : parties) {
-            if (party.channelId == channel.getIdLong())
+            if (party.getChannelId() == channel.getIdLong())
                 return party;
         }
         return null;

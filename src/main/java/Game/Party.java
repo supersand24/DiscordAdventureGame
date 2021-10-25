@@ -3,65 +3,94 @@ package Game;
 import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
-import Game.Items.Item;
-import Game.MapManager;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
- * An object that is stored in a list.  It keeps track of one Party.
+ * This object keeps track of a party, it is able to keep track of its members, map location, and voting information.
  *
  * @author Justin Sandman
- * @version 0.2
+ * @version 1.0
  *
  */
-public class Party implements Serializable {
+public class Party {
 
     /**
-     * ID of the party's text channel
+     * ID of the party's text channel.
      */
-    long channelId;
+    private long channelId;
 
     /**
-     * list of enemies in the players encounter
+     * The party leader, has final say, most of the time.
      */
     private final Member leader;
 
-    List<Enemy> enemies = new ArrayList<>();
+    /**
+     * The current encounter of the party.
+     */
+    private Encounters.EncounterType currentEvent = null;
 
     /**
-     * list fo loop in the players encounter
+     * List of enemies the party is currently facing.
      */
-    List<Item> loot = new ArrayList<>();
+    public List<Enemy> enemies = new ArrayList<>();
 
     /**
-     * lists storing all entities in the encounter, sorted by their speed stats
+     * The party's, current location on the map.
      */
-    Area location = null;
-    MapManager.Direction comingFrom = null;
-    List<Area> previousAreas = new ArrayList<Area>();
-    MapManager.Direction goingTo = null;
+    private Area location;
 
+    /**
+     * The party's direction they are coming from, this should be removed as soon as possible.
+     */
+    @Deprecated
+    public MapManager.Direction comingFrom = null;
+
+    /**
+     * The party's previous areas, works with heading back.
+     */
+    public List<Area> previousAreas = new ArrayList<>();
+
+    /**
+     * The party's facing direction, the map generation prefers this direction when generating areas.
+     */
+    private MapManager.Direction goingTo = null;
+
+    /**
+     * Lists storing all entities in the battle, sorted by their speed stats.
+     */
     private Entity[] turnOrder = null;
 
     /**
-     * index of the current entities turn
+     * Index of the parties current turn.
      */
     private int turnIndex = 0;
-    public Message battleMessage = null;
 
-    public Message voteMessage = null;
+    /**
+     * The message that was sent, shows the battle.
+     */
+    private Message battleMessage = null;
+
+    /**
+     * The message that was sent, so members can vote.
+     */
+    private Message voteMessage = null;
+
+    /**
+     * Keeps track of all the votes and how many each one has.
+     */
     public HashMap<Game.Vote, Integer> vote = new HashMap<>();
+
+    /**
+     * List of members that have already voted, prevents double voting.
+     */
     public List<Member> hasVoted = new ArrayList<>();
 
     /**
-     * constructor for a party
      * @author Justin Sandman
      * @param id id of the chat to set the party to
      */
@@ -72,13 +101,11 @@ public class Party implements Serializable {
     }
 
     /**
-     * the current encounter of the party
+     * Moves the party forwards, generating new paths or using existing ones.
+     * @author Justin Sandman
      */
-    private Encounters.EncounterType crntEvent = null;
-
     public void continueOn() {
         voteMessage.editMessage("The party voted, to continue on!").queue();
-        System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
 
         List<MapManager.Direction> possibleDirections;
         int headingDirection = 0;
@@ -109,17 +136,18 @@ public class Party implements Serializable {
             headingDirection = 0;
             //have a vote in here, if multiple paths
         }
-        //System.out.println(possibleDirections);
         previousAreas.add(getLocation());
         setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
         goingTo = possibleDirections.get(headingDirection);
         //CHECK FOR MULTIPLE PATHS!!!
         comingFrom = location.getOtherConnections(goingTo).get(0);
-        System.out.println(location.getOtherConnections(goingTo));
-        //setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
         Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
     }
 
+    /**
+     * Moves the party backwards to previously visited areas.
+     * @author Justin Sandman
+     */
     public void headBack() {
         voteMessage.editMessage("The party voted, to go back.").queue();
         //setLocation(location.getConnections()[comingFrom.getIndex()]);
@@ -129,7 +157,7 @@ public class Party implements Serializable {
     }
 
     /**
-     * send the battle message to the party
+     * Sends/updates the battle message in Discord.
      * @author Justin Sandman
      */
     public void sendBattleMessage() {
@@ -147,7 +175,7 @@ public class Party implements Serializable {
             //Fields
             embed.addField("Turn Order", getTurnOrderAsString(), false);
             //Get all player stats
-            for (Player player : getPlayers(Game.guild)) {
+            for (Player player : getPlayers()) {
                 embed.addField(
                         "PLAYER\n" + player.getName(),
                         player.getHealth() + "/" + player.getMaxHealth() + " HP",
@@ -173,90 +201,83 @@ public class Party implements Serializable {
         }
     }
 
+    /**
+     * @author Justin Sandman
+     * @return The channel ID.
+     */
     public long getChannelId() {
         return channelId;
     }
 
+    /**
+     * @author Justin Sandman
+     * @return The party leader.
+     */
     public Member getLeader() {
         return leader;
     }
 
+    /**
+     * @author Justin Sandman
+     * @return The event that the party is participating in.
+     */
+    public Encounters.EncounterType getCurrentEvent() {
+        return currentEvent;
+    }
+
+    /**
+     * @author Justin Sandman
+     * @return The list of enemies in front of the party.
+     */
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    /**
+     * @author Justin Sandman
+     * @return The area the party is at.
+     */
     public Area getLocation() {
         return location;
     }
 
+    /**
+     * @author Justin Sandman
+     * @return The direction the party is coming from, soon to be deprecated.
+     */
+    @Deprecated
     public MapManager.Direction getComingFrom() {
         return comingFrom;
     }
 
+    /**
+     * @author Justin Sandman
+     * @return The list of previous areas.
+     */
+    public List<Area> getPreviousAreas() {
+        return previousAreas;
+    }
+
+    /**
+     * @author Justin Sandman
+     * @return The direction the party is facing.
+     */
     public MapManager.Direction getGoingTo() {
         return goingTo;
     }
 
     /**
-     * Goes through the whole player list and finds a match, using member nickname.
-     *
-     * @author Justin Sandman
-     * Written : October 19, 2021
-     * @param member The member we need to compare with players.
-     *
-     */
-    public Player getPlayer(Member member) {
-        if (member.getNickname() != null) {
-            for (Player player : Game.players) {
-                if (member.getNickname().equals(player.getName())) {
-                    return player;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Makes a whole list of Players, that are in the party.
-     * Works side by side with getPlayer method.
-     *
-     * @author Justin Sandman
-     * Written : October 19, 2021
-     * @param guild The guild of the Discord Server.
-     *
-     */
-    public List<Player> getPlayers(Guild guild) {
-        List<Player> playerList = new ArrayList<>();
-        for (Member member : getMembers(guild)) {
-            if (member.getNickname() != null && member.getRoles().contains(Game.roleAdventurer)) {
-                for (Player player : Game.players) {
-                    if (member.getNickname().equals(player.getName())) {
-                        playerList.add(player);
-                        break;
-                    }
-                }
-            }
-        }
-        return playerList;
-    }
-
-    /**
-     * Obtains the member objects from everyone that can view the party channel.
-     *
-     * @author Justin Sandman
-     * Written : October 19, 2021
-     * @param guild The guild of the Discord Server.
-     *
-     */
-    public List<Member> getMembers(Guild guild) {
-        TextChannel channel = guild.getTextChannelById(channelId);
-        if (channel != null) {
-            return channel.getMembers();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * returns the encounter turn order as a string
      * @author Harrison Brown
-     * @return string of turn order
+     * @return Turn order as an Array.
+     */
+    public Entity[] getTurnOrder() {
+        return turnOrder;
+    }
+
+    /**
+     * @author Harrison Brown
+     * @author Justin Sandman
+     * @return Turn Order as a String.
      */
     public String getTurnOrderAsString() {
         if (turnOrder == null) {
@@ -295,66 +316,101 @@ public class Party implements Serializable {
     }
 
     /**
-     * @author Harrison Brown
-     * @return returns the turn order
-     */
-    public Entity[] getTurnOrder() {
-        return turnOrder;
-    }
-
-    /**
-     * sets the turn order
-     * @author Harrison Brown
-     * @param e the array to set the turn order
-     */
-    public void setTurnOrder(Entity[] e) {
-        turnOrder = e;
-    }
-
-    /**
      * getter for turnIndex
      * @author Harrison Brown
-     * @return returns turnIndex
+     * @return A number used for in the turn.
      */
     public int getTurnIndex() {
         return turnIndex;
     }
 
-    /**
-     * setter for turnIndex
-     * @author Harrison Brown
-     * @param turnIndex the new value
-     */
-    public void setTurnIndex(int turnIndex) {
-        this.turnIndex = turnIndex;
+    public Message getBattleMessage() {
+        return battleMessage;
     }
 
-    private void setBattleMessage(Message message) {
-        battleMessage = message;
+    public Message getVoteMessage() {
+        return voteMessage;
     }
 
-    /**
-     * setter for nextEncounter
-     * @author Harrison Brown
-     * @param currentEvent the next encounter for the party
-     */
-    public void setCurrentEncounter(Encounters.EncounterType currentEvent) {
-        this.crntEvent = currentEvent;
+    public HashMap<Game.Vote, Integer> getVote() {
+        return vote;
+    }
+
+    public List<Member> getHasVoted() {
+        return hasVoted;
     }
 
     /**
-     * getter for the party's next encounter
-     * @author Harrison Brown
-     * @return returns the nextEncounter
+     * @author Justin Sandman
+     * @param member The member to get the player from.
+     * @return The direction player the member owns.
      */
-    public Encounters.EncounterType getCurrentEncounter() {
-        return crntEvent;
+    public Player getPlayer(Member member) {
+        if (member.getNickname() != null) {
+            for (Player player : Game.players) {
+                if (member.getNickname().equals(player.getName())) {
+                    return player;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Makes a whole list of Players, that are in the party.
+     * Works side by side with getPlayer method.
+     *
+     * @author Justin Sandman
+     * @return A list of all the players in the party.
+     */
+    public List<Player> getPlayers() {
+        List<Player> playerList = new ArrayList<>();
+        for (Member member : getMembers()) {
+            if (member.getNickname() != null && member.getRoles().contains(Game.roleAdventurer)) {
+                for (Player player : Game.players) {
+                    if (member.getNickname().equals(player.getName())) {
+                        playerList.add(player);
+                        break;
+                    }
+                }
+            }
+        }
+        return playerList;
+    }
+
+    /**
+     * Obtains the member objects from everyone that can view the party channel.
+     *
+     * @author Justin Sandman
+     */
+    public List<Member> getMembers() {
+        TextChannel channel = Game.guild.getTextChannelById(channelId);
+        if (channel != null) {
+            return channel.getMembers();
+        } else {
+            return null;
+        }
+    }
+
+    public void setChannelId(long channelId) {
+        this.channelId = channelId;
+    }
+
+    //SET LEADER
+
+
+    public void setCurrentEvent(Encounters.EncounterType currentEvent) {
+        this.currentEvent = currentEvent;
+    }
+
+    public void setEnemies(List<Enemy> enemies) {
+        this.enemies = enemies;
     }
 
     public void setLocation(Area location) {
         this.location = location;
         int random = new Random().nextInt(location.getPossibleEncounters().size());
-        setCurrentEncounter(location.getPossibleEncounters().get(random));
+        setCurrentEvent(location.getPossibleEncounters().get(random));
         Encounters.generateEncounter(this);
     }
 
@@ -366,6 +422,38 @@ public class Party implements Serializable {
         this.goingTo = goingTo;
     }
 
+    /**
+     * @author Harrison Brown
+     * @param e The array to set the turn order.
+     */
+    public void setTurnOrder(Entity[] e) {
+        turnOrder = e;
+    }
+
+    /**
+     * @author Harrison Brown
+     * @param turnIndex the new value
+     */
+    public void setTurnIndex(int turnIndex) {
+        this.turnIndex = turnIndex;
+    }
+
+    public void setBattleMessage(Message message) {
+        battleMessage = message;
+    }
+
+    public void setVoteMessage(Message voteMessage) {
+        this.voteMessage = voteMessage;
+    }
+
+    public void setVote(HashMap<Game.Vote, Integer> vote) {
+        this.vote = vote;
+    }
+
+    public void setHasVoted(List<Member> hasVoted) {
+        this.hasVoted = hasVoted;
+    }
+
     @Override
     public String toString() {
         return "Party{" +
@@ -373,7 +461,7 @@ public class Party implements Serializable {
                 ", location=" + location +
                 ", comingFrom=" + comingFrom +
                 ", goingTo=" + goingTo +
-                ", crntEvent=" + crntEvent +
+                ", currentEvent=" + currentEvent +
                 ", previousAreas=" + previousAreas +
                 '}';
     }
