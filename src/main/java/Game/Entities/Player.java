@@ -4,6 +4,8 @@ import Game.Items.Item;
 import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Sword;
 import Game.Items.Weapons.Weapon;
+import Game.Party;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,6 +21,10 @@ public class Player extends Entity {
      * Gender of the character
      */
     protected String gender = "male";
+
+    protected Party party;
+
+    protected Member member;
 
     /**
      * player constructor
@@ -134,6 +140,22 @@ public class Player extends Entity {
                 ar[i] = 15;
             }
         }
+    }
+
+    public Party getParty() {
+        return party;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     /**

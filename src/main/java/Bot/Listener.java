@@ -3,6 +3,7 @@ package Bot;
 import Game.Game;
 import Game.BattleSystem;
 import Game.MapManager;
+import Game.Party;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -122,7 +123,15 @@ public class Listener extends ListenerAdapter {
             Game.processVote(e);
         } else {
             switch (e.getButton().getId()) {
-                case "joinParty" -> Game.joinParty(e);
+                case "joinParty" -> {
+                    e.deferReply(true).queue();
+                    Party party = Game.players.get(e.getMessage().getMentionedMembers().get(0)).getParty();
+                    if (party.joinParty(Game.players.get(e.getMember())) ) {
+                        e.getHook().sendMessage("You joined the " + party.getChannel().getAsMention() + ".").queue();
+                    } else {
+                        e.getHook().sendMessage("There was an issue joining the party.").queue();
+                    }
+                }
             }
         }
     }

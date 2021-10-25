@@ -15,6 +15,13 @@ public class MapManager {
     public static final int MAP_SIZE = 7;
 
     /**
+     * Creates a grid.
+     */
+    private static Area[][] map = new Area[MAP_SIZE][MAP_SIZE];
+
+    public static List<Area> areas = new ArrayList<>();
+
+    /**
      * Simple cardinal directions.
      */
     public enum Direction {
@@ -80,11 +87,6 @@ public class MapManager {
         SETTLEMENT,
         PATH
     }
-
-    /**
-     * Creates a grid.
-     */
-    private static Area[][] map = new Area[MAP_SIZE][MAP_SIZE];
 
     public static void linkAreas(Area from, Direction dir, Area to) {
         from.setConnection(to,dir);
@@ -193,6 +195,7 @@ public class MapManager {
         if ( (x > 0 || y > 0) && (x < MAP_SIZE || y < MAP_SIZE) && area != null) {
             map[x - 1][y - 1] = area;
             area.setCoords(x,y);
+            areas.add(area);
         }
     }
 

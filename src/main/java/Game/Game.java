@@ -36,8 +36,6 @@ public class Game {
     public static Hashtable<Member, Player> players = new Hashtable<>();
     public static List<Party> parties = new ArrayList<>();
 
-    private static final Area mainHub = new Area(MapManager.AreaType.SETTLEMENT);
-
     /**
      * Tries to start the game, if one is not in progress.
      * Is called by a Developer in the server.
@@ -52,9 +50,10 @@ public class Game {
             gameStarted = true;
             System.out.println("Starting Game");
             sendMessage("Game Starting!  To join, reply to this message your characters name.");
-            guild.createTextChannel(mainHub.getName(),categorySettlement).queue(channel -> {
-                MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,mainHub);
-                mainHub.setChannelId(channel.getIdLong());
+            Area beginningTown = new Area(MapManager.AreaType.SETTLEMENT);
+            guild.createTextChannel(beginningTown.getName(),categorySettlement).queue(channel -> {
+                MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,beginningTown);
+                beginningTown.setChannel(channel);
                 MapManager.printMap();
             });
         } else {
@@ -75,15 +74,19 @@ public class Game {
     public static void joinGame(Member member, Message msg) {
         if (!member.getRoles().contains(roleAdventurer)) {
             if (gameStarted) {
-                guild.addRoleToMember(member, roleAdventurer).queue();
                 String playerName = msg.getContentRaw().trim();
-                guild.modifyNickname(member,playerName).queue();
-                players.put(member,new Player(playerName));
-                guild.getTextChannelById(mainHub.getChannelId())
-                        .createPermissionOverride(member).setAllow(
-                                Permission.VIEW_CHANNEL
-                        ).queue();
-                System.out.println(member.getUser().getName()  + " has joined the Game.");
+                if (playerName.length() <= 32) {
+                    guild.addRoleToMember(member, roleAdventurer).queue();
+                    guild.modifyNickname(member, playerName).queue();
+                    players.put(member, new Player(playerName));
+                    categorySettlement.getTextChannels().get(0)
+                            .createPermissionOverride(member).setAllow(
+                                    Permission.VIEW_CHANNEL
+                            ).queue();
+                    System.out.println(member.getUser().getName() + " has joined the Game.");
+                } else {
+                    msg.reply("The name chosen is too long, must be 32 characters or less.").queue();
+                }
             } else {
                 msg.reply("Game isn't active.").queue();
             }
@@ -112,8 +115,10 @@ public class Game {
                                     .setAllow(Permission.VIEW_CHANNEL)
                                     .queue();
                             textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                            parties.add(new Party(textChannel.getIdLong(), member, MapManager.getArea(slashCommand.getChannel().getIdLong())));
-                            System.out.println(parties.get(0).toString());
+                            Party party = new Party(textChannel, member, MapManager.getArea(slashCommand.getChannel().getIdLong()));
+                            parties.add(party);
+                            players.get(member).setParty(party);
+                            System.out.println(party);
                         });
                     } else {
                         slashCommand.reply("You are currently on an adventure, go back to town to start a new party.").setEphemeral(true).queue();
@@ -127,38 +132,6 @@ public class Game {
         } else {
             slashCommand.reply("ERROR : Member not found!").setEphemeral(true).queue();
             System.out.println("Member could not be found.");
-        }
-    }
-
-    public static void joinParty(ButtonClickEvent buttonClick) {
-        Member partyLeader = buttonClick.getMessage().getMentionedMembers().get(0);
-        Member member = buttonClick.getMember();
-
-        buttonClick.deferReply(true).queue();
-
-        if (member != null && partyLeader != null) {
-            if (canPlayGame(member)) {
-                //If you are not already in a party.
-                if (!categoryAdventure.getMembers().contains(member)) {
-                    //Find the Party Channel, and add the member to it, and notify the party.
-                    TextChannel channel = findPartyChannel(partyLeader);
-                    if (channel != null) {
-                        channel.sendMessage(member.getAsMention() + " has joined the Party!").queue();
-                        channel.createPermissionOverride(member)
-                                .setAllow(Permission.VIEW_CHANNEL)
-                                .queue();
-                        buttonClick.getHook().sendMessage("You joined the " + channel.getAsMention() + ".").queue();
-                    } else {
-                        buttonClick.getHook().sendMessage("ERROR : Party not found!").queue();
-                        System.out.println("Could not find party channel.");
-                    }
-                } else {
-                    buttonClick.getHook().sendMessage("You are already in a party.").queue();
-                }
-            }
-        } else {
-            buttonClick.getHook().sendMessage("ERROR : Member not found!").queue();
-            System.out.println("A member could not be found.");
         }
     }
 

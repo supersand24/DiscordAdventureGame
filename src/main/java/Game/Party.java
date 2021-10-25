@@ -4,6 +4,7 @@ import Game.Entities.EnemyTypes.Enemy;
 import Game.Entities.Entity;
 import Game.Entities.Player;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -24,10 +25,17 @@ public class Party {
      */
     private long channelId;
 
+    private TextChannel channel;
+
     /**
      * The party leader, has final say, most of the time.
      */
     private final Member leader;
+
+    /**
+     * List of players.
+     */
+    private final List<Player> players = new ArrayList<>();
 
     /**
      * The current encounter of the party.
@@ -92,12 +100,23 @@ public class Party {
 
     /**
      * @author Justin Sandman
-     * @param id id of the chat to set the party to
      */
-    public Party(long id, Member member, Area location) {
-        this.channelId = id;
-        this.leader = member;
+    public Party(TextChannel channel, Member partyLeader, Area location) {
+        this.channel = channel;
+        this.leader = partyLeader;
         this.location = location;
+    }
+
+    public boolean joinParty(Player player) {
+        players.add(player);
+
+        Member member = player.getMember();
+
+        channel.sendMessage(member.getAsMention() + " has joined the Party!").queue();
+        channel.createPermissionOverride(member)
+                .setAllow(Permission.VIEW_CHANNEL)
+                .queue();
+        return true;
     }
 
     /**
@@ -207,6 +226,10 @@ public class Party {
      */
     public long getChannelId() {
         return channelId;
+    }
+
+    public TextChannel getChannel() {
+        return channel;
     }
 
     /**
