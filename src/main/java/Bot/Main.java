@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -64,14 +65,20 @@ public class Main {
         CommandListUpdateAction commands = guild.updateCommands();
 
         commands.addCommands(
-                //Create Party
-                new CommandData("create","Creates a party."),
-                //Attack
-                new CommandData("attack","Attacks an enemy.").addOptions(
-                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                //Battle
+                new CommandData("battle","All commands related to battling.").addSubcommands(
+                        //Attack
+                        new SubcommandData("attack","Attacks an enemy.").addOptions(
+                                new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                        ),
+                        //Block
+                        new SubcommandData("block","Blocks next attack.")
                 ),
-                //Block
-                new CommandData("block","Blocks next attack."),
+                //Party
+                new CommandData("party","Party related commands.").addSubcommands(
+                        //Create
+                        new SubcommandData("create","Creates a party.")
+                ),
                 //Vote
                 new CommandData("vote","Starts a vote.")
 

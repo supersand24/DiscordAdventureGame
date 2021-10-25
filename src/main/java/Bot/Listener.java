@@ -101,11 +101,26 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
+        String subCommand = slashCommand.getSubcommandName();
         switch (slashCommand.getName()) {
-            case "create"           -> Game.startParty(slashCommand);
+            case "party" -> {
+                if (subCommand != null) {
+                    switch (subCommand) {
+                        case "create"   -> Game.startParty(slashCommand);
+                        case "join"     -> System.out.println("Joining Party.");
+                        case "leave"    -> System.out.println("Leaving Party.");
+                    }
+                }
+            }
+            case "battle" -> {
+                if (subCommand != null) {
+                    switch (subCommand) {
+                        case "attack"   -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
+                        case "block"    -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
+                    }
+                }
+            }
             case "adventure"        -> Game.leaveTown(slashCommand);
-            case "attack"           -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
-            case "block"            -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
             case "vote"             -> Game.castVote(slashCommand);
         }
     }
