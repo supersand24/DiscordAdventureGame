@@ -263,7 +263,7 @@ public class Game {
                         .addActionRow(
                                 Button.primary("vote_continue", "Continue On"),
                                 Button.primary("vote_headBack", "Go home")
-                        ).queue(interactionHook -> interactionHook.retrieveOriginal().queue(message -> parties.get(0).setVoteMessage(message);));
+                        ).queue(interactionHook -> interactionHook.retrieveOriginal().queue(message -> parties.get(0).setVoteMessage(message)));
                 parties.get(0).vote.put(Vote.CONTINUE,0);
                 parties.get(0).vote.put(Vote.HEAD_BACK,0);
                 System.out.println(parties.get(0).vote);
