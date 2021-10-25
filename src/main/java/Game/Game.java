@@ -1,11 +1,8 @@
 package Game;
 
-import Game.Entities.EnemyTypes.*;
-import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
 import Game.Items.Bottle;
 import Game.Items.Useable.Potion;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -36,10 +33,10 @@ public class Game {
 
     static boolean gameStarted;
 
-    public static List<Player> players = new ArrayList<>();
+    public static Hashtable<Member, Player> players = new Hashtable<>();
     public static List<Party> parties = new ArrayList<>();
 
-    private static Area mainHub = new Area(MapManager.AreaType.SETTLEMENT);
+    private static final Area mainHub = new Area(MapManager.AreaType.SETTLEMENT);
 
     /**
      * Tries to start the game, if one is not in progress.
@@ -61,6 +58,7 @@ public class Game {
                 MapManager.printMap();
             });
         } else {
+            sendMessage("Game Already Started");
             System.out.println("Game Already Started");
         }
 
@@ -80,7 +78,7 @@ public class Game {
                 guild.addRoleToMember(member, roleAdventurer).queue();
                 String playerName = msg.getContentRaw().trim();
                 guild.modifyNickname(member,playerName).queue();
-                players.add(new Player(playerName));
+                players.put(member,new Player(playerName));
                 guild.getTextChannelById(mainHub.getChannelId())
                         .createPermissionOverride(member).setAllow(
                                 Permission.VIEW_CHANNEL

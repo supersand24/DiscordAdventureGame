@@ -342,38 +342,12 @@ public class Party {
 
     /**
      * @author Justin Sandman
-     * @param member The member to get the player from.
-     * @return The direction player the member owns.
-     */
-    public Player getPlayer(Member member) {
-        if (member.getNickname() != null) {
-            for (Player player : Game.players) {
-                if (member.getNickname().equals(player.getName())) {
-                    return player;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Makes a whole list of Players, that are in the party.
-     * Works side by side with getPlayer method.
-     *
-     * @author Justin Sandman
      * @return A list of all the players in the party.
      */
     public List<Player> getPlayers() {
         List<Player> playerList = new ArrayList<>();
         for (Member member : getMembers()) {
-            if (member.getNickname() != null && member.getRoles().contains(Game.roleAdventurer)) {
-                for (Player player : Game.players) {
-                    if (member.getNickname().equals(player.getName())) {
-                        playerList.add(player);
-                        break;
-                    }
-                }
-            }
+            playerList.add(Game.players.get(member));
         }
         return playerList;
     }
@@ -395,9 +369,6 @@ public class Party {
     public void setChannelId(long channelId) {
         this.channelId = channelId;
     }
-
-    //SET LEADER
-
 
     public void setCurrentEvent(Encounters.EncounterType currentEvent) {
         this.currentEvent = currentEvent;

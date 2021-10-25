@@ -67,7 +67,6 @@ public class Listener extends ListenerAdapter {
                                 switch (command) {
                                     case "startgame" -> Game.startGame();
                                     case "save"      -> Game.save();
-                                    case "players"   -> System.out.println(Game.players.toString());
                                     case "map"   -> {
                                         MapManager.printMap();
                                         System.out.println(Game.parties.get(0));

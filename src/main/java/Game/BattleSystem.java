@@ -135,7 +135,7 @@ public class BattleSystem {
      */
     public static boolean isTurn(Party p, Member m) {
         if (p.getTurnOrder() != null) {
-            return p.getTurnOrder()[p.getTurnIndex()].equals(p.getPlayer(m));
+            return p.getTurnOrder()[p.getTurnIndex()].equals(Game.players.get(m));
         }
         return false;
     }
@@ -195,7 +195,7 @@ public class BattleSystem {
 
                 slashCommand.deferReply(true).queue();
 
-                Player player = party.getPlayer(member);
+                Player player = Game.players.get(member);
 
                 switch (choice) {
                     case ATTACK -> attack(
