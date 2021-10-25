@@ -48,7 +48,7 @@ public class Player extends Entity {
      * @author Harrison Brown
      * @param playerName the name of the player
      */
-    public Player(String playerName) {
+    public Player(String playerName, Member member) {
         super();
         this.name = playerName;
         this.maxHealth = 100;
@@ -56,6 +56,7 @@ public class Player extends Entity {
         genStats();
         Sword s = new Sword();
         holding.add(s);
+        this.member = member;
         System.out.println("New player created\n" + this);
     }
 

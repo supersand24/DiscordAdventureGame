@@ -77,7 +77,10 @@ public class Main {
                 //Party
                 new CommandData("party","Party related commands.").addSubcommands(
                         //Create
-                        new SubcommandData("create","Creates a party.")
+                        new SubcommandData("create","Creates a party."),
+                        new SubcommandData("join", "Joins an existing party.").addOptions(
+                                new OptionData(OptionType.USER,"member", "A member of the party you would like to join.").setRequired(true)
+                        )
                 ),
                 //Vote
                 new CommandData("vote","Starts a vote.")

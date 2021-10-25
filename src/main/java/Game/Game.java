@@ -78,7 +78,7 @@ public class Game {
                 if (playerName.length() <= 32) {
                     guild.addRoleToMember(member, roleAdventurer).queue();
                     guild.modifyNickname(member, playerName).queue();
-                    players.put(member, new Player(playerName));
+                    players.put(member, new Player(playerName, member));
                     categorySettlement.getTextChannels().get(0)
                             .createPermissionOverride(member).setAllow(
                                     Permission.VIEW_CHANNEL

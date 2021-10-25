@@ -107,7 +107,15 @@ public class Listener extends ListenerAdapter {
                 if (subCommand != null) {
                     switch (subCommand) {
                         case "create"   -> Game.startParty(slashCommand);
-                        case "join"     -> System.out.println("Joining Party.");
+                        case "join"     -> {
+                            slashCommand.deferReply(true).queue();
+                            Party party = Game.players.get(slashCommand.getOptionsByName("member").get(0).getAsMember()).getParty();
+                            if (party.joinParty(Game.players.get(slashCommand.getMember())) ) {
+                                slashCommand.getHook().sendMessage("You joined the " + party.getChannel().getAsMention() + ".").queue();
+                            } else {
+                                slashCommand.getHook().sendMessage("There was an issue joining the party.").queue();
+                            }
+                        }
                         case "leave"    -> System.out.println("Leaving Party.");
                     }
                 }
