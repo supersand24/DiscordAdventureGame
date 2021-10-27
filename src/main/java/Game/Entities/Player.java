@@ -73,6 +73,20 @@ public class Player extends Entity {
     }
 
     /**
+     * a default constructor to test character creation in the console
+     * @author Harrison Brown
+     * @param playerName te name of the player
+     */
+    public Player(String playerName) {
+        super();
+        this.name = playerName;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
+        genStats();
+        System.out.println("New player created\n" + this);
+    }
+
+    /**
      * sets the stats of the player
      * @author Harrison Brown
      */

@@ -13,6 +13,8 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import java.io.*;
 import java.util.*;
 
+import static Game.CharacterCreation.makePlayer;
+
 /**
  * Handles everything for the game.
  *
@@ -456,11 +458,9 @@ public class Game {
      *
      */
     public static void main(String[] args) {
-        Bottle bottle = new Bottle();
-        bottle.fill(new Potion(Potion.Liquid.WATER));
-        bottle.getContents().getLiquid().setHowClean(Potion.Cleanliness.KRISP);
-        //Party p1 = new Party();
-        //p1.setCurrentEncounter(Encounters.EncounterType.MERCHANT);
-        //Encounters.setEncounter(p1);
+        Player play = null;
+        play = makePlayer();
+
+        //System.out.println(play);
     }
 }

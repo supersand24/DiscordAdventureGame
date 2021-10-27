@@ -14,7 +14,7 @@ import java.util.Scanner;
  * @version 0.1
  */
 public class CharacterCreation {
-    private static Scanner scan = new Scanner(System.in);
+    private final static Scanner scan = new Scanner(System.in);
 
     /**
      * starts character creation
@@ -38,6 +38,26 @@ public class CharacterCreation {
         return player;
     }
 
+    public static Player makePlayer() {
+        Player player;
+        String name;
+        Player.PlayerRace race;
+        Player.PlayerGender gender;
+        Weapon weapon;
+
+        race = getPlayerRace();
+        scan.reset();
+        name = getPlayerName();
+        scan.reset();
+        gender = getPlayerGender();
+        scan.reset();
+        weapon = getPlayerWeapon();
+
+        player = createPlayer(race, name, gender, weapon);
+
+        return player;
+    }
+
 
     private static Player.PlayerRace getPlayerRace() {
         System.out.println("Pick a race from these options:");
@@ -45,14 +65,13 @@ public class CharacterCreation {
             System.out.print(r + ", ");
         }
         System.out.println();
-        System.out.print("Enter number fro 0 to " + Player.PlayerRace.values().length + ": ");
-
+        System.out.print("Enter number fro 0 to " + (Player.PlayerRace.values().length-1)+ ": ");
 
         return Player.PlayerRace.values()[scan.nextInt()];
     }
 
     private static String getPlayerName() {
-        System.out.println("Enter a name: ");
+        System.out.print("Enter a name: ");
         return scan.next();
     }
 
@@ -62,7 +81,7 @@ public class CharacterCreation {
             System.out.print(g + ", ");
         }
         System.out.println();
-        System.out.print("Enter number fro 0 to " + Player.PlayerRace.values().length + ": ");
+        System.out.print("Enter number fro 0 to " + (Player.PlayerGender.values().length-1) + ": ");
 
 
         return Player.PlayerGender.values()[scan.nextInt()];
@@ -74,6 +93,14 @@ public class CharacterCreation {
 
     private static Player createPlayer(Player.PlayerRace race, String name, Player.PlayerGender gender, Weapon weapon, Member member) {
         Player p = new Player(name, member);
+        p.setGender(gender);
+        p.setRace(race);
+        p.addWeapon(weapon);
+        return p;
+    }
+
+    private static Player createPlayer(Player.PlayerRace race, String name, Player.PlayerGender gender, Weapon weapon) {
+        Player p = new Player(name);
         p.setGender(gender);
         p.setRace(race);
         p.addWeapon(weapon);
