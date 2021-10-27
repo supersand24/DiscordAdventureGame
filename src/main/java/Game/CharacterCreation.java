@@ -7,9 +7,20 @@ import net.dv8tion.jda.api.entities.Member;
 
 import java.util.Scanner;
 
+/**
+ * This class controls character creation
+ *
+ * @author harrison Brown
+ * @version 0.1
+ */
 public class CharacterCreation {
     private static Scanner scan = new Scanner(System.in);
 
+    /**
+     * starts character creation
+     * @param member the member to make the character for
+     * @return the new player object
+     */
     public static Player makePlayer(Member member) {
         Player player;
         String name;
@@ -26,6 +37,7 @@ public class CharacterCreation {
 
         return player;
     }
+
 
     private static Player.PlayerRace getPlayerRace() {
         System.out.println("Pick a race from these options:");
