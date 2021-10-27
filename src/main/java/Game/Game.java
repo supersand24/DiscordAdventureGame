@@ -1,19 +1,17 @@
 package Game;
 
-import Game.Entities.EnemyTypes.*;
-import Game.Entities.EnemyTypes.Grunts.Goblin;
 import Game.Entities.Player;
-import net.dv8tion.jda.api.EmbedBuilder;
+import Game.Items.Bottle;
+import Game.Items.Useable.Potion;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Handles everything for the game.
@@ -28,14 +26,15 @@ public class Game {
     public static Guild guild;
 
     public static Role roleAdventurer;
+    public static Role roleDeveloper;
 
     public static Category categoryAdventure;
     public static Category categorySettlement;
 
     static boolean gameStarted;
 
-    public static List<Player> players = new ArrayList<>();
-    static List<Party> parties = new ArrayList<>();
+    public static Hashtable<Member, Player> players = new Hashtable<>();
+    public static List<Party> parties = new ArrayList<>();
 
     /**
      * Tries to start the game, if one is not in progress.
@@ -51,7 +50,14 @@ public class Game {
             gameStarted = true;
             System.out.println("Starting Game");
             sendMessage("Game Starting!  To join, reply to this message your characters name.");
+            Area beginningTown = new Area(MapManager.AreaType.SETTLEMENT);
+            guild.createTextChannel(beginningTown.getName(),categorySettlement).queue(channel -> {
+                MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,beginningTown);
+                beginningTown.setChannel(channel);
+                MapManager.printMap();
+            });
         } else {
+            sendMessage("Game Already Started");
             System.out.println("Game Already Started");
         }
 
@@ -68,9 +74,19 @@ public class Game {
     public static void joinGame(Member member, Message msg) {
         if (!member.getRoles().contains(roleAdventurer)) {
             if (gameStarted) {
-                System.out.println(member.getEffectiveName() + " has joined the Game.");
-                guild.addRoleToMember(member, roleAdventurer).queue();
-                guild.modifyNickname(member,msg.getContentRaw().trim()).queue();
+                String playerName = msg.getContentRaw().trim();
+                if (playerName.length() <= 32) {
+                    guild.addRoleToMember(member, roleAdventurer).queue();
+                    guild.modifyNickname(member, playerName).queue();
+                    players.put(member, new Player(playerName, member));
+                    categorySettlement.getTextChannels().get(0)
+                            .createPermissionOverride(member).setAllow(
+                                    Permission.VIEW_CHANNEL
+                            ).queue();
+                    System.out.println(member.getUser().getName() + " has joined the Game.");
+                } else {
+                    msg.reply("The name chosen is too long, must be 32 characters or less.").queue();
+                }
             } else {
                 msg.reply("Game isn't active.").queue();
             }
@@ -80,83 +96,42 @@ public class Game {
 
     }
 
-    /**
-     * Opens an invitation for other players to join an adventure.
-     * Is called by a Member in the server, only while in a settlement, and not in another party
-     *
-     * @author Justin Sandman
-     * Written : October 18, 2021
-     *
-     */
-    public static void startAdventure(SlashCommandEvent slashCommand) {
+    public static void startParty(SlashCommandEvent slashCommand) {
 
         //Get user Member
         Member member = slashCommand.getMember();
 
-        if (canPlayGame(member)) {
-            //If member is in a settlement, and not on an adventure.
-            if (categorySettlement.getMembers().contains(member)) {
-                if (!categoryAdventure.getMembers().contains(member)) {
-                    slashCommand.reply(member.getAsMention() + " is going on an adventure.")
-                            .addActionRow(
-                                    Button.primary("joinAdventure", "Join Adventure Party"),
-                                    Button.danger("leaveTown", "Leave Town")
-                            ).queue();
-                    guild.createTextChannel("party", categoryAdventure).queue(textChannel -> {
-                        textChannel.createPermissionOverride(member)
-                                .setAllow(Permission.VIEW_CHANNEL)
-                                .queue();
-                        textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                        parties.add(new Party(textChannel.getIdLong()));
-
-                        System.out.println(parties);
-                    });
-                } else {
-                    slashCommand.reply("You are already in a Party!").queue();
-                }
-            } else {
-                slashCommand.reply("You are not in a Settlement.").queue();
-            }
-        } else {
-            slashCommand.reply("You are unable to use this command!").queue();
-        }
-    }
-
-    /**
-     * Joins an existing party, if they have not left yet.
-     * Is called by a Member that presses a button.
-     *
-     * @author Justin Sandman
-     * Written : October 18, 2021
-     *
-     */
-    public static void joinAdventure(ButtonClickEvent e) {
-
-        Member partyLeader = e.getMessage().getMentionedMembers().get(0);
-        Member member = e.getMember();
-
-        if (canPlayGame(member)) {
-            //If you are not already in a party.
-            if (!categoryAdventure.getMembers().contains(member)) {
-                //If the party hasn't already left yet.
-                if (categorySettlement.getMembers().contains(partyLeader)) {
-
-                    //Find the Party Channel, and add the member to it, and notify the party.
-                    TextChannel channel = findPartyChannel(partyLeader);
-                    if (channel != null) {
-                        channel.sendMessage(member.getAsMention() + " has joined the Party!").queue();
-                        channel.createPermissionOverride(member)
-                                .setAllow(Permission.VIEW_CHANNEL)
-                                .queue();
+        if (member != null) {
+            if (canPlayGame(member)) {
+                //If member is in a settlement, and not on an adventure.
+                if (categorySettlement.getMembers().contains(member)) {
+                    if (!categoryAdventure.getMembers().contains(member)) {
+                        slashCommand.reply(member.getAsMention() + " started a party!")
+                                .addActionRow(
+                                        Button.primary("joinParty", "Join Party")
+                                ).queue();
+                        guild.createTextChannel("party", categoryAdventure).queue(textChannel -> {
+                            textChannel.createPermissionOverride(member)
+                                    .setAllow(Permission.VIEW_CHANNEL)
+                                    .queue();
+                            textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
+                            Party party = new Party(textChannel, member, MapManager.getArea(slashCommand.getTextChannel()));
+                            parties.add(party);
+                            players.get(member).setParty(party);
+                            System.out.println(party);
+                        });
                     } else {
-                        System.out.println("Could not find party channel.");
+                        slashCommand.reply("You are currently on an adventure, go back to town to start a new party.").setEphemeral(true).queue();
                     }
                 } else {
-                    e.reply("The party has already left!").queue();
+                    slashCommand.reply("You need to be in a Settlement to create a party.").setEphemeral(true).queue();
                 }
             } else {
-                e.reply("You are already in a Party!").queue();
+                slashCommand.reply("The game is not started! Ask a " + roleDeveloper.getAsMention() + " to start it.").setEphemeral(true).queue();
             }
+        } else {
+            slashCommand.reply("ERROR : Member not found!").setEphemeral(true).queue();
+            System.out.println("Member could not be found.");
         }
     }
 
@@ -168,82 +143,169 @@ public class Game {
      * Written : October 18, 2021
      *
      */
-    public static void leaveTown(ButtonClickEvent e) {
+    public static void leaveTown(SlashCommandEvent slashCommand) {
 
-        Member partyLeader = e.getMessage().getMentionedMembers().get(0);
-        Member buttonClickingMember = e.getMember();
+        slashCommand.deferReply(true).queue();
 
-        //If the party leader clicks the leaveTown button.
-        if (buttonClickingMember.getIdLong() == partyLeader.getIdLong()) {
-            e.getMessage().editMessage(partyLeader.getAsMention() + " has left on an adventure.").queue();
-            TextChannel channel = findPartyChannel(partyLeader);
-            if (channel != null) {
-                channel.sendMessage("@everyone your party has left the town!").queue();
-                for (Member member : channel.getMembers()) {
-                    if (member.getRoles().contains(roleAdventurer)) {
-                        e.getTextChannel().createPermissionOverride(member)
-                                .setDeny(Permission.VIEW_CHANNEL)
-                                .queue();
+        Member member = slashCommand.getMember();
+        Player player = players.get(member);
+
+        if (member != null || player != null) {
+            Party party = player.getParty();
+            if (party != null) {
+                if (party.getLeader().equals(member)) {
+                    if (party.getChannel() != null) {
+                        party.getChannel().sendMessage("@everyone the party has left town!").queue();
+
+                        //Get direction from command
+                        MapManager.Direction dir = null;
+                        OptionMapping optionMapping = slashCommand.getOption("direction");
+                        if (optionMapping != null) {
+                            switch (optionMapping.getAsString().toLowerCase()) {
+                                case "northwest" -> dir = MapManager.Direction.NORTH_WEST;
+                                case "north" -> dir = MapManager.Direction.NORTH;
+                                case "northeast" -> dir = MapManager.Direction.NORTH_EAST;
+                                case "east" -> dir = MapManager.Direction.EAST;
+                                case "southeast" -> dir = MapManager.Direction.SOUTH_EAST;
+                                case "south" -> dir = MapManager.Direction.SOUTH;
+                                case "southwest" -> dir = MapManager.Direction.SOUTH_WEST;
+                                case "west" -> dir = MapManager.Direction.WEST;
+                            }
+                        } else {
+                            dir = MapManager.Direction.NORTH;
+                        }
+
+                        for (Member m : party.getMembers()) {
+                            if (m.getRoles().contains(roleAdventurer)) {
+                                party.getLocation().getChannel().getPermissionOverride(m).delete().queue();
+                            }
+                        }
+
+                        slashCommand.getHook().sendMessage("Your party left on an adventure. " + party.getChannel().getAsMention()).queue();
+
+                        party.setGoingTo(dir);
+                        party.setComingFrom(dir.getOpposite());
+
+                        //Generate new area, if it doesn't exist.
+                        //ADD SOMEWHERE IN HERE TO CHECK IF SETTLEMENT CAN GENERATE NEW PATHS
+                        if (MapManager.getAdjacentArea(party.getLocation(),dir) == null) {
+                            MapManager.addAdjacentArea(party.getLocation(),dir,new Area(MapManager.AreaType.PATH));
+                        }
+                        party.previousAreas.add(party.getLocation());
+                        party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
+
+                        System.out.println(party);
+
+                    } else {
+                        slashCommand.getHook().sendMessage("ERROR : Could not find party channel.").queue();
+                        System.out.println("Could not find party text channel.");
                     }
+                } else {
+                    slashCommand.getHook().sendMessage("You are not the party leader.").queue();
                 }
-                adventureEvent(findPartyChannel(partyLeader));
+            } else {
+                //Party not found
+                slashCommand.getHook().sendMessage("ERROR : Could not find party.").queue();
+                System.out.println("Could not find party.");
             }
         } else {
-            e.reply("You are not the party leader.").queue();
+            slashCommand.getHook().sendMessage("ERROR : Could not find member.").queue();
+            System.out.println("Could not find member.");
+        }
+    }
+
+    enum Vote {
+        CONTINUE,
+        HEAD_BACK
+    }
+
+    /**
+     * Sends a message in chat with button to press, this is the voting window.
+     *
+     * @param slashCommand Where to send the message.
+     */
+    public static void castVote(SlashCommandEvent slashCommand) {
+        if (categoryAdventure.getMembers().contains(slashCommand.getMember())) {
+            if (parties.get(0).vote.size() == 0) {
+                slashCommand.reply("@everyone time to vote, what do you want to do?")
+                        .addActionRow(
+                                Button.primary("vote_continue", "Continue On"),
+                                Button.primary("vote_headBack", "Go home")
+                        ).queue(interactionHook -> interactionHook.retrieveOriginal().queue(message -> parties.get(0).setVoteMessage(message)));
+                parties.get(0).vote.put(Vote.CONTINUE,0);
+                parties.get(0).vote.put(Vote.HEAD_BACK,0);
+                System.out.println(parties.get(0).vote);
+            } else {
+                slashCommand.reply("There is already an on going vote!").setEphemeral(true).queue();
+            }
+        } else {
+            slashCommand.reply("You are not on an adventure!").setEphemeral(true).queue();
         }
 
     }
 
     /**
-     * Basic processing of an adventure event.
-     * This case is a battle.
+     * This adds the vote to the party.
      *
-     * @author Justin Sandman
-     * Written : October 19, 2021
-     *
+     * @param event So we can get which vote was pressed.
      */
-    private static void adventureEvent(TextChannel textChannel) {
-        textChannel.sendMessage("Everyone walked down the long road.").queue();
+    public static void processVote(ButtonClickEvent event) {
+        event.deferReply(true).queue();
+        if (parties.get(0).vote.size() > 0) {
+            if (!parties.get(0).hasVoted.contains(event.getMember())) {
+                Vote vote = null;
+                switch (event.getButton().getId().split("_")[1]) {
+                    case "continue" -> vote = Vote.CONTINUE;
+                    case "headBack" -> vote = Vote.HEAD_BACK;
+                }
 
-        Party party = parties.get(0);
+                int count = parties.get(0).vote.getOrDefault(vote, 0);
+                parties.get(0).vote.put(vote, count + 1);
 
-        party.enemies.add(new Goblin());
-        party.enemies.add(new Goblin());
-        party.enemies.add(new Goblin());
-        //textChannel.sendMessage("A battle occurs, the enemies died.").queue();
-        //PLACE BattleHandler here.
-        BattleSystem.startBattle(party);
+                System.out.println(parties.get(0).vote);
 
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.addField("Turn Order", party.getTurnOrderAsString(), false);
-        embed.setTitle("BATTLE!");
-        for (Player player : party.getPlayers(guild)) {
-            embed.addField(
-                    player.getName(),
-                    player.getHealth() + "/" + player.getMaxHealth() + " HP",
-                    true);
+                parties.get(0).hasVoted.add(event.getMember());
+                event.getHook().sendMessage("Your vote was counted for.").queue();
+
+                if (parties.get(0).hasVoted.size() >= parties.get(0).getPlayers().size()) {
+                    endVote(parties.get(0));
+                }
+            } else {
+                event.getHook().sendMessage("You have already voted!").queue();
+            }
+        } else {
+            event.getHook().sendMessage("There isn't a vote active.").queue();
+        }
+    }
+
+    /**
+     * Runs after 100% of votes are tallied in.
+     *
+     * @param party The party to check votes.
+     */
+    private static void endVote(Party party) {
+
+        //Run the decision
+
+        Map.Entry<Vote,Integer> maxEntry = null;
+
+        for (Map.Entry<Vote,Integer> entry : party.vote.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
         }
 
-        for (int i = 0; i < party.enemies.size(); i++) {
-            Enemy enemy = party.enemies.get(i);
-            embed.addField(
-                    "#" + (i + 1) + " " + enemy.getName(),
-                    enemy.getHealth() + "/" + enemy.getMaxHealth() + " HP",
-                    true
-            );
+        System.out.println(maxEntry.getKey());
+
+        switch (maxEntry.getKey()) {
+            case CONTINUE -> party.continueOn();
+            case HEAD_BACK -> party.headBack();
         }
 
-        //Save embed for future edits.
-        party.embed = embed;
-        //Send message and save location.
-        textChannel.sendMessageEmbeds(embed.build()).queue(message -> party.battleMessage = message);
-
-        //Potentially get a list of dead people from BattleHandler
-        /*
-        for (Enemy en : parties.get(0).enemies) {
-            Collections.addAll(parties.get(0).loot, en.getInventory());
-        }
-        */
+        //Reset Vars for next vote.
+        party.vote.clear();
+        party.hasVoted.clear();
+        party.setVoteMessage(null);
     }
 
     /**
@@ -259,6 +321,15 @@ public class Game {
             if (channel.getMembers().contains(member)) {
                 return channel;
             }
+        }
+        return null;
+    }
+
+    private static Party findParty(Member member) {
+        TextChannel channel = findPartyChannel(member);
+        for (Party party : parties) {
+            if (party.getChannelId() == channel.getIdLong())
+                return party;
         }
         return null;
     }
@@ -283,7 +354,7 @@ public class Game {
      */
     private static void sendMessage(String msg) {
         //Send a message to the test channel.
-        guild.getTextChannelById(900221982514245652L).sendMessage(msg).queue();
+        guild.getTextChannelById(901660400649658448L).sendMessage(msg).queue();
     }
 
     /**
@@ -302,6 +373,7 @@ public class Game {
         Game.guild = guild;
 
         roleAdventurer      = Game.guild.getRoleById(899464047001468978L);
+        roleDeveloper       = Game.guild.getRoleById(899416257537908777L);
 
         categoryAdventure   = Game.guild.getCategoryById(899663492175511612L);
         categorySettlement  = Game.guild.getCategoryById(899464535180718090L);
@@ -338,15 +410,16 @@ public class Game {
 
         //TESTING BEGIN
         //guild.removeRoleFromMember(guild.getMemberById(262982533157879810L),roleAdventurer).queue();
-        players.add(new Player(guild.getMemberById(262982533157879810L).getNickname()));
-        players.add(new Player(guild.getMemberById(286307112072511490L).getNickname()));
+        for (Member member : guild.getMembers()) {
+            if (member.getRoles().contains(roleAdventurer)) {
+                guild.removeRoleFromMember(member,roleAdventurer).queue();
+            }
+        }
         for (TextChannel channel : categoryAdventure.getTextChannels()) {
             channel.delete().queue();
         }
         for (TextChannel channel : categorySettlement.getTextChannels()) {
-            for (PermissionOverride perm : channel.getMemberPermissionOverrides()) {
-                perm.delete().queue();
-            }
+            channel.delete().queue();
         }
         //TESTING END
 
@@ -383,37 +456,11 @@ public class Game {
      *
      */
     public static void main(String[] args) {
-
-        Scanner scan = new Scanner(System.in);
-
-        int playerNum;
-        int enemyNum;
-
-        System.out.print("How many people are going to play? ");
-        playerNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        System.out.print("How many goblins do you want to fight? ");
-        enemyNum = scan.nextInt();
-        scan.reset();
-        System.out.println();
-
-        Player[] players = new Player[playerNum];
-        Enemy[] enemies = new Enemy[enemyNum];
-
-
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player("PLAYER" + i);
-        }
-
-        for (int i = 0; i < enemies.length; i++) {
-            enemies[i] = new Goblin();
-        }
-
-        //System.out.println(BattleSystem.getTurnOrder(enemies, players));
-
-        //BattleSystem.activeCombat(players, enemies);
-
+        Bottle bottle = new Bottle();
+        bottle.fill(new Potion(Potion.Liquid.WATER));
+        bottle.getContents().getLiquid().setHowClean(Potion.Cleanliness.KRISP);
+        //Party p1 = new Party();
+        //p1.setCurrentEncounter(Encounters.EncounterType.MERCHANT);
+        //Encounters.setEncounter(p1);
     }
 }

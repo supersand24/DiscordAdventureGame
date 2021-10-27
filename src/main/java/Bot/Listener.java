@@ -2,6 +2,7 @@ package Bot;
 
 import Game.Game;
 import Game.BattleSystem;
+import Game.MapManager;
 import Game.Party;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -67,7 +68,11 @@ public class Listener extends ListenerAdapter {
                                 switch (command) {
                                     case "startgame" -> Game.startGame();
                                     case "save"      -> Game.save();
-                                    case "players"   -> System.out.println(Game.players.toString());
+                                    case "map"   -> {
+                                        MapManager.printMap();
+                                        System.out.println(Game.parties.get(0));
+                                    }
+                                    case "nuke"   -> BattleSystem.endBattle(Game.parties.get(0));
                                 }
                             }
                         } else {
@@ -96,10 +101,35 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent slashCommand) {
+        String subCommand = slashCommand.getSubcommandName();
         switch (slashCommand.getName()) {
-            case "adventure"        -> Game.startAdventure(slashCommand);
-            case "attack"           -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
-            case "block"            -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
+            case "party" -> {
+                if (subCommand != null) {
+                    switch (subCommand) {
+                        case "create"   -> Game.startParty(slashCommand);
+                        case "join"     -> {
+                            slashCommand.deferReply(true).queue();
+                            Party party = Game.players.get(slashCommand.getOptionsByName("member").get(0).getAsMember()).getParty();
+                            if (party.joinParty(Game.players.get(slashCommand.getMember())) ) {
+                                slashCommand.getHook().sendMessage("You joined the " + party.getChannel().getAsMention() + ".").queue();
+                            } else {
+                                slashCommand.getHook().sendMessage("There was an issue joining the party.").queue();
+                            }
+                        }
+                        case "leave"    -> System.out.println("Leaving Party.");
+                    }
+                }
+            }
+            case "battle" -> {
+                if (subCommand != null) {
+                    switch (subCommand) {
+                        case "attack"   -> BattleSystem.makeChoice(BattleSystem.actions.ATTACK,slashCommand);
+                        case "block"    -> BattleSystem.makeChoice(BattleSystem.actions.BLOCK, slashCommand);
+                    }
+                }
+            }
+            case "adventure"        -> Game.leaveTown(slashCommand);
+            case "vote"             -> Game.castVote(slashCommand);
         }
     }
 
@@ -112,9 +142,20 @@ public class Listener extends ListenerAdapter {
      */
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
-        switch (e.getButton().getId()) {
-            case "joinAdventure"    -> Game.joinAdventure(e);
-            case "leaveTown"        -> Game.leaveTown(e);
+        if (e.getButton().getId().startsWith("vote_")) {
+            Game.processVote(e);
+        } else {
+            switch (e.getButton().getId()) {
+                case "joinParty" -> {
+                    e.deferReply(true).queue();
+                    Party party = Game.players.get(e.getMessage().getMentionedMembers().get(0)).getParty();
+                    if (party.joinParty(Game.players.get(e.getMember())) ) {
+                        e.getHook().sendMessage("You joined the " + party.getChannel().getAsMention() + ".").queue();
+                    } else {
+                        e.getHook().sendMessage("There was an issue joining the party.").queue();
+                    }
+                }
+            }
         }
     }
 }

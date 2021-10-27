@@ -1,7 +1,5 @@
 package Game.Entities.EnemyTypes.Rodents;
 
-import Game.Entities.EnemyTypes.Enemy;
-
 /**
  * enemy rat class
  * @author Harrison Brown
