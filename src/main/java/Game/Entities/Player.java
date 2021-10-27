@@ -17,14 +17,30 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Player extends Entity {
 
+    public enum PlayerRace {
+        HUMAN,
+        URK,
+        ULF,
+        HALFMAN,
+        WARFED
+    }
+
+    public enum PlayerGender {
+        MALE,
+        FEMALE,
+
+    }
+
     /**
      * Gender of the character
      */
-    protected String gender = "male";
+    protected PlayerGender gender = PlayerGender.MALE;
 
     protected Party party;
 
     protected Member member;
+
+    protected PlayerRace race;
 
     /**
      * player constructor
@@ -33,13 +49,11 @@ public class Player extends Entity {
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
      */
-    public Player(int gold, int maxHealth, String playerName, String gender) {
+    public Player(int gold, int maxHealth, String playerName) {
         super(gold, maxHealth);
         this.name = playerName;
         this.gender = gender;
         genStats();
-        Sword s = new Sword();
-        holding.add(s);
 
     }
 
@@ -54,8 +68,6 @@ public class Player extends Entity {
         this.maxHealth = 100;
         this.health = this.maxHealth;
         genStats();
-        Sword s = new Sword();
-        holding.add(s);
         this.member = member;
         System.out.println("New player created\n" + this);
     }
@@ -176,6 +188,22 @@ public class Player extends Entity {
         Weapon temp = holding.get(0);
         holding.remove(0);
         holding.add(temp);
+    }
+
+    public void setGender(PlayerGender gender) {
+        this.gender = gender;
+    }
+
+    public PlayerGender getGender() {
+        return gender;
+    }
+
+    public void setRace(PlayerRace race) {
+        this.race = race;
+    }
+
+    public PlayerRace getRace() {
+        return race;
     }
 
     /**
