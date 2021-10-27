@@ -40,7 +40,7 @@ public class Player extends Entity {
 
     protected Member member;
 
-    protected PlayerRace race;
+    protected PlayerRace race = null;
 
     /**
      * player constructor
@@ -62,12 +62,14 @@ public class Player extends Entity {
      * @author Harrison Brown
      * @param playerName the name of the player
      */
-    public Player(String playerName, Member member) {
+    public Player(String playerName, Member member, PlayerRace race) {
         super();
         this.name = playerName;
+        this.race = race;
         this.maxHealth = 100;
         this.health = this.maxHealth;
         genStats();
+        raceMod();
         this.member = member;
         //System.out.println("New player created\n" + this);
     }
@@ -77,12 +79,14 @@ public class Player extends Entity {
      * @author Harrison Brown
      * @param playerName te name of the player
      */
-    public Player(String playerName) {
+    public Player(String playerName, PlayerRace race) {
         super();
         this.name = playerName;
+        this.race = race;
         this.maxHealth = 100;
         this.health = this.maxHealth;
         genStats();
+        raceMod();
         //System.out.println("New player created\n" + this);
     }
 
@@ -98,9 +102,9 @@ public class Player extends Entity {
         int cnt = 4;
 
         //sets the lower bound of the rand
-        int min = 1;
+        int min = 3;
         //sets the initial max
-        int max = 15;
+        int max = 10;
 
         while (pool > 0) {
 
@@ -129,11 +133,11 @@ public class Player extends Entity {
         shuffleArray(stats);
         checkMax(stats);
 
-        this.def = stats[0];
-        this.spd = stats[1];
-        this.dex = stats[2];
-        this.wis = stats[3];
-        this.str = stats[4];
+        this.setDef(stats[0]);
+        this.setSpd(stats[1]);
+        this.setDex(stats[2]);
+        this.setWis(stats[3]);
+        this.setStr(stats[4]);
 
     }
 
@@ -163,8 +167,46 @@ public class Player extends Entity {
      */
     private void checkMax(int[] ar) {
         for (int i = 0; i < ar.length; i++) {
-            if (ar[i] > 15) {
-                ar[i] = 15;
+            if (ar[i] > 10) {
+                ar[i] = 10;
+            }
+        }
+    }
+
+    private void raceMod() {
+        switch (this.race) {
+            case (PlayerRace.HUMAN) -> {
+                this.setDef(this.getDef() + 1);
+                this.setDex(this.getDex() + 1);
+                this.setStr(this.getStr() + 1);
+                this.setWis(this.getWis() + 1);
+                this.setSpd(this.getSpd() + 1);
+            }
+            case (PlayerRace.URK) -> {
+                this.setSpd(this.getSpd() - 3);
+                this.setWis(this.getWis() - 1);
+                this.setDef(this.getDef() + 3);
+                this.setStr(this.getStr() + 2);
+            }
+            case (PlayerRace.ULF) -> {
+                this.setDex(this.getDex()+3);
+                this.setDef(this.getDef()-2);
+                this.setStr(this.getStr()-2);
+                this.setWis(this.getWis()+2);
+                this.setSpd(this.getSpd()+1);
+            }
+            case (PlayerRace.WARFED) -> {
+              this.setSpd(this.getSpd()-1);
+              this.setSpd(this.getSpd() - 3);
+              this.setDex(this.getDex() - 1);
+              this.setDef(this.getDef() + 2);
+              this.setStr(this.getStr() + 3);
+            }
+            case (PlayerRace.HALFMAN) -> {
+                this.setDef(this.getDef() - 1);
+                this.setStr(this.getStr() + -1);
+                this.setWis(this.getWis() + 2);
+                this.setSpd(this.getSpd() + 2);
             }
         }
     }
@@ -305,7 +347,7 @@ public class Player extends Entity {
         for (Item x : holding) {
             out.append(x.getClass().getSimpleName()).append(": ").append(x.getName()).append("\n");
         }
-        out.append("Def: ").append(def).append("\n").append("Spd: ").append(spd).append("\n").append("Dex: ").append(dex).append("\n").append("Wis: ").append(wis).append("\n").append("Str: ").append(str).append("\n");
+        out.append("Def: ").append(this.getDef()).append("\n").append("Spd: ").append(this.getSpd()).append("\n").append("Dex: ").append(this.getDex()).append("\n").append("Wis: ").append(this.getWis()).append("\n").append("Str: ").append(this.getStr()).append("\n");
 
         return out.toString();
     }

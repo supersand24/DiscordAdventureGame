@@ -336,6 +336,7 @@ public abstract class Entity implements Comparable<Entity> {
         stats[4] = str;
     }
 
+
     /**
      * checks the current state of blocking
      * @author Harrison Brown
