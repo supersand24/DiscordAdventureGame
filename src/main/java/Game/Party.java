@@ -23,6 +23,7 @@ public class Party {
     /**
      * ID of the party's text channel.
      */
+    @Deprecated
     private long channelId;
 
     private TextChannel channel;
@@ -105,18 +106,21 @@ public class Party {
         this.channel = channel;
         this.leader = partyLeader;
         this.location = location;
+        players.add(Game.players.get(partyLeader));
     }
 
     public boolean joinParty(Player player) {
-        players.add(player);
-
-        Member member = player.getMember();
-
-        channel.sendMessage(member.getAsMention() + " has joined the Party!").queue();
-        channel.createPermissionOverride(member)
-                .setAllow(Permission.VIEW_CHANNEL)
-                .queue();
-        return true;
+        if (!players.contains(player)) {
+            players.add(player);
+            Member member = player.getMember();
+            channel.sendMessage(member.getAsMention() + " has joined the Party!").queue();
+            channel.createPermissionOverride(member)
+                    .setAllow(Permission.VIEW_CHANNEL)
+                    .queue();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -368,11 +372,7 @@ public class Party {
      * @return A list of all the players in the party.
      */
     public List<Player> getPlayers() {
-        List<Player> playerList = new ArrayList<>();
-        for (Member member : getMembers()) {
-            playerList.add(Game.players.get(member));
-        }
-        return playerList;
+        return players;
     }
 
     /**
@@ -381,7 +381,6 @@ public class Party {
      * @author Justin Sandman
      */
     public List<Member> getMembers() {
-        TextChannel channel = Game.guild.getTextChannelById(channelId);
         if (channel != null) {
             return channel.getMembers();
         } else {

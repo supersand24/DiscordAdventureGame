@@ -1,6 +1,9 @@
 package Game;
 
+import net.dv8tion.jda.api.entities.TextChannel;
+
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -20,6 +23,8 @@ public class MapManager {
     private static Area[][] map = new Area[MAP_SIZE][MAP_SIZE];
 
     public static List<Area> areas = new ArrayList<>();
+
+    public static Hashtable<TextChannel,Area> areas2 = new Hashtable<>();
 
     /**
      * Simple cardinal directions.
@@ -157,12 +162,12 @@ public class MapManager {
         return null;
     }
 
-    public static Area getArea(long channelid) {
+    public static Area getArea(TextChannel channel) {
 
         for (Area[] inner : map) {
             for (Area area : inner) {
                 if (area != null) {
-                    if (area.getChannelId() == channelid)
+                    if (area.getChannel().equals(channel))
                         return area;
                 }
             }

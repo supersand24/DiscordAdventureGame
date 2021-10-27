@@ -130,7 +130,7 @@ public class Main {
                 Guild guild = jda.getGuildById(899410801906044991L);
 
                 if (guild != null) {
-                    addSlashCommands(guild);
+                    //addSlashCommands(guild);
 
                     //Sets up the Game, if there is an error, app will exit.
                     if (!Game.setUp(guild)) {

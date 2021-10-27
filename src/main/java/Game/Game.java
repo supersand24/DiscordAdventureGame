@@ -115,7 +115,7 @@ public class Game {
                                     .setAllow(Permission.VIEW_CHANNEL)
                                     .queue();
                             textChannel.sendMessage(member.getAsMention() + " This is your party's private text channel.").queue();
-                            Party party = new Party(textChannel, member, MapManager.getArea(slashCommand.getChannel().getIdLong()));
+                            Party party = new Party(textChannel, member, MapManager.getArea(slashCommand.getTextChannel()));
                             parties.add(party);
                             players.get(member).setParty(party);
                             System.out.println(party);
@@ -148,14 +148,14 @@ public class Game {
         slashCommand.deferReply(true).queue();
 
         Member member = slashCommand.getMember();
+        Player player = players.get(member);
 
-        if (member != null) {
-            Party party = findParty(member);
+        if (member != null || player != null) {
+            Party party = player.getParty();
             if (party != null) {
-                if (member.equals(party.getLeader())) {
-                    TextChannel partyChannel = Game.guild.getTextChannelById(party.getChannelId());
-                    if (partyChannel != null) {
-                        partyChannel.sendMessage("@everyone the party has left town!").queue();
+                if (party.getLeader().equals(member)) {
+                    if (party.getChannel() != null) {
+                        party.getChannel().sendMessage("@everyone the party has left town!").queue();
 
                         //Get direction from command
                         MapManager.Direction dir = null;
@@ -175,15 +175,13 @@ public class Game {
                             dir = MapManager.Direction.NORTH;
                         }
 
-                        //REMOVES ALL PARTY MEMBERS FROM SLASH COMMAND CHANNEL
-                        //NEEDS TO BE PARTY LOCATION CHANNEL
-                        for (Member m : partyChannel.getMembers()) {
+                        for (Member m : party.getMembers()) {
                             if (m.getRoles().contains(roleAdventurer)) {
-                                slashCommand.getTextChannel().getPermissionOverride(m).delete().queue();
+                                party.getLocation().getChannel().getPermissionOverride(m).delete().queue();
                             }
                         }
 
-                        slashCommand.getHook().sendMessage("Your party left on an adventure. " + partyChannel.getAsMention()).queue();
+                        slashCommand.getHook().sendMessage("Your party left on an adventure. " + party.getChannel().getAsMention()).queue();
 
                         party.setGoingTo(dir);
                         party.setComingFrom(dir.getOpposite());
@@ -196,7 +194,6 @@ public class Game {
                         party.previousAreas.add(party.getLocation());
                         party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
 
-                        partyChannel.sendMessage("```" + MapManager.printMap() + "```").queue();
                         System.out.println(party);
 
                     } else {
