@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public abstract class Entity implements Comparable<Entity> {
     //properties
 
+    private int[] stats = {0,0,0,0,0};
     /**
      * last action of the entity
      */
@@ -65,31 +66,7 @@ public abstract class Entity implements Comparable<Entity> {
      */
     protected ArrayList<Weapon> holding = new ArrayList<>(2);
 
-    //stats, will probably be changed later
-    /**
-     * defense stat
-     */
-    protected int def; //defense
 
-    /**
-     * speed stat
-     */
-    protected int spd; //speed
-
-    /**
-     * dexterity stat
-     */
-    protected int dex; //dexterity, accuracy, spryness
-
-    /**
-     * wisdom stat
-     */
-    protected int wis; //wisdom, spell casting etc.
-
-    /**
-     * strength stat
-     */
-    protected int str; //strength
 
 
     //constructor
@@ -231,7 +208,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @return int
      */
     public int getDef() {
-        return def;
+        return stats[0];
     }
 
     /**
@@ -240,7 +217,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @return int
      */
     public int getSpd() {
-        return spd;
+        return stats[1];
     }
 
     /**
@@ -249,7 +226,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @return int
      */
     public int getDex() {
-        return dex;
+        return stats[2];
     }
 
     /**
@@ -258,11 +235,11 @@ public abstract class Entity implements Comparable<Entity> {
      * @return int
      */
     public int getWis() {
-        return wis;
+        return stats[3];
     }
 
     public int getStr() {
-        return str;
+        return stats[4];
     }
 
     /**
@@ -325,7 +302,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @param def val to set def
      */
     public void setDef(int def) {
-        this.def = def;
+        stats[0] = def;
     }
 
     /**
@@ -334,7 +311,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @param spd val to set def
      */
     public void setSpd(int spd) {
-        this.spd = spd;
+        stats[1] = spd;
     }
 
     /**
@@ -343,7 +320,7 @@ public abstract class Entity implements Comparable<Entity> {
      * @param dex val to set dex
      */
     public void setDex(int dex) {
-        this.dex = dex;
+        stats[2] = dex;
     }
 
     /**
@@ -352,11 +329,11 @@ public abstract class Entity implements Comparable<Entity> {
      * @param wis val to set wis
      */
     public void setWis(int wis) {
-        this.wis = wis;
+        stats[3] = wis;
     }
 
     public void setStr(int str) {
-        this.str = str;
+        stats[4] = str;
     }
 
     /**
@@ -425,7 +402,7 @@ public abstract class Entity implements Comparable<Entity> {
         //return this.quantity - compareQuantity;
 
         //descending order
-        return compareSpd - this.spd;
+        return compareSpd - this.getSpd();
 
     }
 
