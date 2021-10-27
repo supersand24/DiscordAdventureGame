@@ -34,7 +34,7 @@ public class Player extends Entity {
     /**
      * Gender of the character
      */
-    protected PlayerGender gender = PlayerGender.MALE;
+    protected PlayerGender gender = null;
 
     protected Party party;
 
@@ -69,7 +69,7 @@ public class Player extends Entity {
         this.health = this.maxHealth;
         genStats();
         this.member = member;
-        System.out.println("New player created\n" + this);
+        //System.out.println("New player created\n" + this);
     }
 
     /**
@@ -83,7 +83,7 @@ public class Player extends Entity {
         this.maxHealth = 100;
         this.health = this.maxHealth;
         genStats();
-        System.out.println("New player created\n" + this);
+        //System.out.println("New player created\n" + this);
     }
 
     /**
@@ -294,6 +294,9 @@ public class Player extends Entity {
         out.append("\n");
         out.append("Gender: ");
         out.append(gender);
+        out.append("\n");
+        out.append("Race: ");
+        out.append(race);
         out.append("\n");
         out.append("Level: ").append(level).append("\n");
         out.append("Health: ").append(health).append(" Max Health: ").append(maxHealth).append("\n");

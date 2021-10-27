@@ -29,8 +29,11 @@ public class CharacterCreation {
         Weapon weapon;
 
         race = getPlayerRace();
+        scan.reset();
         name = getPlayerName();
+        scan.reset();
         gender = getPlayerGender();
+        scan.reset();
         weapon = getPlayerWeapon();
 
         player = createPlayer(race, name, gender, weapon, member);
@@ -54,6 +57,7 @@ public class CharacterCreation {
         weapon = getPlayerWeapon();
 
         player = createPlayer(race, name, gender, weapon);
+        System.out.println("New player created\n" + player);
 
         return player;
     }
