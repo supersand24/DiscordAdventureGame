@@ -18,11 +18,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Player extends Entity {
 
     public enum PlayerRace {
-        HUMAN,
-        URK,
-        ULF,
         HALFMAN,
+        HUMAN,
+        ULF,
+        URK,
         WARFED
+    }
+
+    public enum traits {
+
     }
 
     public enum PlayerGender {
@@ -40,7 +44,7 @@ public class Player extends Entity {
 
     protected Member member;
 
-    protected PlayerRace race = null;
+    protected PlayerRace race;
 
     /**
      * player constructor
