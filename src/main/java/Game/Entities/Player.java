@@ -112,39 +112,14 @@ public class Player extends Entity {
      */
     private void genStats() {
         Random rand = new Random();
-        int pool = 35;
         int[] stats = new int[5];
 
-        int cnt = 4;
+        stats[0] = rand.nextInt(3,11);
+        stats[1] = rand.nextInt(3,11);
+        stats[2] = rand.nextInt(3,11);
+        stats[3] = rand.nextInt(3,11);
+        stats[4] = rand.nextInt(3,11);
 
-        //sets the lower bound of the rand
-        int min = 3;
-        //sets the initial max
-        int max = 10;
-
-        while (pool > 0) {
-
-            for (int i = 0; i < stats.length; i++) {
-                if (pool < 0) {
-                    break;
-                }
-
-                if (stats[i] >= 15) {
-                    i++;
-                    continue;
-                }
-
-                if (pool < 15) {
-                    max = pool - cnt;
-                }
-
-                int add = rand.nextInt(min, max);
-                stats[i] += add;
-                pool -= add;
-                pool += 1;
-                cnt--;
-            }
-        }
 
         shuffleArray(stats);
         checkMax(stats);
@@ -191,38 +166,41 @@ public class Player extends Entity {
 
     private void raceMod() {
         switch (this.race) {
-            case (PlayerRace.HUMAN) -> {
+            case HUMAN -> {
                 this.setDef(this.getDef() + 1);
                 this.setDex(this.getDex() + 1);
                 this.setStr(this.getStr() + 1);
                 this.setWis(this.getWis() + 1);
                 this.setSpd(this.getSpd() + 1);
             }
-            case (PlayerRace.URK) -> {
+            case URK -> {
                 this.setSpd(this.getSpd() - 3);
                 this.setWis(this.getWis() - 1);
                 this.setDef(this.getDef() + 3);
                 this.setStr(this.getStr() + 2);
             }
-            case (PlayerRace.ULF) -> {
-                this.setDex(this.getDex()+3);
-                this.setDef(this.getDef()-2);
-                this.setStr(this.getStr()-2);
-                this.setWis(this.getWis()+2);
-                this.setSpd(this.getSpd()+1);
+            case ULF -> {
+                this.setDex(this.getDex() + 3);
+                this.setDef(this.getDef() - 2);
+                this.setStr(this.getStr() - 2);
+                this.setWis(this.getWis() + 2);
+                this.setSpd(this.getSpd() + 1);
             }
-            case (PlayerRace.WARFED) -> {
-              this.setSpd(this.getSpd()-1);
-              this.setSpd(this.getSpd() - 3);
-              this.setDex(this.getDex() - 1);
-              this.setDef(this.getDef() + 2);
-              this.setStr(this.getStr() + 3);
+            case WARFED -> {
+                this.setSpd(this.getSpd() - 1);
+                this.setSpd(this.getSpd() - 3);
+                this.setDex(this.getDex() - 1);
+                this.setDef(this.getDef() + 2);
+                this.setStr(this.getStr() + 3);
             }
-            case (PlayerRace.HALFMAN) -> {
+            case HALFMAN -> {
                 this.setDef(this.getDef() - 1);
                 this.setStr(this.getStr() + -1);
                 this.setWis(this.getWis() + 2);
                 this.setSpd(this.getSpd() + 2);
+            }
+            default -> {
+                    System.out.println("something broke but i wont tell you where");
             }
         }
     }
