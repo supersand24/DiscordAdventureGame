@@ -69,7 +69,7 @@ public class CharacterCreation {
             System.out.print(r + ", ");
         }
         System.out.println();
-        System.out.print("Enter number fro 0 to " + (Player.PlayerRace.values().length-1)+ ": ");
+        System.out.print("Enter number from 0 to " + (Player.PlayerRace.values().length-1)+ ": ");
 
         return Player.PlayerRace.values()[scan.nextInt()];
     }
@@ -85,7 +85,7 @@ public class CharacterCreation {
             System.out.print(g + ", ");
         }
         System.out.println();
-        System.out.print("Enter number fro 0 to " + (Player.PlayerGender.values().length-1) + ": ");
+        System.out.print("Enter number from 0 to " + (Player.PlayerGender.values().length-1) + ": ");
 
 
         return Player.PlayerGender.values()[scan.nextInt()];
@@ -96,7 +96,7 @@ public class CharacterCreation {
     }
 
     private static Player createPlayer(Player.PlayerRace race, String name, Player.PlayerGender gender, Weapon weapon, Member member) {
-        Player p = new Player(name, member);
+        Player p = new Player(name, member, race);
         p.setGender(gender);
         p.setRace(race);
         p.addWeapon(weapon);
@@ -104,9 +104,8 @@ public class CharacterCreation {
     }
 
     private static Player createPlayer(Player.PlayerRace race, String name, Player.PlayerGender gender, Weapon weapon) {
-        Player p = new Player(name);
+        Player p = new Player(name, race);
         p.setGender(gender);
-        p.setRace(race);
         p.addWeapon(weapon);
         return p;
     }
