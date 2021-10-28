@@ -68,7 +68,7 @@ public abstract class Enemy extends Entity {
         StringBuilder msg = new StringBuilder();
         msg.append("TYPE: ").append(getClass().getSimpleName()).append("\n");
         msg.append("CALLED: ").append(name).append("\n");
-        msg.append("SPEED: ").append(spd).append("\n");
+        msg.append("SPEED: ").append(this.getSpd()).append("\n");
         return msg.toString();
 
     }

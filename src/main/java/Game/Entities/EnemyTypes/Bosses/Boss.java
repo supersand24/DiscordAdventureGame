@@ -15,7 +15,7 @@ public abstract class Boss extends Enemy {
         super();
         this.maxHealth = 300;
         this.health = 300;
-        this.spd = 300;
+        this.setSpd(300);
         this.dmg = 300;
     }
 

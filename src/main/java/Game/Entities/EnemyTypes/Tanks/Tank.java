@@ -18,6 +18,6 @@ public abstract class Tank extends Enemy {
         this.dmg = 15;
         this.maxHealth = 150;
         this.health = this.maxHealth;
-        this.spd = BattleSystem.randomVal(5,7);
+        this.setSpd(BattleSystem.randomVal(5,7));
     }
 }

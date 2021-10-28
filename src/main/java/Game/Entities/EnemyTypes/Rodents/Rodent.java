@@ -16,6 +16,6 @@ public abstract class Rodent extends Enemy {
         this.dmg = 2;
         this.maxHealth = 5;
         this.health = this.maxHealth;
-        this.spd = BattleSystem.randomVal(5,9);
+        this.setSpd(BattleSystem.randomVal(5,9));
     }
 }
