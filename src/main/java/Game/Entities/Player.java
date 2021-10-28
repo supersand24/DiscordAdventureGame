@@ -78,6 +78,18 @@ public class Player extends Entity {
         //System.out.println("New player created\n" + this);
     }
 
+    public Player(String playerName, Member member) {
+        super();
+        this.name = playerName;
+        this.race = PlayerRace.HUMAN;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
+        genStats();
+        raceMod();
+        this.member = member;
+        //System.out.println("New player created\n" + this);
+    }
+
     /**
      * a default constructor to test character creation in the console
      * @author Harrison Brown
