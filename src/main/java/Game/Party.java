@@ -164,7 +164,7 @@ public class Party {
         goingTo = possibleDirections.get(headingDirection);
         //CHECK FOR MULTIPLE PATHS!!!
         comingFrom = location.getOtherConnections(goingTo).get(0);
-        Game.guild.getTextChannelById(channelId).sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
+        channel.sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
     }
 
     /**
@@ -184,8 +184,6 @@ public class Party {
      * @author Justin Sandman
      */
     public void sendBattleMessage() {
-
-        TextChannel channel = Game.guild.getTextChannelById(channelId);
 
         //If the party channel exists.
         if (channel != null) {
@@ -375,19 +373,6 @@ public class Party {
         return players;
     }
 
-    /**
-     * Obtains the member objects from everyone that can view the party channel.
-     *
-     * @author Justin Sandman
-     */
-    public List<Member> getMembers() {
-        if (channel != null) {
-            return channel.getMembers();
-        } else {
-            return null;
-        }
-    }
-
     public void setChannelId(long channelId) {
         this.channelId = channelId;
     }
@@ -445,6 +430,23 @@ public class Party {
 
     public void setHasVoted(List<Member> hasVoted) {
         this.hasVoted = hasVoted;
+    }
+
+    public String saveString() {
+        StringBuilder string = new StringBuilder();
+        string.append("ID:").append(getChannel().getId()).append("\n");
+        for (Member member : getChannel().getMembers()) {
+            if (member.getRoles().contains(Game.roleAdventurer)) {
+                if (member.equals(getLeader())) {
+                    string.append("Leader:").append(member.getId()).append("\n");
+                } else {
+                    string.append("Player:").append(member.getId()).append("\n");
+                }
+            }
+        }
+        string.append("Location:").append(getLocation().getXCoord()).append(',').append(getLocation().getYCoord()).append("\n");
+        string.append("GoingTo:").append(getGoingTo()).append("\n");
+        return string.toString();
     }
 
     @Override

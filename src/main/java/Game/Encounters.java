@@ -214,16 +214,16 @@ public class Encounters {
     private static void none(Party party) {
         int r = rand.nextInt(2);
         if (r == 0) {
-            Game.guild.getTextChannelById(party.getChannelId()).sendMessage("Your party has been walking a while, do you want to rest?").queue();
+            party.getChannel().sendMessage("Your party has been walking a while, do you want to rest?").queue();
         } else {
             encounter(party);
         }
     }
 
     private static void returnToSettlement(Party party) {
-        TextChannel settlementChannel = Game.guild.getTextChannelById(party.getLocation().getChannelId());
+        TextChannel settlementChannel = party.getLocation().getChannel();
         if (settlementChannel != null) {
-            for (Member member : party.getMembers()) {
+            for (Member member : party.getChannel().getMembers()) {
                 for (PermissionOverride perm : settlementChannel.getMemberPermissionOverrides()) {
                     perm.delete().queue();
                 }

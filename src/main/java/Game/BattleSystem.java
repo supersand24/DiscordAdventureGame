@@ -184,7 +184,7 @@ public class BattleSystem {
 
         Party party = null;
         for (Party p : activeBattles) {
-            if (p.getMembers().contains(member)) {
+            if (p.getChannel().getMembers().contains(member)) {
                 party = p;
             }
         }

@@ -119,7 +119,7 @@ public class Main {
                     GatewayIntent.GUILD_MEMBERS,
                     GatewayIntent.GUILD_PRESENCES,
                     GatewayIntent.GUILD_MESSAGES
-            ).setMemberCachePolicy(MemberCachePolicy.ONLINE);
+            ).setMemberCachePolicy(MemberCachePolicy.ALL);
 
             jdaBuilder.addEventListeners(new Listener());
 

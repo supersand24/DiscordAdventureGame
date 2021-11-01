@@ -236,6 +236,20 @@ public class Player extends Entity {
         item.use(this);
     }
 
+    public String saveString() {
+        return "ID:" + getMember().getId() + "\n" +
+                "Player Name:" + getName() + "\n" +
+                "Level:" + getLevel() + "\n" +
+                "Gold:" + getGold() + "\n" +
+                "Health:" + getHealth() + "\n" +
+                "Max Health:" + getMaxHealth() + "\n" +
+                "Defense:" + getDef() + "\n" +
+                "Speed:" + getSpd() + "\n" +
+                "Dexterity:" + getDex() + "\n" +
+                "Wisdom:" + getWis() + "\n" +
+                "Strength:" + getStr();
+    }
+
     /**
      * toString for player
      * @author Harrison Brown

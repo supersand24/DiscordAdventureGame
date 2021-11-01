@@ -123,6 +123,22 @@ public class Area implements Serializable {
         this.connections[dir.getIndex()] = area;
     }
 
+    public String saveString() {
+        StringBuilder string = new StringBuilder();
+        if (getChannel() != null) {
+            string.append("ID:").append(getChannel().getId()).append("\n");
+        }
+        string.append("Name:").append(getName()).append("\n");
+        for (MapManager.Direction dir : MapManager.Direction.values()) {
+            Area area = connections[dir.getIndex()];
+            if (area != null) {
+                string.append("Connection:").append(dir).append("\n");
+            }
+        }
+
+        return string.toString();
+    }
+
     @Override
     public String toString() {
         return "Area{" +
