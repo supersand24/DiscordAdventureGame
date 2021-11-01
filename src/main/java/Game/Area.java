@@ -1,5 +1,7 @@
 package Game;
 
+import net.dv8tion.jda.api.entities.TextChannel;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,8 @@ public class Area implements Serializable {
     private String name;
 
     private long channelId;
+
+    private TextChannel channel;
 
     private int[] coords;
 
@@ -44,6 +48,10 @@ public class Area implements Serializable {
 
     public long getChannelId() {
         return channelId;
+    }
+
+    public TextChannel getChannel() {
+        return channel;
     }
 
     public int[] getCoords() {
@@ -99,6 +107,10 @@ public class Area implements Serializable {
         this.channelId = channelId;
     }
 
+    public void setChannel(TextChannel channel) {
+        this.channel = channel;
+    }
+
     public void setCoords(int[] coords) {
         this.coords = coords;
     }
@@ -113,6 +125,22 @@ public class Area implements Serializable {
 
     public void setConnection(Area area, MapManager.Direction dir) {
         this.connections[dir.getIndex()] = area;
+    }
+
+    public String saveString() {
+        StringBuilder string = new StringBuilder();
+        if (getChannel() != null) {
+            string.append("ID:").append(getChannel().getId()).append("\n");
+        }
+        string.append("Name:").append(getName()).append("\n");
+        for (MapManager.Direction dir : MapManager.Direction.values()) {
+            Area area = connections[dir.getIndex()];
+            if (area != null) {
+                string.append("Connection:").append(dir).append("\n");
+            }
+        }
+
+        return string.toString();
     }
 
     @Override

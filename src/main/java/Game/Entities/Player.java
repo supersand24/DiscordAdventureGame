@@ -4,6 +4,8 @@ import Game.Items.Item;
 import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Sword;
 import Game.Items.Weapons.Weapon;
+import Game.Party;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,6 +21,10 @@ public class Player extends Entity {
      * Gender of the character
      */
     protected String gender = "male";
+
+    protected Party party;
+
+    protected Member member;
 
     /**
      * player constructor
@@ -42,7 +48,7 @@ public class Player extends Entity {
      * @author Harrison Brown
      * @param playerName the name of the player
      */
-    public Player(String playerName) {
+    public Player(String playerName, Member member) {
         super();
         this.name = playerName;
         this.maxHealth = 100;
@@ -50,6 +56,7 @@ public class Player extends Entity {
         genStats();
         Sword s = new Sword();
         holding.add(s);
+        this.member = member;
         System.out.println("New player created\n" + this);
     }
 
@@ -136,6 +143,22 @@ public class Player extends Entity {
         }
     }
 
+    public Party getParty() {
+        return party;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
     /**
      * a method to add a weapon to the players equips
      * @author Harrison Brown
@@ -211,6 +234,20 @@ public class Player extends Entity {
     @Override
     public void useItem(Usable item) {
         item.use(this);
+    }
+
+    public String saveString() {
+        return "ID:" + getMember().getId() + "\n" +
+                "Player Name:" + getName() + "\n" +
+                "Level:" + getLevel() + "\n" +
+                "Gold:" + getGold() + "\n" +
+                "Health:" + getHealth() + "\n" +
+                "Max Health:" + getMaxHealth() + "\n" +
+                "Defense:" + getDef() + "\n" +
+                "Speed:" + getSpd() + "\n" +
+                "Dexterity:" + getDex() + "\n" +
+                "Wisdom:" + getWis() + "\n" +
+                "Strength:" + getStr();
     }
 
     /**
