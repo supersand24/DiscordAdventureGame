@@ -59,6 +59,10 @@ public class Party {
     @Deprecated
     public MapManager.Direction comingFrom = null;
 
+    private int tilesMovedWithNoSpecialEvent = 0;
+
+    List<Enemy> enemies = new ArrayList<>();
+
     /**
      * The party's previous areas, works with heading back.
      */
@@ -151,7 +155,13 @@ public class Party {
 
             headingDirection = new Random().nextInt(possibleDirections.size());
             //THIS IS WHERE SETTLEMENTS AND DUNGEONS ARE GENERATED.
-            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.AreaType.PATH));
+
+            //use previousAreas.size number indicates how far party is on path
+            //gets larger they've been on path, use to force settlement odds
+
+            //random pick area type to use
+
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.setAreaType(this)));
 
         } else {
             System.out.println("Continuing on path.");
@@ -445,6 +455,14 @@ public class Party {
 
     public void setHasVoted(List<Member> hasVoted) {
         this.hasVoted = hasVoted;
+
+    public void setTilesMovedWithNoSpecialEvent(int tilesMovedWithNoSpecialEvent) {
+        this.tilesMovedWithNoSpecialEvent = tilesMovedWithNoSpecialEvent;
+    }
+
+    public int getTilesMovedWithNoSpecialEvent() {
+        return tilesMovedWithNoSpecialEvent;
+
     }
 
     @Override
