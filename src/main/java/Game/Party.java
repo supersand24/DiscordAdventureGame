@@ -21,12 +21,9 @@ import java.util.*;
 public class Party {
 
     /**
-     * ID of the party's text channel.
+     * The party text channel, where messages go.
      */
-    @Deprecated
-    private long channelId;
-
-    private TextChannel channel;
+    private final TextChannel channel;
 
     /**
      * The party leader, has final say, most of the time.
@@ -52,12 +49,6 @@ public class Party {
      * The party's, current location on the map.
      */
     private Area location;
-
-    /**
-     * The party's direction they are coming from, this should be removed as soon as possible.
-     */
-    @Deprecated
-    public MapManager.Direction comingFrom = null;
 
     /**
      * The party's previous areas, works with heading back.
@@ -155,7 +146,7 @@ public class Party {
 
         } else {
             System.out.println("Continuing on path.");
-            possibleDirections = location.getOtherConnections(comingFrom);
+            possibleDirections = location.getOtherConnections(goingTo.getOpposite());
             headingDirection = 0;
             //have a vote in here, if multiple paths
         }
@@ -163,7 +154,6 @@ public class Party {
         setLocation(MapManager.getAdjacentArea(location,possibleDirections.get(headingDirection)));
         goingTo = possibleDirections.get(headingDirection);
         //CHECK FOR MULTIPLE PATHS!!!
-        comingFrom = location.getOtherConnections(goingTo).get(0);
         channel.sendMessage("The party headed " + possibleDirections.get(headingDirection).getName() + ".").queue();
     }
 
@@ -222,14 +212,6 @@ public class Party {
         }
     }
 
-    /**
-     * @author Justin Sandman
-     * @return The channel ID.
-     */
-    public long getChannelId() {
-        return channelId;
-    }
-
     public TextChannel getChannel() {
         return channel;
     }
@@ -264,15 +246,6 @@ public class Party {
      */
     public Area getLocation() {
         return location;
-    }
-
-    /**
-     * @author Justin Sandman
-     * @return The direction the party is coming from, soon to be deprecated.
-     */
-    @Deprecated
-    public MapManager.Direction getComingFrom() {
-        return comingFrom;
     }
 
     /**
@@ -373,10 +346,6 @@ public class Party {
         return players;
     }
 
-    public void setChannelId(long channelId) {
-        this.channelId = channelId;
-    }
-
     public void setCurrentEvent(Encounters.EncounterType currentEvent) {
         this.currentEvent = currentEvent;
     }
@@ -390,10 +359,6 @@ public class Party {
         int random = new Random().nextInt(location.getPossibleEncounters().size());
         setCurrentEvent(location.getPossibleEncounters().get(random));
         Encounters.generateEncounter(this);
-    }
-
-    public void setComingFrom(MapManager.Direction comingFrom) {
-        this.comingFrom = comingFrom;
     }
 
     public void setGoingTo(MapManager.Direction goingTo) {
@@ -454,7 +419,6 @@ public class Party {
         return "Party{" +
                 "leader=" + leader.getEffectiveName() +
                 ", location=" + location +
-                ", comingFrom=" + comingFrom +
                 ", goingTo=" + goingTo +
                 ", currentEvent=" + currentEvent +
                 ", previousAreas=" + previousAreas +

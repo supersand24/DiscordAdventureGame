@@ -187,7 +187,6 @@ public class Game {
                         slashCommand.getHook().sendMessage("Your party left on an adventure. " + party.getChannel().getAsMention()).queue();
 
                         party.setGoingTo(dir);
-                        party.setComingFrom(dir.getOpposite());
 
                         //Generate new area, if it doesn't exist.
                         //ADD SOMEWHERE IN HERE TO CHECK IF SETTLEMENT CAN GENERATE NEW PATHS

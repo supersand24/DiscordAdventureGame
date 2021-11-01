@@ -185,7 +185,7 @@ public class Encounters {
      * @param party current party
      */
     private static void settlement(Party party) {
-        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("You found a settlement").queue();
+        party.getChannel().sendMessage("You found a settlement").queue();
     }
 
     /**
@@ -194,7 +194,7 @@ public class Encounters {
      * @param party current party
      */
     private static void merchant(Party party) {
-        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("You found a merchant").queue();
+        party.getChannel().sendMessage("You found a merchant").queue();
     }
 
     /**
@@ -203,7 +203,7 @@ public class Encounters {
      * @param party current party
      */
     private static void dungeon(Party party) {
-        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("There would be a notice about the dungeon and some desicion structure here").queue();
+        party.getChannel().sendMessage("There would be a notice about the dungeon and some desicion structure here").queue();
     }
 
     /**
@@ -224,17 +224,11 @@ public class Encounters {
         TextChannel settlementChannel = party.getLocation().getChannel();
         if (settlementChannel != null) {
             for (Member member : party.getChannel().getMembers()) {
-                for (PermissionOverride perm : settlementChannel.getMemberPermissionOverrides()) {
-                    perm.delete().queue();
-                }
                 settlementChannel.createPermissionOverride(member).setAllow(
                         Permission.VIEW_CHANNEL
                 ).queue();
             }
-            TextChannel partyChannel = Game.guild.getTextChannelById(party.getChannelId());
-            if (partyChannel != null) {
-                partyChannel.sendMessage("You returned back to " + party.getLocation().getName() + ".").queue();
-            }
+            party.getChannel().sendMessage("You returned back to " + party.getLocation().getName() + ".").queue();
         }
     }
 
@@ -244,7 +238,7 @@ public class Encounters {
      * @param party current party
      */
     private static void branchPath(Party party) {
-        Game.guild.getTextChannelById(party.getChannelId()).sendMessage("Theres a branch in the path, do you go left or right?").queue();
+        party.getChannel().sendMessage("Theres a branch in the path, do you go left or right?").queue();
     }
 
 

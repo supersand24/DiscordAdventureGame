@@ -57,10 +57,7 @@ public class BattleSystem {
         activeBattles.remove(p);
         p.setBattleMessage(null);
 
-        TextChannel channel = Game.guild.getTextChannelById(p.getChannelId());
-        if (channel != null) {
-            channel.sendMessage("The battle is over, stop and heal up.").queue();
-        }
+        p.getChannel().sendMessage("The battle is over, stop and heal up.").queue();
 
         //Send Battle Log
 
