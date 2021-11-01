@@ -54,6 +54,7 @@ public class BattleSystem {
      */
     public static void endBattle(Party p) {
         //removes the party from the list of active battles
+        p.enemies.clear();
         activeBattles.remove(p);
         p.battleMessage = null;
 

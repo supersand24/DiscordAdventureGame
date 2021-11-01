@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Area implements Serializable {
 
@@ -13,15 +14,18 @@ public class Area implements Serializable {
 
     private int[] coords;
 
+    private MapManager.AreaType areaType;
+
     private List<Encounters.EncounterType> possibleEncounters = new ArrayList<>();
 
     private int connectionAmount;
     private Area[] connections = new Area[MapManager.Direction.values().length];
 
     public Area(MapManager.AreaType areaType) {
+        this.areaType = areaType;
         switch (areaType) {
             case SETTLEMENT -> {
-                this.name = "Noctori";
+                this.name = setSettlementName();
                 this.connectionAmount = 6;
                 possibleEncounters.add(Encounters.EncounterType.RETURN_TO_SETTLEMENT);
             }
@@ -119,4 +123,49 @@ public class Area implements Serializable {
                 ", connectionAmount=" + connectionAmount +
                 '}';
     }
+
+    private String setSettlementName() {
+        Random rand = new Random();
+        String name = null;
+        int i = 0;
+        while (name == null) {
+            i = rand.nextInt(possibleNames.length);
+            name = possibleNames[i];
+        }
+        possibleNames[i] = null;
+        return name + setSettlementType();
+    }
+
+    private String setSettlementType() {
+        Random rand = new Random();
+        return settlementType[rand.nextInt(settlementType.length)];
+    }
+
+    public MapManager.AreaType getAreaType() {
+        return areaType;
+    }
+
+    private static String[] possibleNames = {
+            "Noctori",
+            "Harmony",
+            "Crotion",
+            "Monaphos",
+            "Aspen",
+            "Klingson",
+            "Mevania",
+            "Dumarma",
+            "Nazgord",
+            "Nobrul",
+            "Horizon",
+            "Wingston",
+            "Namros",
+            "Redemption",
+            "Flameridge"
+    };
+
+    private String[] settlementType = {
+            " Village",
+            " Town",
+            " City"
+    };
 }
