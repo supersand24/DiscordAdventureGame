@@ -1,6 +1,9 @@
 package Game;
 
+import net.dv8tion.jda.api.entities.TextChannel;
+
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +17,15 @@ public class MapManager {
      * The map size.
      */
     public static final int MAP_SIZE = 15;
+
+    /**
+     * Creates a grid.
+     */
+    private static Area[][] map = new Area[MAP_SIZE][MAP_SIZE];
+
+    public static List<Area> areas = new ArrayList<>();
+
+    public static Hashtable<TextChannel,Area> areas2 = new Hashtable<>();
 
     /**
      * Simple cardinal directions.
@@ -132,11 +144,6 @@ public class MapManager {
         return typeToReturn;
     }
 
-    /**
-     * Creates a grid.
-     */
-    private static Area[][] map = new Area[MAP_SIZE][MAP_SIZE];
-
     public static void linkAreas(Area from, Direction dir, Area to) {
         from.setConnection(to,dir);
         to.setConnection(from,dir.getOpposite());
@@ -206,12 +213,12 @@ public class MapManager {
         return null;
     }
 
-    public static Area getArea(long channelid) {
+    public static Area getArea(TextChannel channel) {
 
         for (Area[] inner : map) {
             for (Area area : inner) {
                 if (area != null) {
-                    if (area.getChannelId() == channelid)
+                    if (area.getChannel().equals(channel))
                         return area;
                 }
             }
@@ -244,6 +251,7 @@ public class MapManager {
         if ( (x > 0 || y > 0) && (x < MAP_SIZE || y < MAP_SIZE) && area != null) {
             map[x - 1][y - 1] = area;
             area.setCoords(x,y);
+            areas.add(area);
         }
     }
 

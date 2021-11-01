@@ -4,6 +4,8 @@ import Game.Items.Item;
 import Game.Items.Useable.Usable;
 import Game.Items.Weapons.Sword;
 import Game.Items.Weapons.Weapon;
+import Game.Party;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -15,10 +17,34 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Player extends Entity {
 
+    public enum PlayerRace {
+        HALFMAN,
+        HUMAN,
+        ULF,
+        URK,
+        WARFED
+    }
+
+    public enum traits {
+
+    }
+
+    public enum PlayerGender {
+        MALE,
+        FEMALE,
+
+    }
+
     /**
      * Gender of the character
      */
-    protected String gender = "male";
+    protected PlayerGender gender = null;
+
+    protected Party party;
+
+    protected Member member;
+
+    protected PlayerRace race;
 
     /**
      * player constructor
@@ -27,13 +53,11 @@ public class Player extends Entity {
      * @param maxHealth initial max health
      * @see Game.Entities.Entity
      */
-    public Player(int gold, int maxHealth, String playerName, String gender) {
+    public Player(int gold, int maxHealth, String playerName) {
         super(gold, maxHealth);
         this.name = playerName;
         this.gender = gender;
         genStats();
-        Sword s = new Sword();
-        holding.add(s);
 
     }
 
@@ -42,15 +66,44 @@ public class Player extends Entity {
      * @author Harrison Brown
      * @param playerName the name of the player
      */
-    public Player(String playerName) {
+    public Player(String playerName, Member member, PlayerRace race) {
         super();
         this.name = playerName;
+        this.race = race;
         this.maxHealth = 100;
         this.health = this.maxHealth;
         genStats();
-        Sword s = new Sword();
-        holding.add(s);
-        System.out.println("New player created\n" + this);
+        raceMod();
+        this.member = member;
+        //System.out.println("New player created\n" + this);
+    }
+
+    public Player(String playerName, Member member) {
+        super();
+        this.name = playerName;
+        this.race = PlayerRace.HUMAN;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
+        genStats();
+        raceMod();
+        this.member = member;
+        //System.out.println("New player created\n" + this);
+    }
+
+    /**
+     * a default constructor to test character creation in the console
+     * @author Harrison Brown
+     * @param playerName te name of the player
+     */
+    public Player(String playerName, PlayerRace race) {
+        super();
+        this.name = playerName;
+        this.race = race;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
+        genStats();
+        raceMod();
+        //System.out.println("New player created\n" + this);
     }
 
     /**
@@ -59,48 +112,23 @@ public class Player extends Entity {
      */
     private void genStats() {
         Random rand = new Random();
-        int pool = 35;
         int[] stats = new int[5];
 
-        int cnt = 4;
+        stats[0] = rand.nextInt(3,11);
+        stats[1] = rand.nextInt(3,11);
+        stats[2] = rand.nextInt(3,11);
+        stats[3] = rand.nextInt(3,11);
+        stats[4] = rand.nextInt(3,11);
 
-        //sets the lower bound of the rand
-        int min = 1;
-        //sets the initial max
-        int max = 15;
-
-        while (pool > 0) {
-
-            for (int i = 0; i < stats.length; i++) {
-                if (pool < 0) {
-                    break;
-                }
-
-                if (stats[i] >= 15) {
-                    i++;
-                    continue;
-                }
-
-                if (pool < 15) {
-                    max = pool - cnt;
-                }
-
-                int add = rand.nextInt(min, max);
-                stats[i] += add;
-                pool -= add;
-                pool += 1;
-                cnt--;
-            }
-        }
 
         shuffleArray(stats);
         checkMax(stats);
 
-        this.def = stats[0];
-        this.spd = stats[1];
-        this.dex = stats[2];
-        this.wis = stats[3];
-        this.str = stats[4];
+        this.setDef(stats[0]);
+        this.setSpd(stats[1]);
+        this.setDex(stats[2]);
+        this.setWis(stats[3]);
+        this.setStr(stats[4]);
 
     }
 
@@ -130,10 +158,67 @@ public class Player extends Entity {
      */
     private void checkMax(int[] ar) {
         for (int i = 0; i < ar.length; i++) {
-            if (ar[i] > 15) {
-                ar[i] = 15;
+            if (ar[i] > 10) {
+                ar[i] = 10;
             }
         }
+    }
+
+    private void raceMod() {
+        switch (this.race) {
+            case HUMAN -> {
+                this.setDef(this.getDef() + 1);
+                this.setDex(this.getDex() + 1);
+                this.setStr(this.getStr() + 1);
+                this.setWis(this.getWis() + 1);
+                this.setSpd(this.getSpd() + 1);
+            }
+            case URK -> {
+                this.setSpd(this.getSpd() - 3);
+                this.setWis(this.getWis() - 1);
+                this.setDef(this.getDef() + 3);
+                this.setStr(this.getStr() + 2);
+            }
+            case ULF -> {
+                this.setDex(this.getDex() + 3);
+                this.setDef(this.getDef() - 2);
+                this.setStr(this.getStr() - 2);
+                this.setWis(this.getWis() + 2);
+                this.setSpd(this.getSpd() + 1);
+            }
+            case WARFED -> {
+                this.setSpd(this.getSpd() - 1);
+                this.setSpd(this.getSpd() - 3);
+                this.setDex(this.getDex() - 1);
+                this.setDef(this.getDef() + 2);
+                this.setStr(this.getStr() + 3);
+            }
+            case HALFMAN -> {
+                this.setDef(this.getDef() - 1);
+                this.setStr(this.getStr() + -1);
+                this.setWis(this.getWis() + 2);
+                this.setSpd(this.getSpd() + 2);
+            }
+            default -> {
+                    System.out.println("something broke but i wont tell you where");
+            }
+        }
+    }
+
+    public Party getParty() {
+        return party;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     /**
@@ -153,6 +238,22 @@ public class Player extends Entity {
         Weapon temp = holding.get(0);
         holding.remove(0);
         holding.add(temp);
+    }
+
+    public void setGender(PlayerGender gender) {
+        this.gender = gender;
+    }
+
+    public PlayerGender getGender() {
+        return gender;
+    }
+
+    public void setRace(PlayerRace race) {
+        this.race = race;
+    }
+
+    public PlayerRace getRace() {
+        return race;
     }
 
     /**
@@ -230,6 +331,9 @@ public class Player extends Entity {
         out.append("Gender: ");
         out.append(gender);
         out.append("\n");
+        out.append("Race: ");
+        out.append(race);
+        out.append("\n");
         out.append("Level: ").append(level).append("\n");
         out.append("Health: ").append(health).append(" Max Health: ").append(maxHealth).append("\n");
         out.append("Gold: ").append(gold).append("\n");
@@ -237,7 +341,7 @@ public class Player extends Entity {
         for (Item x : holding) {
             out.append(x.getClass().getSimpleName()).append(": ").append(x.getName()).append("\n");
         }
-        out.append("Def: ").append(def).append("\n").append("Spd: ").append(spd).append("\n").append("Dex: ").append(dex).append("\n").append("Wis: ").append(wis).append("\n").append("Str: ").append(str).append("\n");
+        out.append("Def: ").append(this.getDef()).append("\n").append("Spd: ").append(this.getSpd()).append("\n").append("Dex: ").append(this.getDex()).append("\n").append("Wis: ").append(this.getWis()).append("\n").append("Str: ").append(this.getStr()).append("\n");
 
         return out.toString();
     }

@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -18,7 +19,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -65,14 +65,23 @@ public class Main {
         CommandListUpdateAction commands = guild.updateCommands();
 
         commands.addCommands(
-                //Create Party
-                new CommandData("create","Creates a party."),
-                //Attack
-                new CommandData("attack","Attacks an enemy.").addOptions(
-                        new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                //Battle
+                new CommandData("battle","All commands related to battling.").addSubcommands(
+                        //Attack
+                        new SubcommandData("attack","Attacks an enemy.").addOptions(
+                                new OptionData(OptionType.INTEGER,"target", "Target you would like to hit.").setRequired(true)
+                        ),
+                        //Block
+                        new SubcommandData("block","Blocks next attack.")
                 ),
-                //Block
-                new CommandData("block","Blocks next attack."),
+                //Party
+                new CommandData("party","Party related commands.").addSubcommands(
+                        //Create
+                        new SubcommandData("create","Creates a party."),
+                        new SubcommandData("join", "Joins an existing party.").addOptions(
+                                new OptionData(OptionType.USER,"member", "A member of the party you would like to join.").setRequired(true)
+                        )
+                ),
                 //Vote
                 new CommandData("vote","Starts a vote.")
 
@@ -121,7 +130,7 @@ public class Main {
                 Guild guild = jda.getGuildById(899410801906044991L);
 
                 if (guild != null) {
-                    addSlashCommands(guild);
+                    //addSlashCommands(guild);
 
                     //Sets up the Game, if there is an error, app will exit.
                     if (!Game.setUp(guild)) {
