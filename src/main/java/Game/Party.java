@@ -15,7 +15,7 @@ import java.util.*;
  * This object keeps track of a party, it is able to keep track of its members, map location, and voting information.
  *
  * @author Justin Sandman
- * @version 1.0
+ * @version 1.1
  *
  */
 public class Party {
@@ -44,6 +44,8 @@ public class Party {
      * List of enemies the party is currently facing.
      */
     public List<Enemy> enemies = new ArrayList<>();
+
+    private int tilesMovedWithNoSpecialEvent = 0;
 
     /**
      * The party's, current location on the map.
@@ -142,7 +144,13 @@ public class Party {
 
             headingDirection = new Random().nextInt(possibleDirections.size());
             //THIS IS WHERE SETTLEMENTS AND DUNGEONS ARE GENERATED.
-            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.AreaType.PATH));
+
+            //use previousAreas.size number indicates how far party is on path
+            //gets larger they've been on path, use to force settlement odds
+
+            //random pick area type to use
+
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.setAreaType(this)));
 
         } else {
             System.out.println("Continuing on path.");
@@ -163,7 +171,6 @@ public class Party {
      */
     public void headBack() {
         voteMessage.editMessage("The party voted, to go back.").queue();
-        //setLocation(location.getConnections()[comingFrom.getIndex()]);
         setLocation(previousAreas.get(previousAreas.size()-1));
         previousAreas.remove(getLocation());
         System.out.println(location.getXCoord() + "," + location.getYCoord() + "[" + location.getName() + "] ");
@@ -412,6 +419,14 @@ public class Party {
         string.append("Location:").append(getLocation().getXCoord()).append(',').append(getLocation().getYCoord()).append("\n");
         string.append("GoingTo:").append(getGoingTo()).append("\n");
         return string.toString();
+    }
+
+    public void setTilesMovedWithNoSpecialEvent(int tilesMovedWithNoSpecialEvent) {
+        this.tilesMovedWithNoSpecialEvent = tilesMovedWithNoSpecialEvent;
+    }
+
+    public int getTilesMovedWithNoSpecialEvent() {
+        return tilesMovedWithNoSpecialEvent;
     }
 
     @Override

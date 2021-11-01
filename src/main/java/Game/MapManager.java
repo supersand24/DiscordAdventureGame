@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Random;
 
 /**
  * This class will do everything we need for the map.
@@ -15,7 +16,7 @@ public class MapManager {
     /**
      * The map size.
      */
-    public static final int MAP_SIZE = 7;
+    public static final int MAP_SIZE = 15;
 
     /**
      * Creates a grid.
@@ -89,8 +90,58 @@ public class MapManager {
     }
 
     public enum AreaType {
-        SETTLEMENT,
-        PATH
+        SETTLEMENT(0),
+        PATH(10);
+
+        int weight;
+
+        AreaType(int weight) {
+            this.weight = weight;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
+
+    }
+
+    public static AreaType setAreaType(Party party) {
+        //need to swap from previousAreas.size() to party.getTilesMovedWithNoSpecialEvent()
+        if (party.previousAreas.size() >= 5) {
+            for (AreaType type : AreaType.values()) {
+                if (!type.equals(AreaType.SETTLEMENT)) {
+                    type.weight = 0;
+                }
+            }
+        } else if (party.previousAreas.size() > 3) {
+            AreaType.SETTLEMENT.weight = (party.previousAreas.size() - 3) * 2;
+        }
+
+        Random rand = new Random();
+        AreaType typeToReturn = null;
+        int max = AreaType.values().length;
+        while (typeToReturn == null) {
+            int sum = 0;
+            for (int i = 0; i < max; i++) {
+                sum += AreaType.values()[i].weight;
+            }
+
+            int x = rand.nextInt(sum);
+            if (x > (sum - (AreaType.values()[(max - 1)].weight))) {
+                typeToReturn = AreaType.values()[(max - 1)];
+            } else {
+                if ((max-1) == 0) {
+                    max = AreaType.values().length;
+                } else {
+                    max--;
+                }
+            }
+        }
+        return typeToReturn;
     }
 
     public static void linkAreas(Area from, Direction dir, Area to) {
@@ -213,9 +264,9 @@ public class MapManager {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map.length; j++) {
                 if (map[j][i] != null) {
-                    switch (map[j][i].getName()) {
-                        case "Route" -> stringBuilder.append("[R]");
-                        case "Noctori" -> stringBuilder.append("[N]");
+                    switch (map[j][i].getAreaType()) {
+                        case PATH -> stringBuilder.append("[R]");
+                        case SETTLEMENT -> stringBuilder.append("[").append(map[j][i].getName().charAt(0)).append("]");
                         default -> stringBuilder.append("[ ]");
                     }
                 } else {
