@@ -100,6 +100,7 @@ public class Party {
         this.leader = partyLeader;
         this.location = location;
         players.add(Game.players.get(partyLeader));
+        this.goingTo = MapManager.Direction.NORTH;
     }
 
     public boolean joinParty(Player player) {
@@ -150,7 +151,13 @@ public class Party {
 
             //random pick area type to use
 
-            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),new Area(MapManager.setAreaType(this)));
+            Area area = new Area(MapManager.setAreaType(this),this);
+
+            switch (area.getAreaType()) {
+                case SETTLEMENT     -> getChannel().sendMessage("@everyone You found " + area.getName() + "!").queue();
+                case PATH           -> getChannel().sendMessage("The path continues on.").queue();
+            }
+            MapManager.addAdjacentArea(location,possibleDirections.get(headingDirection),area);
 
         } else {
             System.out.println("Continuing on path.");

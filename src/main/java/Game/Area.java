@@ -1,12 +1,12 @@
 package Game;
 
+import Game.Entities.Player;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Area implements Serializable {
 
@@ -15,6 +15,8 @@ public class Area implements Serializable {
     private long channelId;
 
     private TextChannel channel;
+
+    public List<Party> parties = new ArrayList<>();
 
     private int[] coords;
 
@@ -25,13 +27,23 @@ public class Area implements Serializable {
     private int connectionAmount;
     private Area[] connections = new Area[MapManager.Direction.values().length];
 
-    public Area(MapManager.AreaType areaType) {
+    public Area(MapManager.AreaType areaType, Party party) {
         this.areaType = areaType;
         switch (areaType) {
             case SETTLEMENT -> {
-                this.name = setSettlementName();
+                this.name = generateSettlementName();
                 this.connectionAmount = 6;
                 possibleEncounters.add(Encounters.EncounterType.RETURN_TO_SETTLEMENT);
+                Game.categorySettlement.createTextChannel(name).queue(channel1 -> {
+                    setChannel(channel1);
+                    for (Member member : party.getChannel().getMembers()) {
+                        if (member.getRoles().contains(Game.roleAdventurer)) {
+                            channel1.createPermissionOverride(member).setAllow(
+                                    Permission.VIEW_CHANNEL
+                            ).queue();
+                        }
+                    }
+                });
             }
             case PATH -> {
                 this.name = "Route";
@@ -152,7 +164,7 @@ public class Area implements Serializable {
                 '}';
     }
 
-    private String setSettlementName() {
+    private String generateSettlementName() {
         Random rand = new Random();
         String name = null;
         int i = 0;

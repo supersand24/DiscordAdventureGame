@@ -50,12 +50,7 @@ public class Game {
             gameStarted = true;
             System.out.println("Starting Game");
             guild.getTextChannelById(901660400649658448L).sendMessage("Game Starting!  To join, reply to this message your characters name.").queue();
-            Area beginningTown = new Area(MapManager.AreaType.SETTLEMENT);
-            guild.createTextChannel(beginningTown.getName(),categorySettlement).queue(channel -> {
-                MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,beginningTown);
-                beginningTown.setChannel(channel);
-                MapManager.printMap();
-            });
+            MapManager.addArea(MapManager.MAP_SIZE/2+1,MapManager.MAP_SIZE/2+1,new Area(MapManager.AreaType.SETTLEMENT,null));
         } else {
             System.out.println("Game Already Started");
         }
@@ -191,7 +186,7 @@ public class Game {
                         //Generate new area, if it doesn't exist.
                         //ADD SOMEWHERE IN HERE TO CHECK IF SETTLEMENT CAN GENERATE NEW PATHS
                         if (MapManager.getAdjacentArea(party.getLocation(),dir) == null) {
-                            MapManager.addAdjacentArea(party.getLocation(),dir,new Area(MapManager.AreaType.PATH));
+                            MapManager.addAdjacentArea(party.getLocation(),dir,new Area(MapManager.AreaType.PATH,party));
                         }
                         party.previousAreas.add(party.getLocation());
                         party.setLocation(MapManager.getAdjacentArea(party.getLocation(),dir));
