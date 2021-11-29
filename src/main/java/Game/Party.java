@@ -117,6 +117,19 @@ public class Party {
         }
     }
 
+    public boolean leaveParty(Player player) {
+        if (players.contains(player)) {
+            players.remove(player);
+            player.setParty(null);
+            Member member = player.getMember();
+            channel.sendMessage(member.getAsMention() + "has left the Party.").queue();
+            channel.getPermissionOverride(member).delete().queue();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Moves the party forwards, generating new paths or using existing ones.
      * @author Justin Sandman

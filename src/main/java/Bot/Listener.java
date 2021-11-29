@@ -1,5 +1,6 @@
 package Bot;
 
+import Game.Entities.Player;
 import Game.Game;
 import Game.BattleSystem;
 import Game.MapManager;
@@ -117,7 +118,23 @@ public class Listener extends ListenerAdapter {
                                 slashCommand.getHook().sendMessage("There was an issue joining the party.").queue();
                             }
                         }
-                        case "leave"    -> System.out.println("Leaving Party.");
+                        case "leave"    -> {
+                            slashCommand.deferReply(true).queue();
+                            Player player = Game.players.get(slashCommand.getMember());
+                            Party party = player.getParty();
+                            if (party != null) {
+                                if (!party.leaveParty(player)) {
+                                    slashCommand.getHook().sendMessage("You left the party.").queue();
+                                    if (party.getPlayers().size() <= 0) {
+                                        Game.parties.remove(party);
+                                    }
+                                } else {
+                                    slashCommand.getHook().sendMessage("There was an issue leaving the party.").queue();
+                                }
+                            } else {
+                                slashCommand.getHook().sendMessage("You are not in a party to leave.").queue();
+                            }
+                        }
                     }
                 }
             }
